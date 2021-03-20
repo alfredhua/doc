@@ -167,15 +167,15 @@ export default {
     },
   },
   'zh-cn': {
-    barText: '社区',
+    barText: '我的技术',
     events: {
-      title: '事件 & 新闻',
+      title: '技术',
       list: [
         {
           img: '/img/brhtqqzh.jpeg',
-          title: '这是标题',
-          content: '这是内容',
-          dateStr: 'May 12nd，2018',
+          title: 'JAVA',
+          content: '',
+          dateStr: '',
           link: '/zh-cn/blog/blog1.html',
         },
         {
@@ -279,55 +279,102 @@ export default {
       ],
     },
     ecos: {
-      title: '生态系统',
+      title: '标签',
       list: [
         {
-          title: '生态系统1',
-          content: <span>生态系统1</span>,
+          title: '',
+          content: <span></span>,
           tags: [
             {
-              text: '标签1',
+              text: '设计模式',
               link: '',
               bgColor: '#7A63FC',
             },
             {
-              text: '标签2',
+              text: 'JAVA',
               link: '',
               bgColor: '#00D0D9',
-            },
-            {
-              text: '标签3',
+            }, {
+              text: 'MySQL',
               link: '',
               bgColor: '#00D0D9',
-            },
+            }, {
+              text: 'clickHouse',
+              link: '',
+              bgColor: '#00D0D9',
+            },, {
+              text: 'elasticsearch',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'RabbitMQ',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'Kafka',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'Redis',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'Guava',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'Mybatis',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'Spring',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'Spring Boot',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'Spring Cloud',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'nacos',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'dubbo',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'grpc',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'zookeeper',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: 'linux',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: '算法',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: '工具',
+              link: '',
+              bgColor: '#00D0D9',
+            }, {
+              text: '面试',
+              link: '',
+              bgColor: '#00D0D9',
+            }
           ],
-        },
-        {
-          title: '生态系统2',
-          content: <span>生态系统2</span>,
-          tags: [
-            {
-              text: '标签1',
-              link: '',
-              bgColor: '#7A63FC',
-            },
-            {
-              text: '标签2',
-              link: '',
-              bgColor: '#00D0D9',
-            },
-            {
-              text: '标签3',
-              link: '/zh-cn/docs/demo1.html',
-              bgColor: '#00D0D9',
-            },
-            {
-              text: '标签4',
-              link: '',
-              bgColor: '#00D0D9',
-            },
-          ],
-        },
+          
+        }
+
       ],
     },
   },

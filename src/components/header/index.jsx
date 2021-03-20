@@ -126,8 +126,9 @@ class Header extends React.Component {
         }
       >
         <div className="header-body">
-          <a href={getLink(`/${language}/index.html`)}>
-            <img className="logo" alt={siteConfig.name} title={siteConfig.name} src={getLink(logo)} />
+          <a className="logo" href={getLink(`/${language}/index.html`)}>
+              <span className= {classnames(({[`logo-${type}`]:true}))}>码农阿华| <span className="logo-desc">玩玩技术，说说产品</span></span>
+            {/* <img className="logo" alt={siteConfig.name} title={siteConfig.name} src={getLink(logo)} /> */}
           </a>
           {
             siteConfig.defaultSearch ?

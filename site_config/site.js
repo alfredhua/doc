@@ -1,10 +1,11 @@
 // 全局的一些配置
 export default {
+  name:'码农阿华',
   rootPath: '/product', // 发布到服务器的根目录，需以/开头但不能有尾/，如果只有/，请填写空字符串
   port: 8080, // 本地开发服务器的启动端口
-  domain: 'dubbo.apache.org', // 站点部署域名，无需协议和path等
+  domain: 'http://alfredhua.com', // 站点部署域名，无需协议和path等
   defaultSearch: 'google', // 默认搜索引擎，baidu或者google
-  defaultLanguage: 'en-us',
+  defaultLanguage: 'zh-cn',
   'en-us': {
     pageMenu: [
       {
@@ -83,13 +84,13 @@ export default {
       },
       {
         key: 'community',
-        text: '社区',
+        text: '关于我',
         link: '/zh-cn/community/index.html',
       },
     ],
     disclaimer: {
-      title: '免责声明',
-      content: '免责声明的具体内容',
+      title: '码农阿华',
+      content: '联系邮箱：alfredhua@aliyun.com',
     },
     documentation: {
       title: '文档',
@@ -97,15 +98,7 @@ export default {
         {
           text: '概览',
           link: '/zh-cn/docs/demo1.html',
-        },
-        {
-          text: '快速开始',
-          link: '/zh-cn/docs/demo2.html',
-        },
-        {
-          text: '开发者指南',
-          link: '/zh-cn/docs/dir/demo3.html',
-        },
+        }
       ],
     },
     resources: {
@@ -114,13 +107,9 @@ export default {
         {
           text: '博客',
           link: '/zh-cn/blog/index.html',
-        },
-        {
-          text: '社区',
-          link: '/zh-cn/community/index.html',
-        },
+        }
       ],
     },
-    copyright: 'Copyright © 2018 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    copyright: 'CopyRight©2019 版权所有 码农阿华 京ICP备19044364号',
   },
 };

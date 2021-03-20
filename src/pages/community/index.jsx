@@ -28,14 +28,7 @@ class Community extends Language {
           onLanguageChange={this.onLanguageChange}
         />
         <Bar img="/img/system/community.png" text={dataSource.barText} />
-        <section className="events-section">
-          <h3>{dataSource.events.title}</h3>
-          <Slider>
-            {dataSource.events.list.map((event, i) => (
-              <EventCard event={event} key={i} />
-            ))}
-          </Slider>
-        </section>
+        
         <section className="eco-section">
           <h3>{dataSource.ecos.title}</h3>
           <div className="eco-lists">
@@ -46,7 +39,17 @@ class Community extends Language {
           }
           </div>
         </section>
-        <section className="contact-section">
+
+        <section className="events-section">
+          <h3>{dataSource.events.title}</h3>
+          <Slider>
+            {dataSource.events.list.map((event, i) => (
+              <EventCard event={event} key={i} />
+            ))}
+          </Slider>
+        </section>
+     
+        {/* <section className="contact-section">
           <h3>{dataSource.contacts.title}</h3>
           <p>{dataSource.contacts.desc}</p>
           <div className="contact-list">
@@ -67,7 +70,7 @@ class Community extends Language {
             ))
           }
           </div>
-        </section>
+        </section> */}
         <Footer logo="/img/dubbo_gray.png" language={language} />
       </div>
     );

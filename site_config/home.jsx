@@ -3,8 +3,8 @@ import React from 'react';
 export default {
   'zh-cn': {
     brand: {
-      brandName: '开源产品品牌名称',
-      briefIntroduction: '关于开源产品的简单介绍',
+      brandName: '码农阿华',
+      briefIntroduction: '博学之，审问之，慎思之，明辨之，笃行之',
       buttons: [
         {
           text: '立即开始',
@@ -13,38 +13,38 @@ export default {
         },
         {
           text: '查看Github',
-          link: '',
+          link: 'https://github.com/alfredhua',
           type: 'normal',
         },
       ],
     },
     introduction: {
-      title: '开源产品的介绍',
-      desc: '开源产品的简单介绍，提供一些该产品的优点、特性描述等',
-      img: '/img/architecture.png',
+      title: '介绍',
+      desc: '玩玩技术，说说产品，搞搞工具，谈谈面试',
+      img: '/img/tec.png',
     },
     features: {
-      title: '特性一览',
+      title: '技术专区',
       list: [
         {
           img: '/img/feature_transpart.png',
-          title: '特性1',
-          content: '特性1的简单概括',
+          title: 'JAVA',
+          content: '',
         },
         {
           img: '/img/feature_loadbalances.png',
-          title: '特性2',
-          content: '特性2的简单概括',
+          title: 'Spring',
+          content: '',
         },
         {
           img: '/img/feature_service.png',
-          title: '特性3',
-          content: '特性3的简单概括',
+          title: 'Mybatis',
+          content: '',
         },
         {
           img: '/img/feature_hogh.png',
-          title: '特性4',
-          content: '特性4的简单概括',
+          title: 'Mysql',
+          content: '',
         },
         {
           img: '/img/feature_runtime.png',
@@ -59,7 +59,7 @@ export default {
       ],
     },
     start: {
-      title: '快速开始',
+      title: '查看文章',
       desc: '简单描述',
       img: '/img/quick_start.png',
       button: {

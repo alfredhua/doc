@@ -20,10 +20,26 @@
     height: $headerHeight;
     line-height: $headerHeight;
     .logo {
-      margin-left: 40px;
-      width: 96px;
-      vertical-align: sub;
+      &-primary{
+        font-size: 28px;
+        width: 96px;
+        vertical-align: sub;
+        color: #fff;
+        .logo-desc{
+          font-size: 16px;
+        }
+      }
+      &-normal{
+        font-size: 24px;
+        width: 96px;
+        vertical-align: sub;
+        color: #333;
+        .logo-desc{
+          font-size: 16px;
+        }
+      }
     }
+   
     .header-menu {
       float: right;
       .header-menu-toggle {
@@ -189,6 +205,7 @@
 }
 
 @media screen and (max-width: $mobileWidth) {
+  
   .header-container {
     .header-body {
       .logo {
@@ -234,7 +251,7 @@
               opacity: 1;
             }
           }
-        }
+        }  
         .menu-item-primary-active, .menu-item-normal-active {
           background: $endColor;
           a {

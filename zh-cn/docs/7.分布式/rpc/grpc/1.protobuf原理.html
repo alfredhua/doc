@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="1.protobuf原理" />
+	<meta name="description" content="1.protobuf原理" />
+	<!-- 网页标签标题 -->
+	<title>1.protobuf原理</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><pre><code class="language-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>{
+    UserProtos.User user=UserProtos.User.newBuilder().
+        setAge(<span class="hljs-number">300</span>).setName(<span class="hljs-string">"abc"</span>).build();
+    <span class="hljs-keyword">byte</span>[] bytes=user.toByteArray();
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">byte</span> bt:bytes){
+     System.out.print(bt+<span class="hljs-string">" "</span>);
+    }
+}
+
+</code></pre>
+<p>序列化出来的数字基本看不懂，但是序列化以后的数据确实很小，那我们接 下来去了解一下底层的原理</p>
+<p>正常来说，要达到最小的序列化结果，一定会用到压缩的技术，而 protobuf 里面用到了两种 压缩算法，一种是 varint，另一种是 zigzag</p>
+<h2 id="%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F">存储格式 <a class="header-anchor" href="#%E5%AD%98%E5%82%A8%E6%A0%BC%E5%BC%8F">#</a></h2>
+<p>protobuf 采用 T-L-V 作为存储方式</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/1e2ce0047e5c408280b2b1545af67525.png" alt="image"></p>
+<p>tag 的计算方式是 field_number(当前字段的编号) &lt;&lt; 3 | wire_type</p>
+<p>比如Mic的字段编号是1 ，类型wire_type的值为 2 所以 : 1&lt;&lt;3|2=10</p>
+<p>age=300 的字段编号是 2，类型 wire_type 的值是 0， 所以 : 2&lt;&lt;3|0 =16</p>
+<h2 id="%E8%B4%9F%E6%95%B0%E7%9A%84%E5%AD%98%E5%82%A8">负数的存储 <a class="header-anchor" href="#%E8%B4%9F%E6%95%B0%E7%9A%84%E5%AD%98%E5%82%A8">#</a></h2>
+<p>在计算机中，负数会被表示为很大的整数，因为计算机定义负数符号位为数字的最高位，所 以如果采用 varint 编码表示一个负数，那么一定需要 5 个比特位。所以在 protobuf 中通过 sint32/sint64 类型来表示负数，负数的处理形式是先采用 zigzag 编码(把符号数转化为无符 号数)，在采用 varint 编码。</p>
+<p>sint32:(n &lt;&lt; 1) ^ (n &gt;&gt; 31)</p>
+<p>sint64:(n &lt;&lt; 1) ^ (n &gt;&gt; 63)</p>
+<p>比如存储一个(-300)的值 -300</p>
+<p>原码:0001 0010 1100</p>
+<p>取反:1110 1101 0011</p>
+<p>加 1 :1110 1101 0100</p>
+<p>n&lt;&lt;1: 整体左移一位，右边补 0 -&gt; 1101 1010 1000</p>
+<p>n&gt;&gt;31: 整体右移 31 位，左边补 1 -&gt; 1111 1111 1111</p>
+<p>n&lt;&lt;1 ^ n &gt;&gt;31</p>
+<p>1101 1010 1000 ^ 1111 1111 1111 = 0010 0101 0111</p>
+<p>十进制: 0010 0101 0111 = 599</p>
+<p>varint 算法: 从右往做，选取 7 位，高位补 1/0(取决于字节数) 得到两个字节</p>
+<p>1101 0111 0000 0100</p>
+<p>-41 、 4</p>
+<p>总结：</p>
+<p>Protocol Buffer 的性能好，主要体现在 序列化后的数据体积小 &amp; 序列化速度快，最终使得 传输效率高，其原因如下:</p>
+<p>序列化速度快的原因:</p>
+<p>a. 编码 / 解码 方式简单(只需要简单的数学运算 = 位移等等)</p>
+<p>b. 采用 Protocol Buffer 自身的框架代码 和 编译器 共同完成</p>
+<p>序列化后的数据量体积小(即数据压缩效果好)的原因:</p>
+<p>a. 采用了独特的编码方式，如 Varint、Zigzag 编码方式等等</p>
+<p>b. 采用 T - L - V 的数据存储方式:减少了分隔符的使用 &amp; 数据存储得紧凑</p>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "filename": "1.安装.md",
+  "__html": "<p>mac:\nbrew install rabbitmq</p>\n<p>centos :\nyum install rabbitmq</p>\n<p>教程：<a href=\"https://www.rabbitmq.com/download.html\">https://www.rabbitmq.com/download.html</a></p>\n<p>默认账户：guest\n默认密码：guest</p>\n",
+  "link": "/zh-cn/docs/4.mq/rabbitmq/1.安装.html",
+  "meta": {}
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="10.集群" />
+	<meta name="description" content="10.集群" />
+	<!-- 网页标签标题 -->
+	<title>10.集群</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">主从复制 <a class="header-anchor" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6">#</a></h2>
+<p>redis 主从复制的核心原理</p>
+<p>当启动一个 slave node 的时候，它会发送一个 PSYNC 命令给 master node。</p>
+<p>如果这是 slave node 初次连接到 master node，那么会触发一次 full resynchronization 全量复制。此时 master 会启动一个后台线程，开始生成一份 RDB 快照文件，</p>
+<p>同时还会将从客户端 client 新收到的所有写命令缓存在内存中。RDB 文件生成完毕后， master 会将这个 RDB 发送给 slave，slave 会先写入本地磁盘，然后再从本地磁盘加载到内存中，</p>
+<p>接着 master 会将内存中缓存的写命令发送到 slave，slave 也会同步这些数据。</p>
+<p>slave node 如果跟 master node 有网络故障，断开了连接，会自动重连，连接之后 master node 仅会复制给 slave 部分缺少的数据</p>
+<p>过程原理</p>
+<ol>
+<li>当从库和主库建立MS关系后，会向主数据库发送SYNC命令</li>
+<li>主库接收到SYNC命令后会开始在后台保存快照(RDB持久化过程)，并将期间接收到的写命令缓存起来</li>
+<li>当快照完成后，主Redis会将快照文件和所有缓存的写命令发送给从Redis</li>
+<li>从Redis接收到后，会载入快照文件并且执行收到的缓存的命令</li>
+<li>之后，主Redis每当接收到写命令时就会将命令发送从Redis，从而保证数据的一致</li>
+</ol>
+<h2 id="docker%E4%B8%8Bredis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA">docker下redis集群搭建 <a class="header-anchor" href="#docker%E4%B8%8Bredis%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA">#</a></h2>
+<p><a href="https://github.com/alfredhua/docker/tree/master/redis">github地址</a></p>
+<ol>
+<li>
+<p>修改redis的配置文件：</p>
+<p>​	cluster-enabled yes</p>
+</li>
+<li>
+<p>如果是单台机器。修改每个redis服务的端口号。</p>
+</li>
+<li>
+<p>启动每个机器。</p>
+</li>
+<li>
+<p>执行命令：加入各个节点，注意替换自己的ip地址</p>
+<pre><code class="language-java"> redis-cli --cluster create <span class="hljs-number">10.5</span><span class="hljs-number">.0</span><span class="hljs-number">.3</span>:<span class="hljs-number">6391</span> <span class="hljs-number">10.5</span><span class="hljs-number">.0</span><span class="hljs-number">.3</span>:<span class="hljs-number">6392</span> <span class="hljs-number">10.5</span><span class="hljs-number">.0</span><span class="hljs-number">.3</span>:<span class="hljs-number">6393</span> <span class="hljs-number">10.5</span><span class="hljs-number">.0</span><span class="hljs-number">.3</span>:<span class="hljs-number">6394</span> <span class="hljs-number">10.5</span><span class="hljs-number">.0</span><span class="hljs-number">.3</span>:<span class="hljs-number">6395</span> <span class="hljs-number">10.5</span><span class="hljs-number">.0</span><span class="hljs-number">.3</span>:<span class="hljs-number">6396</span> --cluster-replicas <span class="hljs-number">1</span> 
+</code></pre>
+</li>
+<li>
+<p>连接测试： redis-cli -c -h 172.30.0.4 -p 6396   （-c 会在set和get的时候自动寻找对应的节点存储）</p>
+</li>
+<li>
+<p>执行 cluster nodes 查看节点信息。</p>
+</li>
+</ol>
+<h2 id="redis%E5%93%88%E5%B8%8C%E6%A7%BD">Redis哈希槽 <a class="header-anchor" href="#redis%E5%93%88%E5%B8%8C%E6%A7%BD">#</a></h2>
+<p><strong>一个 redis 集群包含2^14（16384）个哈希槽（hash slot）</strong>，数据库中的每个数据都属于这16384个哈希槽中的一个。集群使用公式 CRC16(key) % 16384 来计算键 key 属于哪个槽。集群中的每一个节点负责处理一部分哈希槽。</p>
+<p>所有的master节点都会有一个槽区比如0～1000，槽数是可以迁移的。master节点的slave节点不分配槽，只拥有读权限。但是注意在代码中redis cluster执行读写操作的都是master节点，并不是你想 的读是从节点，写是主节点。第一次新建redis cluster时，16384个槽是被master节点均匀分布的。</p>
+<h2 id="%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF16384%EF%BC%882%5E14%EF%BC%89%E4%B8%AA%EF%BC%9F"><strong>为什么是16384（2^14）个？</strong> <a class="header-anchor" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF16384%EF%BC%882%5E14%EF%BC%89%E4%B8%AA%EF%BC%9F">#</a></h2>
+<p>在redis节点发送心跳包时需要把所有的槽放到这个心跳包里，以便让节点知道当前集群信息，16384=16k，在发送心跳包时使用bitmap压缩后是2k（<code>2 * 8 (8 bit) * 1024(1k) = 2K</code>），也就是说使用2k的空间创建了16k的槽数。</p>
+<p>虽然使用CRC16算法最多可以分配65535（2^16-1）个槽位，65535=65k，压缩后就是8k（<code>8 * 8 (8 bit) * 1024(1k) = 8K</code>），也就是说需要需要8k的心跳包，作者认为这样做不太值得；并且一般情况下一个redis集群不会有超过1000个master节点，所以16k的槽位是个比较合适的选择。</p>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

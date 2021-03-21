@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="7.MySQL事务" />
+	<meta name="description" content="7.MySQL事务" />
+	<!-- 网页标签标题 -->
+	<title>7.MySQL事务</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><p>事务就是要保证一组数据库操作，要么全部成功，要么全部失败。</p>
+<h2 id="acid%EF%BC%88atomicity%E3%80%81consistency%E3%80%81isolation%E3%80%81durability%EF%BC%8C%E5%8D%B3%E5%8E%9F%E5%AD%90%E6%80%A7%E3%80%81%E4%B8%80%E8%87%B4%E6%80%A7%E3%80%81%E9%9A%94%E7%A6%BB%E6%80%A7%E3%80%81%E6%8C%81%E4%B9%85%E6%80%A7)">ACID（Atomicity、Consistency、Isolation、Durability，即原子性、一致性、隔离性、持久性) <a class="header-anchor" href="#acid%EF%BC%88atomicity%E3%80%81consistency%E3%80%81isolation%E3%80%81durability%EF%BC%8C%E5%8D%B3%E5%8E%9F%E5%AD%90%E6%80%A7%E3%80%81%E4%B8%80%E8%87%B4%E6%80%A7%E3%80%81%E9%9A%94%E7%A6%BB%E6%80%A7%E3%80%81%E6%8C%81%E4%B9%85%E6%80%A7)">#</a></h2>
+<ul>
+<li>
+<p>原子性（Atomicity）</p>
+<p>也就是我们刚才说的不可再分，也就意味着我们对数 据库的一系列的操作，要么都是成功，要么都是失败，不可能出现部分成功或者部分失 败的情况。以转账的场景为例，一个账户的余额减少，对应一个账户的增加，这两个一 定是同时成功或者同时失败的。</p>
+</li>
+<li>
+<p>一致性（consistent）</p>
+<p>指的是数据库的完整性约束没有被破坏，事务执行的 前后都是合法的数据状态。比如主键必须是唯一的，字段长度符合要求。</p>
+</li>
+<li>
+<p>隔离性（Isolation）</p>
+<p>在数据库里面会有很多的 事务同时去操作我们的同一张表或者同一行数据，必然会产生一些并发或者干扰的操作， 那么我们对隔离性的定义，就是这些很多个的事务，对表或者行的并发操作，应该是透 明的，互相不干扰的。通过这种方式，我们最终也是保证业务数据的一致性。</p>
+</li>
+<li>
+<p>持久性（Durable）</p>
+<p>我们对数据库的任意 的操作，增删改，只要事务提交成功，那么结果就是永久性的，不可能因为我们系统宕 机或者重启了数据库的服务器，它又恢复到原来的状态了。这个就是事务的持久性。</p>
+<p>持久性是通过 redo log 和 double write 双写缓冲来实现的，我们操作数据的时候，会先写到内存的 buffer pool 里面，同时记录 redo log，如果在刷盘之前出现异常，在 重启后就可以读取 redo log 的内容，写入到磁盘，保证数据的持久性。</p>
+</li>
+</ul>
+<h2 id="%E6%89%8B%E5%8A%A8%E5%BC%80%E5%90%AF%E4%BA%8B%E5%8A%A1%E4%B9%9F%E6%9C%89%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F%3F">手动开启事务也有几种方式? <a class="header-anchor" href="#%E6%89%8B%E5%8A%A8%E5%BC%80%E5%90%AF%E4%BA%8B%E5%8A%A1%E4%B9%9F%E6%9C%89%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F%3F">#</a></h2>
+<p>一种是用 begin;一种是用 start transaction。</p>
+<p>结束也有两种方式，第一种就是提交一个事务， commit;还有一种就是 rollback，回滚的时候，事务也会结束。还有一种情况，客户端 的连接断开的时候，事务也会结束。</p>
+<h2 id="%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">事务隔离级别 <a class="header-anchor" href="#%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">#</a></h2>
+<ul>
+<li>
+<p>读未提交是指，一个事务还没提交时，它做的变更就能被别的事务看到。</p>
+</li>
+<li>
+<p>读提交是指，一个事务提交之后，它做的变更才会被其他事务看到。</p>
+</li>
+<li>
+<p>可重复读是指，一个事务执行过程中看到的数据，总是跟这个事务在启动时看到的数据是一致的。当然在可重复读隔离级别下，未提交变更对其他事务也是不可见的。</p>
+</li>
+<li>
+<p>串行化，顾名思义是对于同一行记录，“写”会加“写锁”，“读”会加“读锁”。当出现读写锁冲突的时候，后访问的事务必须等前一个事务执行完成，才能继续执行。</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/58e73934bbb8447ba73eae4c801ea4ba.png" alt="image"></p>
+</li>
+<li>
+<p>若隔离级别是“读未提交”， 则 V1 的值就是 2。这时候事务 B 虽然还没有提交，但是结果已经被 A 看到了。因此，V2、V3 也都是 2。</p>
+</li>
+<li>
+<p>若隔离级别是“读提交”，则 V1 是 1，V2 的值是 2。事务 B 的更新在提交后才能被 A 看到。所以， V3 的值也是 2。</p>
+</li>
+<li>
+<p>若隔离级别是“可重复读”，则 V1、V2 是 1，V3 是 2。之所以 V2 还是 1，遵循的就是这个要求：事务在执行期间看到的数据前后必须是一致的。</p>
+</li>
+<li>
+<p>若隔离级别是“串行化”，则在事务 B 执行“将 1 改成 2”的时候，会被锁住。直到事务 A 提交后，事务 B 才可以继续执行。所以从 A 的角度看， V1、V2 值是 1，V3 的值是 2。</p>
+</li>
+</ul>
+<h2 id="%E4%BA%8B%E5%8A%A1%E5%B9%B6%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98%3F">事务并带来的问题? <a class="header-anchor" href="#%E4%BA%8B%E5%8A%A1%E5%B9%B6%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98%3F">#</a></h2>
+<blockquote>
+<p>读取到其他事务未提交的数据的情况，我们把它叫做脏读。</p>
+</blockquote>
+<blockquote>
+<p>一个事务读取到了其他事务已提交的数据导致前后两次读取数据不一致的情 况，我们把它叫做不可重复读。</p>
+</blockquote>
+<blockquote>
+<p>一个事务前后两次读取数据数据不一致，是由于其他事务插入数据造成的，这种情 况我们把它叫做幻读。</p>
+</blockquote>
+<blockquote>
+<p>不可重复读是修改或者删除，幻读是插入。</p>
+</blockquote>
+<h1 id="mvvc">MVVC <a class="header-anchor" href="#mvvc">#</a></h1>
+<p>MVCC (Multiversion Concurrency Control) 中文全程叫多版本并发控制，是现代数据库（包括 MySQL、Oracle、PostgreSQL 等）引擎实现中常用的处理读写冲突的手段，目的在于提高数据库高并发场景下的吞吐性能。</p>
+<ol>
+<li>插入数据（insert）:记录的版本号即当前事务的版本号</li>
+</ol>
+<pre><code class="language-mysql">insert into testmvcc values(1,&quot;test&quot;);
+</code></pre>
+<p>假设事务id为1，那么插入后的数据行如下：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>create version</th>
+<th>delete version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>test</td>
+<td>1</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol start="2">
+<li>在更新操作的时候，采用的是先标记旧的那行记录为已删除，并且删除版本号是事务版本号，然后插入一行新的记录的方式。</li>
+</ol>
+<p>比如，针对上面那行记录，事务Id为2 要把name字段更新</p>
+<pre><code class="language-mysql">update table set name= 'new_value' where id=1;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>create version</th>
+<th>delete version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>test</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>new_value</td>
+<td>2</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
+<li>删除操作的时候，就把事务版本号作为删除版本号。比如</li>
+</ol>
+<pre><code class="language-mysql">delete from table where id=1;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>create version</th>
+<th>delete version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>test</td>
+<td>2</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<ol start="4">
+<li>
+<p>查询操作：</p>
+<p>从上面的描述可以看到，在查询时要符合以下两个条件的记录才能被事务查询出来：</p>
+</li>
+</ol>
+<ol>
+<li>
+<p>删除版本号未指定或者大于当前事务版本号，即查询事务开启后确保读取的行未被删除。(即上述事务id为2的事务查询时，依然能读取到事务id为3所删除的数据行)</p>
+</li>
+<li>
+<p>创建版 本号 小于或者等于 当前事务版本号 ，就是说记录创建是在当前事务中（等于的情况）或者在当前事务启动之前的其他事物进行的insert。</p>
+</li>
+</ol>
+<p>补充：</p>
+<ol>
+<li>
+<p>MVCC手段只适用于Msyql隔离级别中的读已提交（Read committed）和可重复读（Repeatable Read）.</p>
+</li>
+<li>
+<p>Read uncimmitted由于存在脏读，即能读到未提交事务的数据行，所以不适用MVCC.</p>
+<p>原因是MVCC的创建版本和删除版本只要在事务提交后才会产生。</p>
+</li>
+<li>
+<p>串行化由于是会对所涉及到的表加锁，并非行锁，自然也就不存在行的版本控制问题。</p>
+</li>
+<li>
+<p>通过以上总结，可知，MVCC主要作用于事务性的，有行锁控制的数据库模型。</p>
+</li>
+</ol>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="2.源码解读" />
+	<meta name="description" content="2.源码解读" />
+	<!-- 网页标签标题 -->
+	<title>2.源码解读</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="%E4%BB%8E-springbootapplication-%E6%B3%A8%E8%A7%A3%E5%85%A5%E6%89%8B">从 SpringBootApplication 注解入手 <a class="header-anchor" href="#%E4%BB%8E-springbootapplication-%E6%B3%A8%E8%A7%A3%E5%85%A5%E6%89%8B">#</a></h2>
+<p>为了揭开 springboot 的奥秘，我们直接从 Annotation 入 手，看看@SpringBootApplication 里面，做了什么? 打开 SpringBootApplication 这个注解，可以看到它实际上 是一个复合注解</p>
+<pre><code class="language-java">
+<span class="hljs-meta">@Target</span>(ElementType.TYPE)
+<span class="hljs-meta">@Retention</span>(RetentionPolicy.RUNTIME)
+<span class="hljs-meta">@Documented</span>
+<span class="hljs-meta">@Inherited</span>
+<span class="hljs-meta">@SpringBootConfiguration</span>
+<span class="hljs-meta">@EnableAutoConfiguration</span>
+<span class="hljs-meta">@ComponentScan</span>(excludeFilters = { <span class="hljs-meta">@Filter</span>(type = FilterType.CUSTOM, classes = TypeExcludeFilter<span class="hljs-class">.<span class="hljs-keyword">class</span>),
+		@<span class="hljs-title">Filter</span>(<span class="hljs-title">type</span> </span>= FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter<span class="hljs-class">.<span class="hljs-keyword">class</span>) })
+<span class="hljs-title">public</span> @<span class="hljs-title">interface</span> <span class="hljs-title">SpringBootApplication</span> </span>{
+}
+
+</code></pre>
+<p>@SpringBootConfiguration</p>
+<p>@EnableAutoConfiguration</p>
+<p>@ComponentScan</p>
+<p>我们可以直接用这三个注解也可以启动 springboot 应用， 只是每次配置三个注解比较繁琐，所以直接用一个复合注 解更方便些。
+然后仔细观察者三个注解，除了 EnableAutoConfiguration 可能稍微陌生一点，其他两个注解使用得都很多</p>
+<h3 id="%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90%40configuration">简单分析@Configuration <a class="header-anchor" href="#%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90%40configuration">#</a></h3>
+<p>Configuration 这个注解大家应该有用过，它是 JavaConfig形式的基于 Spring IOC 容器的配置类使用的一种注解。因 为 SpringBoot 本质上就是一个 spring 应用，所以通过这 个注解来加载 IOC 容器的配置是很正常的。所以在启动类 里面标注了@Configuration，意味着它其实也是一个 IoC 容器的配置类。</p>
+<p>传统意义上的 spring 应用都是基于 xml 形式来配置 bean 的依赖关系。然后通过 spring 容器在启动的时候，把 bean 进行初始化并且，如果 bean 之间存在依赖关系，则分析这 些已经在 IoC 容器中的 bean 根据依赖关系进行组装。 直到 Java5 中，引入了 Annotations 这个特性，Spring 框 架也紧随大流并且推出了基于 Java 代码和 Annotation 元 信息的依赖关系绑定描述的方式。也就是 JavaConfig。</p>
+<p>从 spring3 开始，spring 就支持了两种 bean 的配置方式， 一种是基于 xml 文件方式、另一种就是 JavaConfig 任何一个标注了@Configuration 的 Java 类定义都是一个 JavaConfig 配置类。而在这个配置类中，任何标注了 @Bean 的方法，它的返回值都会作为 Bean 定义注册到 Spring 的 IOC 容器，方法名默认成为这个 bean 的 id</p>
+<h2 id="%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90-componentscan">简单分析 ComponentScan <a class="header-anchor" href="#%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90-componentscan">#</a></h2>
+<p>ComponentScan 这个注解是大家接触得最多的了，相当 于 xml 配置文件中的、&lt;context:component-scan &gt;。 它的主要作用就是扫描指定路径下的标识了需要装配的类，自 动装配到 spring 的 Ioc 容器中。 标识需要装配的类的形式主要是:@Component、 @Repository、@Service、@Controller 这类的注解标识的 类。</p>
+<p>ComponentScan 默认会扫描当前 package 下的的所有加 了相关注解标识的类到 IoC 容器中;</p>
+<h2 id="%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90-enableautoconfiguration">简单分析 EnableAutoConfiguration <a class="header-anchor" href="#%E7%AE%80%E5%8D%95%E5%88%86%E6%9E%90-enableautoconfiguration">#</a></h2>
+<p>我们把 EnableAutoConfiguration 放在最后讲的目的并不 是说它是一个新的东西，只是他对于 springboot 来说意义 重大。</p>
+<p>找到 EnableAutoConfiguration，我们可以看到每一个涉及 到 Enable 开头的注解，都会带有一个@Import 的注解。</p>
+<pre><code class="language-java"><span class="hljs-meta">@Import</span>(AutoConfigurationImportSelector<span class="hljs-class">.<span class="hljs-keyword">class</span>)
+<span class="hljs-title">public</span> @<span class="hljs-title">interface</span> <span class="hljs-title">EnableAutoConfiguration</span> </span>{
+}
+
+</code></pre>
+<h2 id="%40import">@import <a class="header-anchor" href="#%40import">#</a></h2>
+<p>import 注解是什么意思呢? 联想到 xml 形式下有一个 &lt;import resource/&gt; 形式的注解，就明白它的作用了。 import 就是把多个分来的容器配置合并在一个配置中。在 JavaConfig 中所表达的意义是一样的。</p>
+<h2 id="%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90-enableautoconfiguration">深入分析 EnableAutoConfiguration <a class="header-anchor" href="#%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90-enableautoconfiguration">#</a></h2>
+<p>EnableAutoConfiguration 的 主 要 作 用 其 实 就 是 帮 助 springboot 应用把所有符合条件的@Configuration 配置 都加载到当前 SpringBoot 创建并使用的 IoC 容器中。 再回到 EnableAutoConfiguration 这个注解中，我们发现 它的 import 是这样
+@Import(AutoConfigurationImportSelector.class)</p>
+<h2 id="autoconfigurationimportselector-%E6%98%AF%E4%BB%80%E4%B9%88%3F">AutoConfigurationImportSelector 是什么? <a class="header-anchor" href="#autoconfigurationimportselector-%E6%98%AF%E4%BB%80%E4%B9%88%3F">#</a></h2>
+<p>Enable 注解不仅仅可以像前面演示的案例一样很简单的实 现多个 Configuration 的整合，还可以实现一些复杂的场 景，比如可以根据上下文来激活不同类型的 bean， @Import 注解可以配置三种不同的 class</p>
+<ol>
+<li>第一种就是前面演示过的，基于普通 bean 或者带有 @Configuration 的 bean 进行诸如</li>
+<li>实现 ImportSelector 接口进行动态注入</li>
+<li>实现 ImportBeanDefinitionRegistrar 接口进行动态注入</li>
+</ol>
+<h2 id="%40enableautoconfiguration-%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">@EnableAutoConfiguration 注解的实现原理 <a class="header-anchor" href="#%40enableautoconfiguration-%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">#</a></h2>
+<p>了解了 ImportSelector 和 ImportBeanDefinitionRegistrar 后，对于 EnableAutoConfiguration 的理解就容易一些了 它会通过 import 导入第三方提供的 bean 的配置类:</p>
+<p>从名字来看，可以猜到它是基于 ImportSelector 来实现 基于动态 bean 的加载功能。之前我们讲过 Springboot @Enable*注解的工作原理 ImportSelector 接口 selectImports 返回的数组(类的全类名)都会被纳入到 spring 容器中。 那么可以猜想到这里的实现原理也一定是一样的，定位到 AutoConfigurationImportSelector 这个类中的 selectImports 方法
+本质上来说，其实 EnableAutoConfiguration 会帮助 springboot 应用把所有符合@Configuration 配置都加载 到当前 SpringBoot 创建的 IoC 容器，而这里面借助了 Spring 框架提供的一个工具类 SpringFactoriesLoader 的 支持。以及用到了 Spring 提供的条件注解 @Conditional，选择性的针对需要加载的 bean 进行条件 过滤。</p>
+<h2 id="springfactoriesloader">SpringFactoriesLoader <a class="header-anchor" href="#springfactoriesloader">#</a></h2>
+<p>SpringFactoriesLoader 这个工具类的使用。它其实和 java 中的 SPI 机制的原理是一样的，不过它比 SPI 更好的 点在于不会一次性加载所有的类，而是根据 key 进行加 载。</p>
+<p>首 先 ， SpringFactoriesLoader 的 作 用 是 从 classpath/META-INF/spring.factories 文件中，根据 key 来 加载对应的类到 spring IoC 容器中。</p>
+<p>在分析 AutoConfigurationImportSelector 的源码时，会 先扫描 spring-autoconfiguration-metadata.properties 文件，最后在扫描 spring.factories 对应的类时，会结合 前面的元数据进行过滤，为什么要过滤呢? 原因是很多 的@Configuration 其实是依托于其他的框架来加载的， 如果当前的 classpath 环境下没有相关联的依赖，则意味着这些类没必要进行加载，所以，通过这种条件过滤可以 有效的减少@configuration 类的数量从而降低 SpringBoot 的启动时间。</p>
+<h2 id="conditional-%E4%B8%AD%E7%9A%84%E5%85%B6%E4%BB%96%E6%B3%A8%E8%A7%A3">Conditional 中的其他注解 <a class="header-anchor" href="#conditional-%E4%B8%AD%E7%9A%84%E5%85%B6%E4%BB%96%E6%B3%A8%E8%A7%A3">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Conditions</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@ConditionalOnBean</td>
+<td>在存在某个 bean 的时候</td>
+</tr>
+<tr>
+<td>@ConditionalOnMissingBean</td>
+<td>不存在某个 bean 的时候</td>
+</tr>
+<tr>
+<td>@ConditionalOnClass</td>
+<td>当前 classpath 可以找到某个类型的类时</td>
+</tr>
+<tr>
+<td>@ConditionalOnMissingClass</td>
+<td>当前 classpath 不可以找到某个类型的类 时</td>
+</tr>
+<tr>
+<td>@ConditionalOnResource</td>
+<td>当前 classpath 是否存在某个资源文件</td>
+</tr>
+<tr>
+<td>@ConditionalOnProperty</td>
+<td>当前 jvm 是否包含某个系统属性为某个值</td>
+</tr>
+<tr>
+<td>@ConditionalOnWebApplication</td>
+<td>当前 spring context 是否是 web 应用程序</td>
+</tr>
+</tbody>
+</table>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

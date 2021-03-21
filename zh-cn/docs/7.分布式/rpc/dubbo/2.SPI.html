@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="2.SPI" />
+	<meta name="description" content="2.SPI" />
+	<!-- 网页标签标题 -->
+	<title>2.SPI</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="%E5%A6%82%E4%BD%95%E5%8E%BB%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%A0%87%E5%87%86%E7%9A%84-spi-%E5%8F%91%E7%8E%B0%E6%9C%BA%E5%88%B6%E5%91%A2%3F">如何去实现一个标准的 SPI 发现机制呢? <a class="header-anchor" href="#%E5%A6%82%E4%BD%95%E5%8E%BB%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%A0%87%E5%87%86%E7%9A%84-spi-%E5%8F%91%E7%8E%B0%E6%9C%BA%E5%88%B6%E5%91%A2%3F">#</a></h2>
+<ol>
+<li>需要在 classpath 下创建一个目录，该目录命名必须是:META-INF/service</li>
+<li>在该目录下创建一个 properties 文件，该文件需要满足以下几个条件</li>
+</ol>
+<blockquote>
+<ol>
+<li>文件名必须是扩展的接口的全路径名称</li>
+<li>文件内部描述的是该扩展接口的所有实现类</li>
+<li>文件的编码格式是 UTF-8</li>
+</ol>
+</blockquote>
+<ol start="3">
+<li>通过 java.util.ServiceLoader 的加载机制来发现</li>
+</ol>
+<h2 id="spi%E7%BC%BA%E7%82%B9">SPI缺点 <a class="header-anchor" href="#spi%E7%BC%BA%E7%82%B9">#</a></h2>
+<ol>
+<li>JDK 标准的 SPI 会一次性加载实例化扩展点的所有实现，什么意思呢?就是如果你在 META-INF/service 下的文件里面加了 N 个实现类，那么 JDK 启动的时候都会一次性全部加载。那么如果有的扩展点实现初始化很耗时或者如果有些实现类并没有用到， 那么会很浪费资源</li>
+<li>如果扩展点加载失败，会导致调用方报错，而且这个错误很难定位到是这个原因 Dubbo 优化后的 SPI 机制</li>
+</ol>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

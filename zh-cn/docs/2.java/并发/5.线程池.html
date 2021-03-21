@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="5.线程池" />
+	<meta name="description" content="5.线程池" />
+	<!-- 网页标签标题 -->
+	<title>5.线程池</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0%EF%BC%9F">为什么使用线程池？ <a class="header-anchor" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E6%B1%A0%EF%BC%9F">#</a></h2>
+<ul>
+<li>降低资源消耗。 通过重复利用已创建的线程降低线程创建和销毁造成的消耗。</li>
+<li>提高响应速度。 当任务到达时，任务可以不需要的等到线程创建就能立即执行。</li>
+<li>提高线程的可管理性。 线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性， 使用线程池可以进行统一的分配，调优和监控。</li>
+</ul>
+<p>《阿里巴巴Java开发手册》中强制线程池不允许使用 Executors 去创建，而是通过 ThreadPoolExecutor 的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。</p>
+<p>Executors 返回线程池对象的弊端如下:</p>
+<blockquote>
+<p>FixedThreadPool 和 SingleThreadExecutor : 允许请求的队列长度为 Integer.MAX_VALUE,可能堆积 大量的请求，从而导致OOM。</p>
+</blockquote>
+<blockquote>
+<p>CachedThreadPool 和 ScheduledThreadPool : 允许创建的线程数量为 Integer.MAX_VALUE ，可能 会创建大量线程，从而导致OOM。</p>
+</blockquote>
+<h2 id="%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B">创建线程 <a class="header-anchor" href="#%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B">#</a></h2>
+<ul>
+<li>
+<p>方式一：通过构造方法实现：</p>
+<p>new ThreadPoolExecutor() 方式创建。</p>
+</li>
+<li>
+<p>方式二：通过Executor 框架的工具类Executors来实现 我们可以创建五种类型的ThreadPoolExecutor。</p>
+<ol>
+<li>
+<p>FixedThreadPool : 该方法返回一个固定线程数量的线程池。该线程池中的线程数量始终不变。当有一个新的 任务提交时，线程池中若有空闲线程，则立即执行。若没有，则新的任务会被暂存在一个任务队列中，待有线 程空闲时，便处理在任务队列中的任务。</p>
+</li>
+<li>
+<p>SingleThreadExecutor: 方法返回一个只有一个线程的线程池。若多余一个任务被提交到该线程池，任务会 被保存在一个任务队列中，待线程空闲，按先入先出的顺序执行队列中的任务。</p>
+</li>
+<li>
+<p>CachedThreadPool: 该方法返回一个可根据实际情况调整线程数量的线程池。线程池的线程数量不确定，但 若有空闲线程可以复用，则会优先使用可复用的线程。若所有线程均在工作，又有新的任务提交，则会创建新 的线程处理任务。所有线程在当前任务执行完毕后，将返回线程池进行复用。</p>
+</li>
+<li>
+<p>newSingleThreadScheduledExecutor()方法：该方法返回一个ScheduledExecutorService对象，线程池大小为1。ScheduledExecutorService接口在ExecutorService接口之上扩展了在给定时间执行某任务的功能，如在某个固定的延时之后执行，或者周期性执行某个任务。</p>
+</li>
+<li>
+<p>newScheduledThreadPool()方法：该方法也返回一个ScheduledExecutorService对象，但该线程池可以指定线程数量。</p>
+</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-java">
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ThreadPoolExecutor</span><span class="hljs-params">(<span class="hljs-keyword">int</span> corePoolSize,
+                          <span class="hljs-keyword">int</span> maximumPoolSize,
+                          <span class="hljs-keyword">long</span> keepAliveTime,
+                          TimeUnit unit,
+                          BlockingQueue&lt;Runnable&gt; workQueue,
+                          ThreadFactory threadFactory,
+                          RejectedExecutionHandler handler)</span> </span>{
+    <span class="hljs-keyword">if</span> (corePoolSize &lt; <span class="hljs-number">0</span> ||
+        maximumPoolSize &lt;= <span class="hljs-number">0</span> ||
+        maximumPoolSize &lt; corePoolSize ||
+        keepAliveTime &lt; <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalArgumentException();
+    <span class="hljs-keyword">if</span> (workQueue == <span class="hljs-keyword">null</span> || threadFactory == <span class="hljs-keyword">null</span> || handler == <span class="hljs-keyword">null</span>)
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> NullPointerException();
+    <span class="hljs-keyword">this</span>.acc = System.getSecurityManager() == <span class="hljs-keyword">null</span> ?
+            <span class="hljs-keyword">null</span> :
+            AccessController.getContext();
+    <span class="hljs-keyword">this</span>.corePoolSize = corePoolSize;
+    <span class="hljs-keyword">this</span>.maximumPoolSize = maximumPoolSize;
+    <span class="hljs-keyword">this</span>.workQueue = workQueue;
+    <span class="hljs-keyword">this</span>.keepAliveTime = unit.toNanos(keepAliveTime);
+    <span class="hljs-keyword">this</span>.threadFactory = threadFactory;
+    <span class="hljs-keyword">this</span>.handler = handler;
+}
+
+</code></pre>
+<h2 id="%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B%EF%BC%9A">参数类型： <a class="header-anchor" href="#%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B%EF%BC%9A">#</a></h2>
+<ul>
+<li>corePoolSize：指定了线程池中的线程数量。</li>
+<li>maximumPoolSize：指定了线程池中的最大线程数量。</li>
+<li>keepAliveTime：当线程池线程数量超过corePoolSize时，多余的空闲线程的存活时间。即，超过corePoolSize的空闲线程，在多长时间内，会被销毁。</li>
+<li>unit：keepAliveTime的单位。</li>
+<li>workQueue：任务队列，被提交但尚未被执行的任务。</li>
+<li>threadFactory：线程工厂，用于创建线程，一般用默认的即可。</li>
+<li>handler：拒绝策略。当任务太多来不及处理，如何拒绝任务。</li>
+</ul>
+<h2 id="%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%EF%BC%9A">拒绝策略： <a class="header-anchor" href="#%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5%EF%BC%9A">#</a></h2>
+<ul>
+<li>AbortPolicy策略：该策略会直接抛出异常，阻止系统正常工作。</li>
+</ul>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbortPolicy</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">RejectedExecutionHandler</span> </span>{
+    <span class="hljs-comment">/**
+     * Creates an {<span class="hljs-doctag">@code</span> AbortPolicy}.
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">AbortPolicy</span><span class="hljs-params">()</span> </span>{ }
+
+    <span class="hljs-comment">/**
+     * Always throws RejectedExecutionException.
+     *
+     * <span class="hljs-doctag">@param</span> r the runnable task requested to be executed
+     * <span class="hljs-doctag">@param</span> e the executor attempting to execute this task
+     * <span class="hljs-doctag">@throws</span> RejectedExecutionException always
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rejectedExecution</span><span class="hljs-params">(Runnable r, ThreadPoolExecutor e)</span> </span>{
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RejectedExecutionException(<span class="hljs-string">"Task "</span> + r.toString() +
+                                             <span class="hljs-string">" rejected from "</span> +
+                                             e.toString());
+    }
+}
+</code></pre>
+<ul>
+<li>CallerRunsPolicy策略：只要线程池未关闭，该策略直接在调用者线程中，运行当前被丢弃的任务。显然这样做不会真的丢弃任务，但是，任务提交线程的性能极有可能会急剧下降。</li>
+</ul>
+<pre><code class="language-java"><span class="hljs-comment">/**
+ * A handler for rejected tasks that runs the rejected task
+ * directly in the calling thread of the {<span class="hljs-doctag">@code</span> execute} method,
+ * unless the executor has been shut down, in which case the task
+ * is discarded.
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CallerRunsPolicy</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">RejectedExecutionHandler</span> </span>{
+    <span class="hljs-comment">/**
+     * Creates a {<span class="hljs-doctag">@code</span> CallerRunsPolicy}.
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">CallerRunsPolicy</span><span class="hljs-params">()</span> </span>{ }
+
+    <span class="hljs-comment">/**
+     * Executes task r in the caller's thread, unless the executor
+     * has been shut down, in which case the task is discarded.
+     *
+     * <span class="hljs-doctag">@param</span> r the runnable task requested to be executed
+     * <span class="hljs-doctag">@param</span> e the executor attempting to execute this task
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rejectedExecution</span><span class="hljs-params">(Runnable r, ThreadPoolExecutor e)</span> </span>{
+        <span class="hljs-keyword">if</span> (!e.isShutdown()) {
+            r.run();
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>DiscardOledestPolicy策略：该策略将丢弃最老的一个请求，也就是即将被执行的一个任务，并尝试再次提交当前任务。</li>
+</ul>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DiscardOldestPolicy</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">RejectedExecutionHandler</span> </span>{
+    <span class="hljs-comment">/**
+     * Creates a {<span class="hljs-doctag">@code</span> DiscardOldestPolicy} for the given executor.
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">DiscardOldestPolicy</span><span class="hljs-params">()</span> </span>{ }
+
+    <span class="hljs-comment">/**
+     * Obtains and ignores the next task that the executor
+     * would otherwise execute, if one is immediately available,
+     * and then retries execution of task r, unless the executor
+     * is shut down, in which case task r is instead discarded.
+     *
+     * <span class="hljs-doctag">@param</span> r the runnable task requested to be executed
+     * <span class="hljs-doctag">@param</span> e the executor attempting to execute this task
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rejectedExecution</span><span class="hljs-params">(Runnable r, ThreadPoolExecutor e)</span> </span>{
+        <span class="hljs-keyword">if</span> (!e.isShutdown()) {
+            e.getQueue().poll();
+            e.execute(r);
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>DiscardPolicy策略：该策略默默地丢弃无法处理的任务，不予任何处理。如果允许任务丢失，我觉得这可能是最好的一种方案了吧！</li>
+</ul>
+<pre><code class="language-java"><span class="hljs-comment">/**
+ * A handler for rejected tasks that silently discards the
+ * rejected task.
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DiscardPolicy</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">RejectedExecutionHandler</span> </span>{
+    <span class="hljs-comment">/**
+     * Creates a {<span class="hljs-doctag">@code</span> DiscardPolicy}.
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">DiscardPolicy</span><span class="hljs-params">()</span> </span>{ }
+    <span class="hljs-comment">/**
+     * Does nothing, which has the effect of discarding task r.
+     *
+     * <span class="hljs-doctag">@param</span> r the runnable task requested to be executed
+     * <span class="hljs-doctag">@param</span> e the executor attempting to execute this task
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rejectedExecution</span><span class="hljs-params">(Runnable r, ThreadPoolExecutor e)</span> </span>{
+    }
+}
+</code></pre>
+<ul>
+<li>自己扩展、实现RejectedExecutionHandler接口</li>
+</ul>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CustomRejectionHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">RejectedExecutionHandler</span> </span>{
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">rejectedExecution</span><span class="hljs-params">(Runnable r, ThreadPoolExecutor executor)</span> </span>{
+        System.out.println(r.toString() + <span class="hljs-string">"被拒绝了，执行入库操作，之后定时任务补偿"</span>);
+    }
+}
+
+</code></pre>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

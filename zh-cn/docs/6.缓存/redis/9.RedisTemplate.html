@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="9.RedisTemplate" />
+	<meta name="description" content="9.RedisTemplate" />
+	<!-- 网页标签标题 -->
+	<title>9.RedisTemplate</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h1 id="spring-boot%E9%9B%86%E6%88%90redistemplate">Spring Boot集成RedisTemplate <a class="header-anchor" href="#spring-boot%E9%9B%86%E6%88%90redistemplate">#</a></h1>
+<p>github：<a href="https://github.com/alfredhua/common-spring-boot-start">https://github.com/alfredhua/common-spring-boot-start</a></p>
+<p>jar包引入：</p>
+<pre><code class="language-java">dependencies {
+    compile(<span class="hljs-string">"org.springframework.boot:spring-boot-starter-web:$springBootVersion"</span>)
+    compile(<span class="hljs-string">"org.springframework.boot:spring-boot-starter-data-redis:$springBootVersion"</span>)
+    compile(<span class="hljs-string">"org.springframework.boot:spring-boot-starter-aop:$springBootVersion"</span>)
+
+    compile(<span class="hljs-string">"org.projectlombok:lombok:$lombokVersion"</span>)
+    annotationProcessor (<span class="hljs-string">"org.projectlombok:lombok:$lombokVersion"</span>)
+
+    compile(<span class="hljs-string">"org.apache.httpcomponents:httpclient:$httpclientVersion"</span>)
+    compile (<span class="hljs-string">"javax.mail:mail:$mailVersion"</span>)
+    compile(<span class="hljs-string">"com.alibaba:fastjson:$fastJsonVersion"</span>)
+    compile group: <span class="hljs-string">'redis.clients'</span>, name: <span class="hljs-string">'jedis'</span>, version: <span class="hljs-string">'2.9.1'</span>
+    testCompile (<span class="hljs-string">'junit:junit:4.12'</span>)
+
+}
+</code></pre>
+<p>基本配置：</p>
+<pre><code class="language-java">
+<span class="hljs-meta">@Configuration</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisConfig</span> </span>{
+
+    <span class="hljs-meta">@Bean</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> RedisUtils <span class="hljs-title">redisUtils</span><span class="hljs-params">(@Autowired RedisConnectionFactory connectionFactory,
+                                 @Autowired ObjectMapper objectMapper)</span></span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RedisUtils(RedisOptions.createRedisTemplate(connectionFactory,objectMapper,Object<span class="hljs-class">.<span class="hljs-keyword">class</span>))</span>;
+    }
+}
+</code></pre>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisOptions</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span>&lt;T&gt; RedisTemplate&lt;String, T&gt; <span class="hljs-title">createRedisTemplate</span><span class="hljs-params">(RedisConnectionFactory connectionFactory, ObjectMapper objectMapper, Class&lt;T&gt; tClass)</span></span>{
+        RedisTemplate&lt;String, T&gt; redisTemplate = <span class="hljs-keyword">new</span> RedisTemplate&lt;&gt;();
+        Jackson2JsonRedisSerializer&lt;Object&gt; jackson2JsonRedisSerializer = <span class="hljs-keyword">new</span> Jackson2JsonRedisSerializer&lt;Object&gt;(Object<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+        ObjectMapper om = <span class="hljs-keyword">new</span> ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        jackson2JsonRedisSerializer.setObjectMapper(om);
+        StringRedisSerializer stringRedisSerializer = <span class="hljs-keyword">new</span> StringRedisSerializer();
+        redisTemplate.setKeySerializer(stringRedisSerializer);
+        redisTemplate.setHashKeySerializer(stringRedisSerializer);
+
+        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+
+        redisTemplate.setEnableTransactionSupport(<span class="hljs-keyword">true</span>);
+        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.afterPropertiesSet();
+        <span class="hljs-keyword">return</span> redisTemplate;
+    }
+}
+
+</code></pre>
+<p>对于RedisTemplate的封装：</p>
+<pre><code class="language-java"><span class="hljs-keyword">package</span> com.common.redis;
+
+<span class="hljs-keyword">import</span> org.springframework.data.redis.connection.DataType;
+<span class="hljs-keyword">import</span> org.springframework.data.redis.core.*;
+<span class="hljs-keyword">import</span> org.springframework.util.CollectionUtils;
+
+<span class="hljs-keyword">import</span> java.util.List;
+<span class="hljs-keyword">import</span> java.util.Map;
+<span class="hljs-keyword">import</span> java.util.Set;
+<span class="hljs-keyword">import</span> java.util.concurrent.TimeUnit;
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RedisUtils</span> </span>{
+
+  <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> DEFAULT_TIME_OUT=<span class="hljs-number">30</span>*<span class="hljs-number">24</span>*<span class="hljs-number">60</span>;
+
+  <span class="hljs-keyword">private</span> RedisTemplate&lt;String,Object&gt; template;
+
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">RedisUtils</span><span class="hljs-params">(RedisTemplate&lt;String, Object&gt; template)</span> </span>{
+    <span class="hljs-keyword">this</span>.template = template;
+  }
+
+
+  <span class="hljs-comment">/**
+   * 设置过期时间，默认单位秒
+   * <span class="hljs-doctag">@param</span> key key
+   * <span class="hljs-doctag">@param</span> timeout 过期时间
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">expire</span><span class="hljs-params">(String key,<span class="hljs-keyword">long</span> timeout)</span></span>{
+    <span class="hljs-keyword">if</span> (timeout==<span class="hljs-number">0</span>) {
+      template.expire(key, DEFAULT_TIME_OUT, TimeUnit.SECONDS);
+    }<span class="hljs-keyword">else</span>{
+      template.expire(key, timeout, TimeUnit.SECONDS);
+    }
+  }
+
+  <span class="hljs-comment">/**
+   * 从redis中随机返回一个key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">randomKey</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-keyword">return</span> template.randomKey();
+  }
+
+  <span class="hljs-comment">/**
+   * 返回 key 所储存的值的类型
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> DataType <span class="hljs-title">getType</span><span class="hljs-params">(String key)</span> </span>{
+    <span class="hljs-keyword">return</span> template.type(key);
+  }
+
+
+  <span class="hljs-comment">/**
+   * 根据key 获取过期时间
+   * <span class="hljs-doctag">@param</span> key 键 不能为null
+   * <span class="hljs-doctag">@return</span> 时间(秒) 返回0代表为永久有效
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">getExpire</span><span class="hljs-params">(String key)</span> </span>{
+    <span class="hljs-keyword">return</span> template.getExpire(key, TimeUnit.SECONDS);
+  }
+
+  <span class="hljs-comment">/**
+   * 验证key是否存在
+   * <span class="hljs-doctag">@param</span> key key
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Boolean <span class="hljs-title">hasKey</span><span class="hljs-params">(String key)</span> </span>{
+    <span class="hljs-keyword">return</span> template.hasKey(key);
+  }
+
+  <span class="hljs-comment">/**
+   * 删除
+   * <span class="hljs-doctag">@param</span> key key
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">del</span><span class="hljs-params">(String... key)</span> </span>{
+    <span class="hljs-keyword">if</span> (key != <span class="hljs-keyword">null</span> &amp;&amp; key.length &gt; <span class="hljs-number">0</span>) {
+      <span class="hljs-keyword">if</span> (key.length == <span class="hljs-number">1</span>) {
+        template.delete(key[<span class="hljs-number">0</span>]);
+      } <span class="hljs-keyword">else</span> {
+        template.delete(CollectionUtils.arrayToList(key));
+      }
+    }
+  }
+
+  <span class="hljs-comment">/**
+   * Object类型存储
+   * <span class="hljs-doctag">@param</span> key  key
+   * <span class="hljs-doctag">@param</span> timeout 过期时间，0：表示使用默认30天,null：表示永不过期
+   * <span class="hljs-doctag">@param</span> value
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">objectSet</span><span class="hljs-params">(String key,Long timeout,Object value)</span></span>{
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">if</span> (timeout==<span class="hljs-keyword">null</span>){
+        template.opsForValue().set(key, value);
+      }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (timeout==<span class="hljs-number">0</span>) {
+        template.opsForValue().set(key, value, DEFAULT_TIME_OUT, TimeUnit.SECONDS);
+      }<span class="hljs-keyword">else</span>{
+        template.opsForValue().set(key, value, timeout, TimeUnit.SECONDS);
+      }
+    }<span class="hljs-keyword">catch</span> (Exception e){
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">"set error"</span>,e);
+    }
+  }
+  <span class="hljs-comment">/**
+   * Object 类型获取
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">objectGet</span><span class="hljs-params">(String key)</span></span>{
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">return</span> (T) template.opsForValue().get(key);
+    }<span class="hljs-keyword">catch</span> ( Exception e){
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(<span class="hljs-string">"redis get error"</span>,e);
+    }
+  }
+
+  <span class="hljs-comment">/**
+   * 递增
+   * <span class="hljs-doctag">@param</span> key  key
+   * <span class="hljs-doctag">@param</span> delta 递增因子，0或者null时候：默认是1,负数表示递减。
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">increment</span><span class="hljs-params">(String key, Long delta)</span> </span>{
+    <span class="hljs-keyword">if</span>(delta==<span class="hljs-keyword">null</span>||delta==<span class="hljs-number">0</span>){
+      <span class="hljs-keyword">return</span> template.opsForValue().increment(key, <span class="hljs-number">1L</span>);
+    }
+    <span class="hljs-keyword">return</span> template.opsForValue().increment(key, delta);
+  }
+
+
+  <span class="hljs-comment">/**
+   * HashGet
+   *
+   * <span class="hljs-doctag">@param</span> key  键 不能为null
+   * <span class="hljs-doctag">@param</span> field 项 不能为null
+   * <span class="hljs-doctag">@return</span> 值
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">hashGet</span><span class="hljs-params">(String key, String field)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForHash().get(key, field);
+  }
+
+  <span class="hljs-comment">/**
+   * 向一张hash表中放入数据,如果不存在将创建
+   * <span class="hljs-doctag">@param</span> key   键
+   * <span class="hljs-doctag">@param</span> field  项
+   * <span class="hljs-doctag">@param</span> value 值
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hashSet</span><span class="hljs-params">(String key, String field, Object value)</span> </span>{
+    template.opsForHash().put(key, field, value);
+  }
+
+  <span class="hljs-comment">/**
+   *
+   * <span class="hljs-doctag">@param</span> key key
+   * <span class="hljs-doctag">@param</span> map 对象
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">hashPutAll</span><span class="hljs-params">(String key, Map&lt;Object, Object&gt; map)</span></span>{
+    template.opsForHash().putAll(key,map);
+  }
+
+  <span class="hljs-comment">/**
+   * 获取map
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Map&lt;Object, Object&gt; <span class="hljs-title">hashGetAll</span><span class="hljs-params">(String key)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForHash().entries(key);
+  }
+
+  <span class="hljs-comment">/**
+   * 返回这个key里面所有fields的值
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> fields
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Object&gt; <span class="hljs-title">multiHashGet</span><span class="hljs-params">(String key, String...fields)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForHash().multiGet(key, CollectionUtils.arrayToList(fields));
+  }
+
+
+
+  <span class="hljs-comment">/**
+   * 判断key中的hashKey是否存在
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> field
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Boolean <span class="hljs-title">hasKey</span><span class="hljs-params">(String key,String field)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForHash().hasKey(key, field);
+  }
+
+  <span class="hljs-comment">/**
+   * list left push
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> value
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">listLeftPush</span><span class="hljs-params">(String key,Object value)</span> </span>{
+    template.opsForList().leftPush(key, value);
+  }
+
+  <span class="hljs-comment">/**
+   * list left pop
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">listLeftPop</span><span class="hljs-params">(String key)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForList().leftPop(key);
+  }
+
+
+
+  <span class="hljs-comment">/**
+   * list right push
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> value
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">listRightPush</span><span class="hljs-params">(String key,Object value)</span> </span>{
+    template.opsForList().rightPush(key, value);
+  }
+
+  <span class="hljs-comment">/**
+   * list right pop
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">listRightPop</span><span class="hljs-params">(String key)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForList().rightPop(key);
+  }
+
+
+  <span class="hljs-comment">/**
+   * 获取该key index处的元素
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> index
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">listGetIndex</span><span class="hljs-params">(String key,<span class="hljs-keyword">int</span> index)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForList().index(key, index);
+  }
+
+  <span class="hljs-comment">/**
+   * 获取列表的长度
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">listSize</span><span class="hljs-params">(String key)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForList().size(key);
+  }
+
+
+  <span class="hljs-comment">/**
+   * 获取key中下标从start到end处的值
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> start 开始下标
+   * <span class="hljs-doctag">@param</span> end  结束下标
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Object&gt; <span class="hljs-title">listRange</span><span class="hljs-params">(String key,<span class="hljs-keyword">int</span> start,<span class="hljs-keyword">int</span> end)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForList().range(key, start, end);
+  }
+
+  <span class="hljs-comment">/**
+   * 删除
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">listRemove</span><span class="hljs-params">(String key,<span class="hljs-keyword">long</span> count,Object value)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForList().remove(key, count, value);
+  }
+
+  <span class="hljs-comment">/**
+   * 向set 集合中添加
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> values
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setAdd</span><span class="hljs-params">(String key,Object...values)</span> </span>{
+    template.opsForSet().add(key, values);
+  }
+
+  <span class="hljs-comment">/**
+   * 移除并取出第一个元素
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">setGet</span><span class="hljs-params">(String key)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().pop(key);
+  }
+
+  <span class="hljs-comment">/**
+   * 返回集合中所有的元素
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;Object&gt; <span class="hljs-title">setGetAll</span><span class="hljs-params">(String key)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().members(key);
+  }
+
+
+  <span class="hljs-comment">/**
+   * 返回指定数量的元素(随机)
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> count
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Object&gt; <span class="hljs-title">setRandomMembers</span><span class="hljs-params">(String key,<span class="hljs-keyword">int</span> count)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().randomMembers(key, count);
+  }
+
+  <span class="hljs-comment">/**
+   * 返回集合中的长度
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">setGetSize</span><span class="hljs-params">(String key)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().size(key);
+  }
+
+  <span class="hljs-comment">/**
+   * 返回给定集合的差集（返回 key在otherKeys不存在的元素）
+   * <span class="hljs-doctag">@param</span> key 主集合
+   * <span class="hljs-doctag">@param</span> otherKeys 其他集合
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;Object&gt; <span class="hljs-title">setDifference</span><span class="hljs-params">(String key,String...otherKeys)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().difference(key, CollectionUtils.arrayToList(otherKeys));
+  }
+
+  <span class="hljs-comment">/**
+   * 返回给定集合的交集（返回 key与otherKeys中共同存在的元素）
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> otherKeys
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;Object&gt; <span class="hljs-title">setIntersect</span><span class="hljs-params">(String key,String...otherKeys)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().intersect(key, CollectionUtils.arrayToList(otherKeys));
+  }
+  <span class="hljs-comment">/**
+   * 返回给定集合的并集（key和otherKeys加起来的所有元素，共同拥有的元素只返回一个）
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> otherKeys
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;Object&gt; <span class="hljs-title">setUnion</span><span class="hljs-params">(String key,String...otherKeys)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().union(key, CollectionUtils.arrayToList(otherKeys));
+  }
+
+  <span class="hljs-comment">/**
+   * 返回集合中的所有元素
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;Object&gt; <span class="hljs-title">setMembers</span><span class="hljs-params">(String key)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().members(key);
+  }
+
+  <span class="hljs-comment">/**
+   * 迭代集合中的元素
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Cursor&lt;Object&gt; <span class="hljs-title">setScan</span><span class="hljs-params">(String key)</span></span>{
+    <span class="hljs-keyword">return</span> template.opsForSet().scan(key, ScanOptions.NONE);
+  }
+
+  <span class="hljs-comment">//zSet操作 有序集合</span>
+
+  <span class="hljs-comment">/**
+   * 添加数据
+   *
+   * 添加方式：
+   * 1.创建一个set集合
+   * Set&lt;ZSetOperations.TypedTuple&lt;Object&gt;&gt; sets=new HashSet&lt;&gt;();
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> tuples
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">zSetAdd</span><span class="hljs-params">(String key,Set&lt;ZSetOperations.TypedTuple&lt;Object&gt;&gt; tuples)</span> </span>{
+    template.opsForZSet().add(key, tuples);
+  }
+
+  <span class="hljs-comment">/**
+   * 获取有序集合的成员数
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">zSetCard</span><span class="hljs-params">(String key)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().zCard(key);
+  }
+
+  <span class="hljs-comment">/**
+   * 计算在有序集合中指定区间分数的成员数
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> min 最小排序分数
+   * <span class="hljs-doctag">@param</span> max 最大排序分数
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">zSetCount</span><span class="hljs-params">(String key,Double min,Double max)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().count(key, min, max);
+  }
+
+  <span class="hljs-comment">/**
+   * 获取有序集合下标区间 start 至 end 的成员  分数值从小到大排列
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> start
+   * <span class="hljs-doctag">@param</span> end
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;Object&gt; <span class="hljs-title">zSetRange</span><span class="hljs-params">(String key,<span class="hljs-keyword">int</span> start,<span class="hljs-keyword">int</span> end)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().range(key, start, end);
+  }
+
+  <span class="hljs-comment">/**
+   * 获取有序集合下标区间 start 至 end 的成员  分数值从大到小排列
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> start
+   * <span class="hljs-doctag">@param</span> end
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;Object&gt; <span class="hljs-title">zSetReverseRange</span><span class="hljs-params">(String key,<span class="hljs-keyword">int</span> start,<span class="hljs-keyword">int</span> end)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().reverseRange(key, start, end);
+  }
+
+  <span class="hljs-comment">/**
+   * 返回 分数在min至max之间的数据 按分数值递减(从大到小)的次序排列。
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> min
+   * <span class="hljs-doctag">@param</span> max
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Set&lt;Object&gt; <span class="hljs-title">zSetReverseRange</span><span class="hljs-params">(String key,Double min,Double max)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().reverseRangeByScore(key, min, max);
+  }
+
+  <span class="hljs-comment">/**
+   * 返回指定成员的下标
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> value
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">zSetRank</span><span class="hljs-params">(String key,Object value)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().rank(key, value);
+  }
+
+  <span class="hljs-comment">/**
+   * 删除key的指定元素
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> values
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">zSetRemoveValue</span><span class="hljs-params">(String key,Object values)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().remove( key, values);
+  }
+
+  <span class="hljs-comment">/**
+   * 移除下标从start至end的元素
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> start
+   * <span class="hljs-doctag">@param</span> end
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">zSetRemoveRange</span><span class="hljs-params">(String key,<span class="hljs-keyword">int</span> start,<span class="hljs-keyword">int</span> end)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().removeRange(key, start, end);
+  }
+
+  <span class="hljs-comment">/**
+   * 移除分数从min至max的元素
+   * <span class="hljs-doctag">@param</span> key
+   * <span class="hljs-doctag">@param</span> min
+   * <span class="hljs-doctag">@param</span> max
+   * <span class="hljs-doctag">@return</span>
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Long <span class="hljs-title">zSetRemoveRangeByScore</span><span class="hljs-params">(String key,Double min,Double max)</span> </span>{
+    <span class="hljs-keyword">return</span> template.opsForZSet().removeRangeByScore(key, min, max);
+  }
+
+
+}
+
+</code></pre>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

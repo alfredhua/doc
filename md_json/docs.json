@@ -18,18 +18,943 @@
   ],
   "zh-cn": [
     {
-      "filename": "demo1.md",
-      "link": "/zh-cn/docs/demo1.html",
+      "filename": "1.单一职责.md",
+      "link": "/zh-cn/docs/1.设计模式/1.单一职责.html",
+      "meta": {
+        "title": "单一职责-码农阿华",
+        "keywords": "单一职责，设计模式",
+        "description": "单一职责(Simple Responsibility Pinciple，SRP)是指不要存在多于一个导致类变更 的原因"
+      }
+    },
+    {
+      "filename": "10.装饰器模式.md",
+      "link": "/zh-cn/docs/1.设计模式/10.装饰器模式.html",
+      "meta": {
+        "title": "装饰器模式-码农阿华",
+        "keywords": "装饰器模式，设计模式",
+        "description": "装饰器的核心就是新接口继承原有的接口，对于原有的实现类，重新注入到新的实现类。"
+      }
+    },
+    {
+      "filename": "2.开闭原则.md",
+      "link": "/zh-cn/docs/1.设计模式/2.开闭原则.html",
+      "meta": {
+        "title": "开闭原则-码农阿华",
+        "keywords": "开闭原则，设计模式",
+        "description": "开闭原则(Open-Closed Principle, OCP)是指一个软件实体如类、模块和函数应该对 扩展开放，对修改关闭。所谓的开闭，也正是对扩展和修改两个行为的一个原则。强调 的是用抽象构建框架，用实现扩展细节。可以提高软件系统的可复用性及可维护性。开 闭原则，是面向对象设计中最基础的设计原则。它指导我们如何建立稳定灵活的系统， 例如:我们版本更新，我尽可能不修改源代码，但是可以增加新功能。"
+      }
+    },
+    {
+      "filename": "3.接口隔离原则.md",
+      "link": "/zh-cn/docs/1.设计模式/3.接口隔离原则.html",
+      "meta": {
+        "title": "接口隔离原则-码农阿华",
+        "keywords": "接口隔离原则，设计模式",
+        "description": "接口隔离原则(Interface Segregation Principle, ISP)是指用多个专门的接口，而不使 用单一的总接口，客户端不应该依赖它不需要的接口。"
+      }
+    },
+    {
+      "filename": "4.工厂模式.md",
+      "link": "/zh-cn/docs/1.设计模式/4.工厂模式.html",
+      "meta": {
+        "title": "工厂模式-码农阿华",
+        "keywords": "工厂模式，设计模式",
+        "description": "工厂模式。"
+      }
+    },
+    {
+      "filename": "5.单例模式.md",
+      "link": "/zh-cn/docs/1.设计模式/5.单例模式.html",
+      "meta": {
+        "title": "单例模式-码农阿华",
+        "keywords": "单例模式，设计模式",
+        "description": "单例模式。"
+      }
+    },
+    {
+      "filename": "6.原型模式.md",
+      "link": "/zh-cn/docs/1.设计模式/6.原型模式.html",
+      "meta": {
+        "title": "原型模式-码农阿华",
+        "keywords": "原型模式，设计模式",
+        "description": "原型模式：我们从数据库获取数据到DTO，从DTO传递给VO，这个时候需要将DTO层的数据全部copy到VO中，这种模式就是一种原型模式"
+      }
+    },
+    {
+      "filename": "7.代理模式.md",
+      "link": "/zh-cn/docs/1.设计模式/7.代理模式.html",
+      "meta": {
+        "title": "代理模式-码农阿华",
+        "keywords": "静态代理，动态代理，代理模式，设计模式",
+        "description": "静态代理：静态代理不需要接口，只是一个代理对象拿到了被代理对象的引用，有代理对象调用被代理对象而已。动态代理：JKD和CGLIB俩种方式"
+      }
+    },
+    {
+      "filename": "8.策略模式.md",
+      "link": "/zh-cn/docs/1.设计模式/8.策略模式.html",
+      "meta": {
+        "title": "策略和模板模式-码农阿华",
+        "keywords": "策略，模板，策略模式，模板模式，设计模式",
+        "description": "策略模式：策略模式侧重于选择，例如：支付方式，我们商品购物时，选择不同的渠道即可支付宝，微信，京东等。模板模式:模板模式侧重于流程，可以自定义修改某一个流程，但是整个过程是不可以修改的。"
+      }
+    },
+    {
+      "filename": "9.委派模式和适配器模式.md",
+      "link": "/zh-cn/docs/1.设计模式/9.委派模式和适配器模式.html",
+      "meta": {
+        "title": "委派模式-码农阿华",
+        "keywords": "委派模式，设计模式",
+        "description": "委派模式：核心是就是分发、调度、派遣。"
+      }
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/1.设计模式/README.html",
       "meta": {}
     },
     {
-      "filename": "demo2.md",
-      "link": "/zh-cn/docs/demo2.html",
+      "filename": "JAVA环境.md",
+      "link": "/zh-cn/docs/10.工具/JAVA环境.html",
       "meta": {}
     },
     {
-      "filename": "demo3.md",
-      "link": "/zh-cn/docs/dir/demo3.html",
+      "filename": "README.md",
+      "link": "/zh-cn/docs/10.工具/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.安装.md",
+      "link": "/zh-cn/docs/10.工具/arthas/1.安装.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.dashboard.md",
+      "link": "/zh-cn/docs/10.工具/arthas/2.dashboard.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.thread.md",
+      "link": "/zh-cn/docs/10.工具/arthas/3.thread.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.JVM.md",
+      "link": "/zh-cn/docs/10.工具/arthas/4.JVM.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/10.工具/arthas/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.安装.md",
+      "link": "/zh-cn/docs/10.工具/docker/1.安装.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/10.工具/docker/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.kubectl.md",
+      "link": "/zh-cn/docs/10.工具/k8s/1.kubectl.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.环境搭建.md",
+      "link": "/zh-cn/docs/10.工具/k8s/1.环境搭建.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/10.工具/k8s/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "解决依赖冲突.md",
+      "link": "/zh-cn/docs/10.工具/maven/解决依赖冲突.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/2.java/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.jvm类加载.md",
+      "link": "/zh-cn/docs/2.java/jvm/1.jvm类加载.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.栈帧.md",
+      "link": "/zh-cn/docs/2.java/jvm/2.栈帧.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.内存模型.md",
+      "link": "/zh-cn/docs/2.java/jvm/3.内存模型.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.垃圾回收.md",
+      "link": "/zh-cn/docs/2.java/jvm/4.垃圾回收.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.垃圾收集器.md",
+      "link": "/zh-cn/docs/2.java/jvm/5.垃圾收集器.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.JVM参数.md",
+      "link": "/zh-cn/docs/2.java/jvm/6.JVM参数.html",
+      "meta": {}
+    },
+    {
+      "filename": "7.JVM常用命令.md",
+      "link": "/zh-cn/docs/2.java/jvm/7.JVM常用命令.html",
+      "meta": {}
+    },
+    {
+      "filename": "8.JVM常用工具.md",
+      "link": "/zh-cn/docs/2.java/jvm/8.JVM常用工具.html",
+      "meta": {}
+    },
+    {
+      "filename": "9.常见问题.md",
+      "link": "/zh-cn/docs/2.java/jvm/9.常见问题.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/2.java/jvm/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.HashMap.md",
+      "link": "/zh-cn/docs/2.java/基础/1.HashMap.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.integer.md",
+      "link": "/zh-cn/docs/2.java/基础/2.integer.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.calculations.md",
+      "link": "/zh-cn/docs/2.java/基础/3.calculations.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.LinkedHashMap.md",
+      "link": "/zh-cn/docs/2.java/基础/4.LinkedHashMap.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.list.md",
+      "link": "/zh-cn/docs/2.java/基础/5.list.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.reference.md",
+      "link": "/zh-cn/docs/2.java/基础/6.reference.html",
+      "meta": {}
+    },
+    {
+      "filename": "7.synchronized.md",
+      "link": "/zh-cn/docs/2.java/基础/7.synchronized.html",
+      "meta": {}
+    },
+    {
+      "filename": "8.volatile.md",
+      "link": "/zh-cn/docs/2.java/基础/8.volatile.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/2.java/基础/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.并发基本概念.md",
+      "link": "/zh-cn/docs/2.java/并发/1.并发基本概念.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.并发级别.md",
+      "link": "/zh-cn/docs/2.java/并发/2.并发级别.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.CountDownLatch.md",
+      "link": "/zh-cn/docs/2.java/并发/3.CountDownLatch.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.CyclicBarrier.md",
+      "link": "/zh-cn/docs/2.java/并发/4.CyclicBarrier.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.线程池.md",
+      "link": "/zh-cn/docs/2.java/并发/5.线程池.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.原子类.md",
+      "link": "/zh-cn/docs/2.java/并发/6.原子类.html",
+      "meta": {}
+    },
+    {
+      "filename": "7.锁.md",
+      "link": "/zh-cn/docs/2.java/并发/7.锁.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/2.java/并发/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "Http.md",
+      "link": "/zh-cn/docs/2.java/网络编程/Http.html",
+      "meta": {}
+    },
+    {
+      "filename": "Socket.md",
+      "link": "/zh-cn/docs/2.java/网络编程/Socket.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/3.数据库/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.介绍.md",
+      "link": "/zh-cn/docs/3.数据库/clickhouse/1.介绍.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.安装教程.md",
+      "link": "/zh-cn/docs/3.数据库/clickhouse/2.安装教程.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.JAVA接入.md",
+      "link": "/zh-cn/docs/3.数据库/clickhouse/3.JAVA接入.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.SQL语法.md",
+      "link": "/zh-cn/docs/3.数据库/clickhouse/4.SQL语法.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.Mysql迁移.md",
+      "link": "/zh-cn/docs/3.数据库/clickhouse/5.Mysql迁移.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.引擎engine.md",
+      "link": "/zh-cn/docs/3.数据库/clickhouse/5.引擎engine.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.HDFS.md",
+      "link": "/zh-cn/docs/3.数据库/clickhouse/6.HDFS.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/3.数据库/clickhouse/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.安装.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/1.安装.html",
+      "meta": {}
+    },
+    {
+      "filename": "10.聚合.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/10.聚合.html",
+      "meta": {}
+    },
+    {
+      "filename": "11.Term和全文本查询.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/11.Term和全文本查询.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.基本概念.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/2.基本概念.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.logstash导入数据.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/3.logstash导入数据.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.基本操作.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/4.基本操作.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.Index操作.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/5.Index操作.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.CRUD.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/6.CRUD.html",
+      "meta": {}
+    },
+    {
+      "filename": "7.集群操作.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/7.集群操作.html",
+      "meta": {}
+    },
+    {
+      "filename": "8.多字段特性及自定义Analyzer.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/8.多字段特性及自定义Analyzer.html",
+      "meta": {}
+    },
+    {
+      "filename": "9.IndexTemplate.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/9.IndexTemplate.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "错误.md",
+      "link": "/zh-cn/docs/3.数据库/elasticsearch/错误.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.mysql安装与卸载.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/1.mysql安装与卸载.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.忘记和修改密码.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/2.忘记和修改密码.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.Mysql的基本语法.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/3.Mysql的基本语法.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.mysql索引.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/4.mysql索引.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.SQL的执行流程.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/5.SQL的执行流程.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.MySQL的存储结构.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/6.MySQL的存储结构.html",
+      "meta": {}
+    },
+    {
+      "filename": "7.MySQL事务.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/7.MySQL事务.html",
+      "meta": {}
+    },
+    {
+      "filename": "8.MySQL锁.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/8.MySQL锁.html",
+      "meta": {}
+    },
+    {
+      "filename": "9.性能优化.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/9.性能优化.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/3.数据库/mysql/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/4.mq/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.安装.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/1.安装.html",
+      "meta": {}
+    },
+    {
+      "filename": "10.如何设计一个MQ.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/10.如何设计一个MQ.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.消息模式.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/2.消息模式.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.基本操作.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/3.基本操作.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.消息可靠性投递.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/4.消息可靠性投递.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.重复消费.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/5.重复消费.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.消息丢失问题.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/6.消息丢失问题.html",
+      "meta": {}
+    },
+    {
+      "filename": "7.高可用.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/7.高可用.html",
+      "meta": {}
+    },
+    {
+      "filename": "8.消息积压.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/8.消息积压.html",
+      "meta": {}
+    },
+    {
+      "filename": "9.死信队列.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/9.死信队列.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/4.mq/rabbitmq/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/5.框架/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.jdbc连接流程.md",
+      "link": "/zh-cn/docs/5.框架/mybatis/1.jdbc连接流程.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.源码解读.md",
+      "link": "/zh-cn/docs/5.框架/mybatis/2.源码解读.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.手写mybatis.md",
+      "link": "/zh-cn/docs/5.框架/mybatis/3.手写mybatis.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.ORM.md",
+      "link": "/zh-cn/docs/5.框架/mybatis/4.ORM.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/5.框架/mybatis/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.基本教程.md",
+      "link": "/zh-cn/docs/5.框架/spring/1.基本教程.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.IOC的XML方式源码分析.md",
+      "link": "/zh-cn/docs/5.框架/spring/2.IOC的XML方式源码分析.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.IOC的注解方式源码解析.md",
+      "link": "/zh-cn/docs/5.框架/spring/3.IOC的注解方式源码解析.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.DI源码解析.md",
+      "link": "/zh-cn/docs/5.框架/spring/4.DI源码解析.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.AOP源码分析.md",
+      "link": "/zh-cn/docs/5.框架/spring/5.AOP源码分析.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.mvc.md",
+      "link": "/zh-cn/docs/5.框架/spring/6.mvc.html",
+      "meta": {}
+    },
+    {
+      "filename": "7.事务.md",
+      "link": "/zh-cn/docs/5.框架/spring/7.事务.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/5.框架/spring/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.SpringBoot初识.md",
+      "link": "/zh-cn/docs/5.框架/spring-boot/1.SpringBoot初识.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.源码解读.md",
+      "link": "/zh-cn/docs/5.框架/spring-boot/2.源码解读.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/5.框架/spring-boot/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.consul.md",
+      "link": "/zh-cn/docs/5.框架/spring-cloud/1.consul.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.Ribbon.md",
+      "link": "/zh-cn/docs/5.框架/spring-cloud/2.Ribbon.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.feign.md",
+      "link": "/zh-cn/docs/5.框架/spring-cloud/3.feign.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.Config.md",
+      "link": "/zh-cn/docs/5.框架/spring-cloud/4.Config.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.Hystrix.md",
+      "link": "/zh-cn/docs/5.框架/spring-cloud/5.Hystrix.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/5.框架/spring-cloud/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/6.缓存/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/6.缓存/guava/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.安装.md",
+      "link": "/zh-cn/docs/6.缓存/redis/1.安装.html",
+      "meta": {}
+    },
+    {
+      "filename": "10.集群.md",
+      "link": "/zh-cn/docs/6.缓存/redis/10.集群.html",
+      "meta": {}
+    },
+    {
+      "filename": "11.lock.md",
+      "link": "/zh-cn/docs/6.缓存/redis/11.lock.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.数据类型.md",
+      "link": "/zh-cn/docs/6.缓存/redis/2.数据类型.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.应用场景.md",
+      "link": "/zh-cn/docs/6.缓存/redis/3.应用场景.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.单线程模型.md",
+      "link": "/zh-cn/docs/6.缓存/redis/4.单线程模型.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.过期策略.md",
+      "link": "/zh-cn/docs/6.缓存/redis/5.过期策略.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.数据恢复.md",
+      "link": "/zh-cn/docs/6.缓存/redis/6.数据恢复.html",
+      "meta": {}
+    },
+    {
+      "filename": "7.哨兵模式.md",
+      "link": "/zh-cn/docs/6.缓存/redis/7.哨兵模式.html",
+      "meta": {}
+    },
+    {
+      "filename": "8.缓冲.md",
+      "link": "/zh-cn/docs/6.缓存/redis/8.缓冲.html",
+      "meta": {}
+    },
+    {
+      "filename": "9.RedisTemplate.md",
+      "link": "/zh-cn/docs/6.缓存/redis/9.RedisTemplate.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/6.缓存/redis/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/7.分布式/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/7.分布式/nacos/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.序列化.md",
+      "link": "/zh-cn/docs/7.分布式/rpc/1.序列化.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/7.分布式/rpc/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.基本应用.md",
+      "link": "/zh-cn/docs/7.分布式/rpc/dubbo/1.基本应用.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.SPI.md",
+      "link": "/zh-cn/docs/7.分布式/rpc/dubbo/2.SPI.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/7.分布式/rpc/dubbo/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.protobuf原理.md",
+      "link": "/zh-cn/docs/7.分布式/rpc/grpc/1.protobuf原理.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.grpc.md",
+      "link": "/zh-cn/docs/7.分布式/rpc/grpc/2.grpc.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/7.分布式/rpc/grpc/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.基本概念.md",
+      "link": "/zh-cn/docs/7.分布式/zookeeper/1.基本概念.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.操作.md",
+      "link": "/zh-cn/docs/7.分布式/zookeeper/2.操作.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.使用场景.md",
+      "link": "/zh-cn/docs/7.分布式/zookeeper/3.使用场景.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.分布式锁.md",
+      "link": "/zh-cn/docs/7.分布式/zookeeper/4.分布式锁.html",
+      "meta": {}
+    },
+    {
+      "filename": "5.分布式一致性.md",
+      "link": "/zh-cn/docs/7.分布式/zookeeper/5.分布式一致性.html",
+      "meta": {}
+    },
+    {
+      "filename": "6.集群搭建.md",
+      "link": "/zh-cn/docs/7.分布式/zookeeper/6.集群搭建.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/7.分布式/zookeeper/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "seata.md",
+      "link": "/zh-cn/docs/7.分布式/分布式事务/seata.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/8.服务器/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "centos下软件安装.md",
+      "link": "/zh-cn/docs/8.服务器/centos下软件安装.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.递归.md",
+      "link": "/zh-cn/docs/9.算法/1.递归.html",
+      "meta": {}
+    },
+    {
+      "filename": "2.排序.md",
+      "link": "/zh-cn/docs/9.算法/2.排序.html",
+      "meta": {}
+    },
+    {
+      "filename": "3.双子针.md",
+      "link": "/zh-cn/docs/9.算法/3.双子针.html",
+      "meta": {}
+    },
+    {
+      "filename": "4.回溯.md",
+      "link": "/zh-cn/docs/9.算法/4.回溯.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/9.算法/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "begin.md",
+      "link": "/zh-cn/docs/begin.html",
+      "meta": {}
+    },
+    {
+      "filename": "Nodejs.md",
+      "link": "/zh-cn/docs/面试/Nodejs.html",
+      "meta": {}
+    },
+    {
+      "filename": "README.md",
+      "link": "/zh-cn/docs/面试/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "java基础.md",
+      "link": "/zh-cn/docs/面试/java基础.html",
+      "meta": {}
+    },
+    {
+      "filename": "jvm.md",
+      "link": "/zh-cn/docs/面试/jvm.html",
+      "meta": {}
+    },
+    {
+      "filename": "mybatis.md",
+      "link": "/zh-cn/docs/面试/mybatis.html",
+      "meta": {}
+    },
+    {
+      "filename": "mysql.md",
+      "link": "/zh-cn/docs/面试/mysql.html",
+      "meta": {}
+    },
+    {
+      "filename": "nginx.md",
+      "link": "/zh-cn/docs/面试/nginx.html",
+      "meta": {}
+    },
+    {
+      "filename": "rabbitmq.md",
+      "link": "/zh-cn/docs/面试/rabbitmq.html",
+      "meta": {}
+    },
+    {
+      "filename": "redis.md",
+      "link": "/zh-cn/docs/面试/redis.html",
+      "meta": {}
+    },
+    {
+      "filename": "rpc.md",
+      "link": "/zh-cn/docs/面试/rpc.html",
+      "meta": {}
+    },
+    {
+      "filename": "spring.md",
+      "link": "/zh-cn/docs/面试/spring.html",
+      "meta": {}
+    },
+    {
+      "filename": "springboot.md",
+      "link": "/zh-cn/docs/面试/springboot.html",
+      "meta": {}
+    },
+    {
+      "filename": "zookeeper.md",
+      "link": "/zh-cn/docs/面试/zookeeper.html",
+      "meta": {}
+    },
+    {
+      "filename": "并发.md",
+      "link": "/zh-cn/docs/面试/并发.html",
+      "meta": {}
+    },
+    {
+      "filename": "网络.md",
+      "link": "/zh-cn/docs/面试/网络.html",
+      "meta": {}
+    },
+    {
+      "filename": "设计模式.md",
+      "link": "/zh-cn/docs/面试/设计模式.html",
+      "meta": {}
+    },
+    {
+      "filename": "锁.md",
+      "link": "/zh-cn/docs/面试/锁.html",
+      "meta": {}
+    },
+    {
+      "filename": "集合.md",
+      "link": "/zh-cn/docs/面试/集合.html",
       "meta": {}
     }
   ]

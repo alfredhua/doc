@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="5.list" />
+	<meta name="description" content="5.list" />
+	<!-- 网页标签标题 -->
+	<title>5.list</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="arraylist%EF%BC%9A">ArrayList： <a class="header-anchor" href="#arraylist%EF%BC%9A">#</a></h2>
+<p>ArrayList a=new ArrayList();
+a.add(&quot;a&quot;);
+a.get(10);</p>
+<ul>
+<li>
+<p>add：ArrayList在添加的时候会增加数组的大小，与10比较，如果小于10 则选择10，然后就是正常的数组copy，扩容。</p>
+</li>
+<li>
+<p>get：直接返回数组对应的值即可。</p>
+</li>
+</ul>
+<h2 id="linkedlist%3A">LinkedList: <a class="header-anchor" href="#linkedlist%3A">#</a></h2>
+<ul>
+<li>add方法：直接往最后一个节点上存放节点即可。</li>
+<li>get方法：
+如果index的位置比size&gt;&gt;1小，则从0开始到index位置查找，反之，从最后一个节点反向寻找。</li>
+</ul>
+<pre><code>LinkedList linkedList=new LinkedList();
+linkedList.add(&quot;a&quot;);
+linkedList.get(1);
+
+//add:
+void linkLast(E e) {
+    final Node&lt;E&gt; l = last;
+    final Node&lt;E&gt; newNode = new Node&lt;&gt;(l, e, null);
+    last = newNode;
+    if (l == null)
+        first = newNode;
+    else
+        l.next = newNode;
+    size++;
+    modCount++;
+} 
+
+//get:
+Node&lt;E&gt; node(int index) {
+    // assert isElementIndex(index);
+
+    if (index &lt; (size &gt;&gt; 1)) {
+        Node&lt;E&gt; x = first;
+        for (int i = 0; i &lt; index; i++)
+            x = x.next;
+        return x;
+    } else {
+        Node&lt;E&gt; x = last;
+        for (int i = size - 1; i &gt; index; i--)
+            x = x.prev;
+        return x;
+    }
+}
+</code></pre>
+<ul>
+<li>
+<p>安全性：ArrayList 和 LinkedList 都是不同步的，也就是不保证线程安全;</p>
+</li>
+<li>
+<p>底层数据结构：Arraylist 底层使用的是Object数组;LinkedList 底层使用的是双向链表数据结构(JDK1.6之 前为循环链表，JDK1.7取消了循环。注意双向链表和双向循环链表的区别。</p>
+</li>
+<li>
+<p>插入和删除是否受元素位置的影响:</p>
+</li>
+</ul>
+<ol>
+<li>ArrayList 采用数组存储，所以插入和删除元素的时间复杂度受元素 位置的影响。比如:执行add(E e)方法的时候，ArrayList会默认在将指定的元素追加到此列表的末尾，这种 情况时间复杂度就是O(1)。但是如果要在指定位置i插入和删除元素的话(add(int index, E element))时 间复杂度就为 O(n-i)。因为在进行上述操作的时候集合中第 i 和第 i 个元素之后的(n-i)个元素都要执行向后位/向 前移一位的操作。</li>
+<li>LinkedList 采用链表存储，所以插入，删除元素时间复杂度不受元素位置的影响，都是 近似 O(1)而数组为近似 O(n)。</li>
+</ol>
+<ul>
+<li>是否支持快速随机访问:LinkedList 不支持高效的随机元素访问，而 ArrayList 支持。快速随机访问就是通 过元素的序号快速获取元素对象(对应于get(int index)方法)。</li>
+<li>内存空间占用: ArrayList的空 间浪费主要体现在在list列表的结尾会预留一定的容量空间，而LinkedList的空 间花费则体现在它的每一个元素都需要消耗比ArrayList更多的空间(因为要存放直接后继和直接前驱以及数 据)。</li>
+</ul>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

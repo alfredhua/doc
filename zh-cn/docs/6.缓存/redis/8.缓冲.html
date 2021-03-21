@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="8.缓冲" />
+	<meta name="description" content="8.缓冲" />
+	<!-- 网页标签标题 -->
+	<title>8.缓冲</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9">缓存雪崩 <a class="header-anchor" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9">#</a></h2>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/90427422aa67451bb3c72c79189e5edc" alt="image"></p>
+<p>缓存雪崩是指在我们设置缓存时采用了相同的过期时间，导致缓存在某一时刻同时失效，请求全部转发到DB，DB瞬时压力过重雪崩。</p>
+<p>解决方案：</p>
+<p>缓存失效时的雪崩效应对底层系统的冲击非常可怕。大多数系统设计者考虑用加锁或者队列的方式保证缓存的单线 程（进程）写，从而避免失效时大量的并发请求落到底层存储系统上。这里分享一个简单方案就时讲缓存失效时间分散开，比如我们可以在原有的失效时间基础上增加一个随机值，比如1-5分钟随机，这样每一个缓存的过期时间的重复率就会降低，就很难引发集体失效的事件。</p>
+<h2 id="%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F">缓存穿透 <a class="header-anchor" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F">#</a></h2>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/30f8ecaa736b4649ae68522a1e124e87" alt="image"></p>
+<p>缓存穿透是指查询一个一定不存在的数据，由于缓存是不命中时被动写的，并且出于容错考虑，如果从存储层查不到数据则不写入缓存，这将导致这个不存在的数据每次请求都要到存储层去查询，失去了缓存的意义。在流量大时，可能DB就挂掉了，要是有人利用不存在的key频繁攻击我们的应用，这就是漏洞。</p>
+<p>解决：
+有很多种方法可以有效地解决缓存穿透问题，最常见的则是采用布隆过滤器，将所有可能存在的数据哈希到一个足够大的bitmap中，一个一定不存在的数据会被 这个bitmap拦截掉，从而避免了对底层存储系统的查询压力。另外也有一个更为简单粗暴的方法（我们采用的就是这种），如果一个查询返回的数据为空（不管是数 据不存在，还是系统故障），我们仍然把这个空结果进行缓存，但它的过期时间会很短，最长不超过五分钟。</p>
+<p>布隆过滤器：</p>
+<pre><code class="language-java"><span class="hljs-comment">// import com.google.common.base.Charsets;</span>
+<span class="hljs-comment">// import com.google.common.hash.BloomFilter;</span>
+<span class="hljs-comment">// import com.google.common.hash.Funnels;</span>
+    <span class="hljs-meta">@PostConstruct</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">init</span><span class="hljs-params">()</span></span>{
+		<span class="hljs-comment">//将数据从数据库导入到本地</span>
+		allUsers = UserDao.getAllUser();
+		<span class="hljs-keyword">if</span>(allUsers == <span class="hljs-keyword">null</span> || allUsers.size()==<span class="hljs-number">0</span>){
+			<span class="hljs-keyword">return</span>;
+		}
+		<span class="hljs-comment">//创建布隆过滤器(默认3%误差)</span>
+		bf = BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), allUsers.size());
+		<span class="hljs-comment">//将数据存入布隆过滤器</span>
+		<span class="hljs-keyword">for</span>(UserDto userDto : allUsers){
+			bf.put(userDto.getUserName());
+		}
+	}
+
+</code></pre>
+<h2 id="%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF">缓存击穿 <a class="header-anchor" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF">#</a></h2>
+<p>对于一些设置了过期时间的key，如果这些key可能会在某些时间点被超高并发地访问，是一种非常“热点”的数据。这个时候，需要考虑一个问题：缓存被“击穿”的问题，这个和缓存雪崩的区别在于这里针对某一key缓存，前者则是很多key。</p>
+<p>缓存在某个时间点过期的时候，恰好在这个时间点对这个Key有大量的并发请求过来，这些请求发现缓存过期一般都会从后端DB加载数据并回设到缓存，这个时候大并发的请求可能会瞬间把后端DB压垮。</p>
+<p>解决方案：</p>
+<ol>
+<li>使用互斥锁(mutex key)： 这种解决方案思路比较简单，就是只让一个线程构建缓存，其他线程等待构建缓存的线程执行完，重新从缓存获取数据就可以了（如下图）</li>
+</ol>
+<pre><code class="language-java">
+<span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">get</span><span class="hljs-params">(key)</span> </span>{
+      String value = redis.get(key);
+      <span class="hljs-keyword">if</span> (value == <span class="hljs-keyword">null</span>) { 
+		  <span class="hljs-comment">//代表缓存值过期</span>
+          <span class="hljs-comment">//设置3min的超时，防止del操作失败的时候，下次缓存过期一直不能load db</span>
+		  <span class="hljs-keyword">if</span> (redis.setnx(key_mutex, <span class="hljs-number">1</span>, <span class="hljs-number">3</span> * <span class="hljs-number">60</span>) == <span class="hljs-number">1</span>) {  <span class="hljs-comment">//代表设置成功</span>
+               value = db.get(key);
+               redis.set(key, value, expire_secs);
+               redis.del(key_mutex);
+           } <span class="hljs-keyword">else</span> {  <span class="hljs-comment">//这个时候代表同时候的其他线程已经load db并回设到缓存了，这时候重试获取缓存值即可</span>
+               sleep(<span class="hljs-number">50</span>);
+               get(key);  <span class="hljs-comment">//重试</span>
+          }
+      } <span class="hljs-keyword">else</span> {
+              <span class="hljs-keyword">return</span> value;      
+      }
+ }
+</code></pre>
+<ol start="2">
+<li>&quot;提前&quot;使用互斥锁(mutex key)：在value内部设置1个超时值(timeout1), timeout1比实际的memcache timeout(timeout2)小。当从cache读取到timeout1发现它已经过期时候，马上延长timeout1并重新设置到cache。然后再从数据库加载数据并设置到cache中。伪代码如下</li>
+</ol>
+<pre><code class="language-java">v = memcache.get(key);  
+<span class="hljs-keyword">if</span> (v == <span class="hljs-keyword">null</span>) {  
+    <span class="hljs-keyword">if</span> (memcache.add(key_mutex, <span class="hljs-number">3</span> * <span class="hljs-number">60</span> * <span class="hljs-number">1000</span>) == <span class="hljs-keyword">true</span>) {  
+        value = db.get(key);  
+        memcache.set(key, value);  
+        memcache.delete(key_mutex);  
+    } <span class="hljs-keyword">else</span> {  
+        sleep(<span class="hljs-number">50</span>);  
+        retry();  
+    }  
+} <span class="hljs-keyword">else</span> {  
+    <span class="hljs-keyword">if</span> (v.timeout &lt;= now()) {  
+        <span class="hljs-keyword">if</span> (memcache.add(key_mutex, <span class="hljs-number">3</span> * <span class="hljs-number">60</span> * <span class="hljs-number">1000</span>) == <span class="hljs-keyword">true</span>) {  
+            <span class="hljs-comment">// extend the timeout for other threads  </span>
+            v.timeout += <span class="hljs-number">3</span> * <span class="hljs-number">60</span> * <span class="hljs-number">1000</span>;  
+            memcache.set(key, v, KEY_TIMEOUT * <span class="hljs-number">2</span>);  
+  
+            <span class="hljs-comment">// load the latest value from db  </span>
+            v = db.get(key);  
+            v.timeout = KEY_TIMEOUT;  
+            memcache.set(key, value, KEY_TIMEOUT * <span class="hljs-number">2</span>);  
+            memcache.delete(key_mutex);  
+        } <span class="hljs-keyword">else</span> {  
+            sleep(<span class="hljs-number">50</span>);  
+            retry();  
+        }  
+    }  
+} 
+</code></pre>
+<ol start="3">
+<li>
+<p>永不过期</p>
+</li>
+<li>
+<p>从redis上看，确实没有设置过期时间，这就保证了，不会出现热点key过期问题，也就是“物理”不过期。</p>
+</li>
+<li>
+<p>从功能上看，如果不过期，那不就成静态的了吗？所以我们把过期时间存在key对应的value里，如果发现要过期了，通过一个后台的异步线程进行缓存的构建，也就是“逻辑”过期</p>
+</li>
+</ol>
+<p>从实战看，这种方法对于性能非常友好，唯一不足的就是构建缓存时候，其余线程(非构建缓存的线程)可能访问的是老数据，但是对于一般的互联网功能来说这个还是可以忍受。</p>
+<pre><code class="language-java"><span class="hljs-function">String <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-keyword">final</span> String key)</span> </span>{  
+        V v = redis.get(key);  
+        String value = v.getValue();  
+        <span class="hljs-keyword">long</span> timeout = v.getTimeout();  
+        <span class="hljs-keyword">if</span> (v.timeout &lt;= System.currentTimeMillis()) {  
+            <span class="hljs-comment">// 异步更新后台异常执行  </span>
+            threadPool.execute(<span class="hljs-keyword">new</span> Runnable() {  
+                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>{  
+                    String keyMutex = <span class="hljs-string">"mutex:"</span> + key;  
+                    <span class="hljs-keyword">if</span> (redis.setnx(keyMutex, <span class="hljs-string">"1"</span>)) {  
+                        <span class="hljs-comment">// 3 min timeout to avoid mutex holder crash  </span>
+                        redis.expire(keyMutex, <span class="hljs-number">3</span> * <span class="hljs-number">60</span>);  
+                        String dbValue = db.get(key);  
+                        redis.set(key, dbValue);  
+                        redis.delete(keyMutex);  
+                    }  
+                }  
+            });  
+        }  
+        <span class="hljs-keyword">return</span> value;  
+}
+</code></pre>
+<ol start="4">
+<li>资源保护</li>
+</ol>
+<p>采用netflix的hystrix，可以做资源的隔离保护主线程池，如果把这个应用到缓存的构建也未尝不可。</p>
+<p>四种解决方案：没有最佳只有最合适</p>
+<table>
+<thead>
+<tr>
+<th>解决方案</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>简单分布式互斥锁（mutex key）</td>
+<td>1. 思路简单<br>2. 保证一致性</td>
+<td>1. 代码复杂度增大<br>2. 存在死锁的风险<br>3. 存在线程池阻塞的风险</td>
+</tr>
+<tr>
+<td>“提前”使用互斥锁</td>
+<td>1. 保证一致性</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>不过期(本文)</td>
+<td>1. 异步构建缓存，不会阻塞线程池</td>
+<td>1. 不保证一致性。<br>2. 代码复杂度增大(每个value都要维护一个timekey)。<br>3. 占用一定的内存空间(每个value都要维护一个timekey)。</td>
+</tr>
+<tr>
+<td>资源隔离组件hystrix(本文)</td>
+<td>1. hystrix技术成熟，有效保证后端。<br>2. hystrix监控强大。</td>
+<td>1. 部分访问存在降级策略。</td>
+</tr>
+</tbody>
+</table>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

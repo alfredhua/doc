@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="装饰器模式，设计模式" />
+	<meta name="description" content="装饰器的核心就是新接口继承原有的接口，对于原有的实现类，重新注入到新的实现类。" />
+	<!-- 网页标签标题 -->
+	<title>装饰器模式-码农阿华</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><p>装饰器模式：</p>
+<p>装饰器的核心就是新接口继承原有的接口，对于原有的实现类，重新注入到新的实现类</p>
+<p>如：public interface ISigninForThirdService  extends ISigninService</p>
+<p>装饰器模式是一种特殊的适配器模式：</p>
+<p>比较：</p>
+<table>
+<thead>
+<tr>
+<th>装饰器模式</th>
+<th>适配器模式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>是一种非常特别的适配器模式</td>
+<td>可以不保留层级关系</td>
+</tr>
+<tr>
+<td>装饰者和被装饰者都要实现同一个接口，主要目的是为了扩展，依旧保留OOP关系</td>
+<td>适配者和被适配者没有必然的层级联系，通常采用代理或者继承形式进行包装</td>
+</tr>
+<tr>
+<td>满足is-a的关系</td>
+<td>满足has-a</td>
+</tr>
+<tr>
+<td>注重的是覆盖、扩展</td>
+<td>注重兼容、转换</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">ISigninService</span> </span>{
+     <span class="hljs-function">ResultMsg <span class="hljs-title">regist</span><span class="hljs-params">(String username, String password)</span></span>;
+
+    <span class="hljs-comment">/**
+     * 登录的方法
+     * <span class="hljs-doctag">@param</span> username
+     * <span class="hljs-doctag">@param</span> password
+     * <span class="hljs-doctag">@return</span>
+     */</span>
+     <span class="hljs-function">ResultMsg <span class="hljs-title">login</span><span class="hljs-params">(String username, String password)</span></span>;
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Member</span> </span>{
+
+    <span class="hljs-keyword">private</span> String username;
+    <span class="hljs-keyword">private</span> String password;
+    <span class="hljs-keyword">private</span> String mid;
+    <span class="hljs-keyword">private</span> String info;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getUsername</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> username;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setUsername</span><span class="hljs-params">(String username)</span> </span>{
+        <span class="hljs-keyword">this</span>.username = username;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getPassword</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> password;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setPassword</span><span class="hljs-params">(String password)</span> </span>{
+        <span class="hljs-keyword">this</span>.password = password;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getMid</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> mid;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setMid</span><span class="hljs-params">(String mid)</span> </span>{
+        <span class="hljs-keyword">this</span>.mid = mid;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getInfo</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> info;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setInfo</span><span class="hljs-params">(String info)</span> </span>{
+        <span class="hljs-keyword">this</span>.info = info;
+    }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ResultMsg</span> </span>{
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> code;
+    <span class="hljs-keyword">private</span> String msg;
+    <span class="hljs-keyword">private</span> Object data;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ResultMsg</span><span class="hljs-params">(<span class="hljs-keyword">int</span> code, String msg, Object data)</span> </span>{
+        <span class="hljs-keyword">this</span>.code = code;
+        <span class="hljs-keyword">this</span>.msg = msg;
+        <span class="hljs-keyword">this</span>.data = data;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getCode</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> code;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setCode</span><span class="hljs-params">(<span class="hljs-keyword">int</span> code)</span> </span>{
+        <span class="hljs-keyword">this</span>.code = code;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">getMsg</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> msg;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setMsg</span><span class="hljs-params">(String msg)</span> </span>{
+        <span class="hljs-keyword">this</span>.msg = msg;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">getData</span><span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> data;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setData</span><span class="hljs-params">(Object data)</span> </span>{
+        <span class="hljs-keyword">this</span>.data = data;
+    }
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SigninService</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ISigninService</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">regist</span><span class="hljs-params">(String username,String password)</span></span>{
+        <span class="hljs-keyword">return</span>  <span class="hljs-keyword">new</span> ResultMsg(<span class="hljs-number">200</span>,<span class="hljs-string">"注册成功"</span>,<span class="hljs-keyword">new</span> Member());
+    }
+
+
+    <span class="hljs-comment">/**
+     * 登录的方法
+     * <span class="hljs-doctag">@param</span> username
+     * <span class="hljs-doctag">@param</span> password
+     * <span class="hljs-doctag">@return</span>
+     */</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">login</span><span class="hljs-params">(String username,String password)</span></span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+    }
+}
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">ISigninForThirdService</span>  <span class="hljs-keyword">extends</span> <span class="hljs-title">ISigninService</span> </span>{
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForQQ</span><span class="hljs-params">(String openId)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForWechat</span><span class="hljs-params">(String openId)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForToken</span><span class="hljs-params">(String token)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForTelphone</span><span class="hljs-params">(String telphone,String code)</span></span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForRegist</span><span class="hljs-params">(String username,String password)</span></span>;
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SigninForThirdService</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ISigninForThirdService</span> </span>{
+
+    <span class="hljs-keyword">private</span> ISigninService service;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">SigninForThirdService</span><span class="hljs-params">(ISigninService service)</span></span>{
+        <span class="hljs-keyword">this</span>.service = service;
+    }
+
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">regist</span><span class="hljs-params">(String username, String password)</span> </span>{
+        <span class="hljs-keyword">return</span> service.regist(username,password);
+    }
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">login</span><span class="hljs-params">(String username, String password)</span> </span>{
+        <span class="hljs-keyword">return</span> service.login(username,password);
+    }
+
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForQQ</span><span class="hljs-params">(String openId)</span></span>{
+        <span class="hljs-keyword">return</span> loginForRegist(openId,<span class="hljs-keyword">null</span>);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForWechat</span><span class="hljs-params">(String openId)</span></span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForToken</span><span class="hljs-params">(String token)</span></span>{
+        <span class="hljs-comment">//通过token拿到用户信息，然后再重新登陆了一次</span>
+        <span class="hljs-keyword">return</span>  <span class="hljs-keyword">null</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForTelphone</span><span class="hljs-params">(String telphone,String code)</span></span>{
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> ResultMsg <span class="hljs-title">loginForRegist</span><span class="hljs-params">(String username,String password)</span></span>{
+        <span class="hljs-keyword">this</span>.regist(username,<span class="hljs-keyword">null</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.login(username,<span class="hljs-keyword">null</span>);
+    }
+}
+</code></pre>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

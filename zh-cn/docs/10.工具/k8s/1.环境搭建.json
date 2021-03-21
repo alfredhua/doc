@@ -1,0 +1,6 @@
+{
+  "filename": "1.环境搭建.md",
+  "__html": "<h1 id=\"%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA\">环境搭建 <a class=\"header-anchor\" href=\"#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA\">#</a></h1>\n<h2 id=\"mac\">MAC <a class=\"header-anchor\" href=\"#mac\">#</a></h2>\n<ul>\n<li>\n<p>安装docker</p>\n</li>\n<li>\n<p>选择 enable Kubernetes 即可</p>\n</li>\n<li>\n<p>下载 git clone <a href=\"https://github.com/gotok8s/k8s-docker-desktop-for-mac.git\">https://github.com/gotok8s/k8s-docker-desktop-for-mac.git</a></p>\n</li>\n<li>\n<p>执行脚本</p>\n<pre><code>./load_images.sh\n</code></pre>\n</li>\n<li>\n<p>查看有哪些集群</p>\n<pre><code class=\"language-java\">kubectl config get-contexts\n</code></pre>\n</li>\n<li>\n<p>切换集群</p>\n<pre><code class=\"language-java\">kubectl config use-context docker-<span class=\"hljs-keyword\">for</span>-desktop\n</code></pre>\n</li>\n<li>\n<p>重新启动docker即可</p>\n</li>\n</ul>\n<h2 id=\"linux\">LINUX <a class=\"header-anchor\" href=\"#linux\">#</a></h2>\n",
+  "link": "/zh-cn/docs/10.工具/k8s/1.环境搭建.html",
+  "meta": {}
+}

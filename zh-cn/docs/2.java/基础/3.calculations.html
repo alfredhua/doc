@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="3.calculations" />
+	<meta name="description" content="3.calculations" />
+	<!-- 网页标签标题 -->
+	<title>3.calculations</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><pre><code class="language-java">
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Demo</span> </span>{
+
+  <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>{
+    test1();
+    test2();
+    test3();
+    test4();
+    test5();
+    test6();
+    test7();
+    test8();
+  }
+
+  <span class="hljs-comment">/**
+   * &amp;（按位与），有0即为0
+   *
+   * &amp;按位与的运算规则是将两边的数转换为二进制位，然后运算最终值，运算规则即(两个为真才为真)1&amp;1=1 , 1&amp;0=0 , 0&amp;1=0 , 0&amp;0=0
+   *
+   * 3的二进制位是0000 0011 ， 5的二进制位是0000 0101 ， 那么就是011 &amp; 101，由按位与运算规则得知，001 &amp; 101等于0000 0001，最终值为1
+   *
+   * 7的二进制位是0000 0111，那就是111 &amp; 101等于101，也就是0000 0101，故值为5
+   *
+   */</span>
+
+  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span>  <span class="hljs-keyword">void</span> <span class="hljs-title">test1</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> i =<span class="hljs-number">3</span>;   <span class="hljs-comment">//0000 0011</span>
+    <span class="hljs-keyword">int</span> h=<span class="hljs-number">5</span>;    <span class="hljs-comment">//0000 0101    0000 0001</span>
+    System.out.println(<span class="hljs-string">"test1()----&gt;&amp; ----&gt;"</span> +(i &amp; h));
+  }
+
+  <span class="hljs-comment">/**
+   * &amp;&amp;（逻辑与）
+   *
+   * &amp;&amp;逻辑与也称为短路逻辑与，先运算&amp;&amp;左边的表达式，一旦为假，后续不管多少表达式，均不再计算，一个为真，再计算右边的表达式，两个为真才为真。
+   *
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span>  <span class="hljs-keyword">void</span> <span class="hljs-title">test2</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> i =<span class="hljs-number">3</span>;
+    <span class="hljs-keyword">int</span> h=<span class="hljs-number">5</span>;
+    System.out.println(<span class="hljs-string">"test2()----&gt;&amp;&amp; ----&gt;"</span> +(<span class="hljs-number">3</span>/<span class="hljs-number">100</span>==<span class="hljs-number">0</span> &amp;&amp; <span class="hljs-keyword">true</span>));
+  }
+
+  <span class="hljs-comment">/**
+   * |（按位或）有1即为1
+   *
+   * |按位或和&amp;按位与计算方式都是转换二进制再计算，不同的是运算规则(一个为真即为真)1|0 = 1 , 1|1 = 1 , 0|0 = 0 , 0|1 = 1
+   *   6的二进制位0000 0110 , 2的二进制位0000 0010 , 110|010为110，最终值0000 0110，故6|2等于6
+   */</span>
+
+  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span>  <span class="hljs-keyword">void</span> <span class="hljs-title">test3</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> i =<span class="hljs-number">3</span>; <span class="hljs-comment">// 000 011</span>
+    <span class="hljs-keyword">int</span> h=<span class="hljs-number">5</span>;  <span class="hljs-comment">// 000 101  ----&gt;  000111</span>
+
+    System.out.println(<span class="hljs-string">"test3()----&gt;| ----&gt;"</span> +(<span class="hljs-number">3</span> | <span class="hljs-number">5</span>));
+  }
+
+  <span class="hljs-comment">/**
+   * ||（逻辑或）,有真即为真，
+   * 逻辑或||的运算规则是一个为真即为真，后续不再计算，一个为假再计算右边的表达式。
+   */</span>
+
+  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span>  <span class="hljs-keyword">void</span> <span class="hljs-title">test4</span><span class="hljs-params">()</span></span>{
+    System.out.println(<span class="hljs-string">"test4()----&gt;|| ----&gt;"</span> +(<span class="hljs-keyword">true</span> || <span class="hljs-keyword">false</span>));
+  }
+
+  <span class="hljs-comment">/**
+   * ^异或
+   *
+   * ^异或运算符顾名思义，异就是不同，其运算规则为1^0 = 1 , 1^1 = 0 , 0^1 = 1 , 0^0 = 0
+   * 5的二进制位是0000 0101 ， 9的二进制位是0000 0011，也就是0101 ^ 0011,结果为1100 , 00001100的十进制位是12
+   *
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test5</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> i =<span class="hljs-number">3</span>;  <span class="hljs-comment">//0011</span>
+    <span class="hljs-keyword">int</span> h=<span class="hljs-number">5</span>;   <span class="hljs-comment">//0101   0110</span>
+    System.out.println(<span class="hljs-string">"test5()----&gt;^ ----&gt;"</span> +(i^h));
+  }
+
+  <span class="hljs-comment">/**
+   * &lt;&lt;
+   * 5&lt;&lt;2的意思为5的二进制位往左挪两位，右边补0，5的二进制位是0000 0101 ，
+   * 就是把有效值101往左挪两位就是0001--&gt; 0100 ，正数左边第一位补0，负数补1，等于乘于2的n次方，十进制位是20
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test6</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> h=<span class="hljs-number">5</span>;   <span class="hljs-comment">//0101  0101</span>
+    System.out.println(<span class="hljs-string">"test6()----&gt;^ ----&gt;"</span> +(<span class="hljs-number">5</span>&lt;&lt;<span class="hljs-number">2</span>));
+  }
+
+  <span class="hljs-comment">/**
+   *  &gt;&gt;
+   * 5&gt;&gt;2的意思为5的二进制位往右挪两位，左边补0，5的二进制位是0000 0101 ，
+   * 就是把有效值101往右挪两位就是0101 (0000 0001)，正数左边第一位补0，负数补1，等于乘于2的n次方，十进制位是20
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test7</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> h=<span class="hljs-number">5</span>;   <span class="hljs-comment">//0101 ---&gt; 0000 0001</span>
+    System.out.println(<span class="hljs-string">"test7()----&gt;^ ----&gt;"</span> +(<span class="hljs-number">5</span>&gt;&gt;<span class="hljs-number">2</span>));
+  }
+
+  <span class="hljs-comment">/**
+   * &gt;&gt;&gt; 无符号位右移
+   */</span>
+  <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test8</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-comment">//0000 1111 ----&gt;  0011</span>
+    System.out.println(<span class="hljs-string">"test7()----&gt;^ ----&gt;"</span> +(<span class="hljs-number">15</span>&gt;&gt;&gt;<span class="hljs-number">2</span>));
+  }
+}
+</code></pre>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

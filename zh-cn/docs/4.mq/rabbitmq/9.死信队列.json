@@ -1,0 +1,6 @@
+{
+  "filename": "9.死信队列.md",
+  "__html": "<h2 id=\"%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D\">死信队列介绍 <a class=\"header-anchor\" href=\"#%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D\">#</a></h2>\n<ul>\n<li>死信队列：DLX，dead-letter-exchange</li>\n<li>利用DLX，当消息在一个队列中变成死信 (dead message) 之后，它能被重新publish到另一个Exchange，这个Exchange就是DLX</li>\n</ul>\n<h2 id=\"%E6%B6%88%E6%81%AF%E5%8F%98%E6%88%90%E6%AD%BB%E4%BF%A1%E6%9C%89%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%A7%8D%E6%83%85%E5%86%B5\">消息变成死信有以下几种情况 <a class=\"header-anchor\" href=\"#%E6%B6%88%E6%81%AF%E5%8F%98%E6%88%90%E6%AD%BB%E4%BF%A1%E6%9C%89%E4%BB%A5%E4%B8%8B%E5%87%A0%E7%A7%8D%E6%83%85%E5%86%B5\">#</a></h2>\n<ul>\n<li>消息被拒绝(basic.reject / basic.nack)，并且requeue = false</li>\n<li>消息TTL过期</li>\n<li>队列达到最大长度</li>\n</ul>\n<h2 id=\"%E6%AD%BB%E4%BF%A1%E5%A4%84%E7%90%86%E8%BF%87%E7%A8%8B\">死信处理过程 <a class=\"header-anchor\" href=\"#%E6%AD%BB%E4%BF%A1%E5%A4%84%E7%90%86%E8%BF%87%E7%A8%8B\">#</a></h2>\n<ul>\n<li>DLX也是一个正常的Exchange，和一般的Exchange没有区别，它能在任何的队列上被指定，实际上就是设置某个队列的属性。</li>\n<li>当这个队列中有死信时，RabbitMQ就会自动的将这个消息重新发布到设置的Exchange上去，进而被路由到另一个队列。\n可以监听这个队列中的消息做相应的处理。</li>\n</ul>\n<p>在RabbitMQ的管理后台，标有DLX的即为死信队列。</p>\n",
+  "link": "/zh-cn/docs/4.mq/rabbitmq/9.死信队列.html",
+  "meta": {}
+}

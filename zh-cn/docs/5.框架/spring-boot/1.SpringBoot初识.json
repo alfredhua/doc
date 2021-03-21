@@ -1,0 +1,6 @@
+{
+  "filename": "1.SpringBoot初识.md",
+  "__html": "<h2 id=\"%E4%BB%80%E4%B9%88%E6%98%AFspring-boot%3F\">什么是Spring Boot? <a class=\"header-anchor\" href=\"#%E4%BB%80%E4%B9%88%E6%98%AFspring-boot%3F\">#</a></h2>\n<p>对于 spring 框架，我们接触得比较多的应该是 spring mvc、 和 spring。而 spring 的核心在于 IOC(控制反转)和 DI (依赖注入)。而这些框架在使用的过程中会需要配置大量 的 xml，或者需要做很多繁琐的配置。</p>\n<p>springboot 框架是为了能够帮助使用 spring 框架的开发 者快速高效的构建一个基于 spirng 框架以及 spring 生态 体系的应用解决方案。它是对“约定优于配置”这个理念下 的一个最佳实践。因此它是一个服务于框架的框架，服务 的范围是简化配置文件。</p>\n<h2 id=\"%E7%BA%A6%E5%AE%9A%E4%BC%98%E4%BA%8E%E9%85%8D%E7%BD%AE%E7%9A%84%E4%BD%93%E7%8E%B0\">约定优于配置的体现 <a class=\"header-anchor\" href=\"#%E7%BA%A6%E5%AE%9A%E4%BC%98%E4%BA%8E%E9%85%8D%E7%BD%AE%E7%9A%84%E4%BD%93%E7%8E%B0\">#</a></h2>\n<ol>\n<li>\n<p>maven 的目录结构</p>\n<blockquote>\n<p>a. 默认有 resources 文件夹存放配置文件</p>\n<p>b. 默认打包方式为 jar</p>\n</blockquote>\n</li>\n<li>\n<p>spring-boot-starter-web 中默认包含 spring mvc 相关 依赖以及内置的 tomcat 容器，使得构建一个 web 应用 更加简单</p>\n</li>\n<li>\n<p>默认提供 application.properties/yml 文件</p>\n</li>\n<li>\n<p>默认通过 spring.profiles.active 属性来决定运行环境时\n读取的配置文件</p>\n</li>\n<li>\n<p>EnableAutoConfiguration 默认对于依赖的 starter 进行\n自动装载</p>\n</li>\n</ol>\n",
+  "link": "/zh-cn/docs/5.框架/spring-boot/1.SpringBoot初识.html",
+  "meta": {}
+}

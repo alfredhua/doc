@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="7.JVM常用命令" />
+	<meta name="description" content="7.JVM常用命令" />
+	<!-- 网页标签标题 -->
+	<title>7.JVM常用命令</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><ol>
+<li>
+<p>jps</p>
+<p>查看当前运行的java程序的进程id号。</p>
+</li>
+<li>
+<p>jinfo 官网：<a href="https://docs.oracle.com/javase/7/docs/technotes/tools/share/jinfo.html">https://docs.oracle.com/javase/7/docs/technotes/tools/share/jinfo.html</a></p>
+<p>实时查看和调整JVM配置参数</p>
+<ul>
+<li>查看参数：jinfo -flags 24984</li>
+<li>修改：jinfo -flag +UseG1GC 24984</li>
+</ul>
+</li>
+<li>
+<p>jstat:官网：<a href="https://docs.oracle.com/javase/6/docs/technotes/tools/share/jstat.html">https://docs.oracle.com/javase/6/docs/technotes/tools/share/jstat.html</a></p>
+</li>
+</ol>
+<ul>
+<li>
+<p>查看虚拟机性能统计信息</p>
+<p>The jstat command displays performance statistics for an instrumented Java HotSpot VM. The target JVM is identified by its virtual machine identifier, or vmid option.</p>
+</li>
+<li>
+<p>查看类装载信息</p>
+<p>jstat -class PID 1000 10 查看某个java进程的类装载信息，每1000毫秒输出一次，共输出10 次</p>
+</li>
+<li>
+<p>查看垃圾收集信息</p>
+<p>jstat -gc PID 1000 10</p>
+</li>
+</ul>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/05dcf5e9a1a84a8a8ca0fc45259e1606" alt="image"></p>
+<table>
+<thead>
+<tr>
+<th>描述</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S0C</td>
+<td>第一个幸存区的大小</td>
+</tr>
+<tr>
+<td>S1C</td>
+<td>第二个幸存区的大小</td>
+</tr>
+<tr>
+<td>S0U</td>
+<td>第一个幸存区的使用大小</td>
+</tr>
+<tr>
+<td>S1U</td>
+<td>第二个幸存区的使用大小</td>
+</tr>
+<tr>
+<td>EC</td>
+<td>伊甸园区的大小</td>
+</tr>
+<tr>
+<td>EU</td>
+<td>伊甸园区的使用大小</td>
+</tr>
+<tr>
+<td>OC</td>
+<td>老年代大小</td>
+</tr>
+<tr>
+<td>OU</td>
+<td>老年代使用大小</td>
+</tr>
+<tr>
+<td>MC</td>
+<td>方法区大小</td>
+</tr>
+<tr>
+<td>MU</td>
+<td>方法区使用大小</td>
+</tr>
+<tr>
+<td>CCSC</td>
+<td>压缩类空间大小</td>
+</tr>
+<tr>
+<td>CCSU</td>
+<td>压缩类空间使用大小</td>
+</tr>
+<tr>
+<td>YGC</td>
+<td>年轻代垃圾回收次数</td>
+</tr>
+<tr>
+<td>YGCT</td>
+<td>年轻代垃圾回收消耗时间</td>
+</tr>
+<tr>
+<td>FGC</td>
+<td>老年代垃圾回收次数</td>
+</tr>
+<tr>
+<td>FGCT</td>
+<td>老年代垃圾回收消耗时间</td>
+</tr>
+<tr>
+<td>GCT</td>
+<td>垃圾回收消耗总时间</td>
+</tr>
+</tbody>
+</table>
+<ol start="4">
+<li>jmap 官网：<a href="https://docs.oracle.com/javase/7/docs/technotes/tools/share/jmap.html">https://docs.oracle.com/javase/7/docs/technotes/tools/share/jmap.html</a></li>
+</ol>
+<ul>
+<li>
+<p>生成堆转储快照</p>
+<p>The jmap command prints shared object memory maps or heap memory details of a specified process, core file, or remote debug server.</p>
+</li>
+<li>
+<p>打印出堆内存相关信息</p>
+<p>-XX:+PrintFlagsFinal -Xms300M -Xmx300M</p>
+<p>jmap -heap PID</p>
+</li>
+<li>
+<p>dump出堆内存相关信息</p>
+<p>jmap -dump:format=b,file=heap.hprof PID</p>
+</li>
+<li>
+<p>要是在发生堆内存溢出的时候，能自动dump出该文件就好了</p>
+<p>一般在开发中，JVM参数可以加上下面两句，这样内存溢出时，会自动dump出该文件</p>
+<p>-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=heap.hprof</p>
+</li>
+</ul>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="4.DI源码解析" />
+	<meta name="description" content="4.DI源码解析" />
+	<!-- 网页标签标题 -->
+	<title>4.DI源码解析</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h1 id="di%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90">DI源码解析 <a class="header-anchor" href="#di%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90">#</a></h1>
+<p>依赖注入发生的时间
+当 Spring IOC 容器完成了 Bean 定义资源的定位、载入和解析注册以后，IOC 容器中已经管理类 Bean 定义的相关数据，但是此时 IOC 容器还没有对所管理的 Bean 进行依赖注入，依赖注入在以下两种情况 发生:
+1)、用户第一次调用 getBean()方法时，IOC 容器触发依赖注入。
+2)、当用户在配置文件中将<bean>元素配置了 lazy-init=false 属性，即让容器在解析注册 Bean 定义 时进行预实例化，触发依赖注入。
+BeanFactory 接口定义了 Spring IOC 容器的基本功能规范，是 Spring IOC 容器所应遵守的最底层和 最基本的编程规范。BeanFactory 接口中定义了几个 getBean()方法，就是用户向 IOC 容器索取管理的 Bean 的方法，我们通过分析其子类的具体实现，理解 Spring IOC 容器在用户索取 Bean 时如何完成依 赖注入。</p>
+<h2 id="%E5%AF%BB%E6%89%BE%E8%8E%B7%E5%8F%96-bean-%E7%9A%84%E5%85%A5%E5%8F%A3">寻找获取 Bean 的入口 <a class="header-anchor" href="#%E5%AF%BB%E6%89%BE%E8%8E%B7%E5%8F%96-bean-%E7%9A%84%E5%85%A5%E5%8F%A3">#</a></h2>
+<pre><code class="language-java">
+	<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">getBean</span><span class="hljs-params">(String name)</span> <span class="hljs-keyword">throws</span> BeansException </span>{
+		<span class="hljs-keyword">return</span> doGetBean(name, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">false</span>);
+	}
+
+<span class="hljs-comment">//真正实现向 IOC 容器获取 Bean 的功能，也是触发依赖注入功能的地方</span>
+<span class="hljs-keyword">protected</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">doGetBean</span><span class="hljs-params">(<span class="hljs-keyword">final</span> String name, @Nullable <span class="hljs-keyword">final</span> Class&lt;T&gt; requiredType,
+			@Nullable <span class="hljs-keyword">final</span> Object[] args, <span class="hljs-keyword">boolean</span> typeCheckOnly)</span> <span class="hljs-keyword">throws</span> BeansException </span>{
+
+		<span class="hljs-comment">//根据指定的名称获取被管理 Bean 的名称，剥离指定名称中对容器的相关依赖 </span>
+		<span class="hljs-comment">//如果指定的是别名，将别名转换为规范的 Bean 名称</span>
+		<span class="hljs-keyword">final</span> String beanName = transformedBeanName(name);
+		Object bean;
+
+		<span class="hljs-comment">// Eagerly check singleton cache for manually registered singletons.</span>
+		<span class="hljs-comment">//先从缓存中取是否已经有被创建过的单态类型的 Bean </span>
+		<span class="hljs-comment">//对于单例模式的 Bean 整个 IOC 容器中只创建一次，不需要重复创建</span>
+		Object sharedInstance = getSingleton(beanName);
+		<span class="hljs-comment">//IOC 容器创建单例模式 Bean 实例对象</span>
+		<span class="hljs-keyword">if</span> (sharedInstance != <span class="hljs-keyword">null</span> &amp;&amp; args == <span class="hljs-keyword">null</span>) {
+			<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+				<span class="hljs-comment">//如果指定名称的 Bean 在容器中已有单例模式的 Bean 被创建 </span>
+				<span class="hljs-comment">//直接返回已经创建的 Bean</span>
+				<span class="hljs-keyword">if</span> (isSingletonCurrentlyInCreation(beanName)) {
+					logger.trace(<span class="hljs-string">"Returning eagerly cached instance of singleton bean '"</span> + beanName +
+							<span class="hljs-string">"' that is not fully initialized yet - a consequence of a circular reference"</span>);
+				}
+				<span class="hljs-keyword">else</span> {
+					logger.trace(<span class="hljs-string">"Returning cached instance of singleton bean '"</span> + beanName + <span class="hljs-string">"'"</span>);
+				}
+			}
+			<span class="hljs-comment">//获取给定 Bean 的实例对象，主要是完成 FactoryBean 的相关处理 </span>
+			<span class="hljs-comment">//注意:BeanFactory 是管理容器中 Bean 的工厂，</span>
+			<span class="hljs-comment">//而 FactoryBean 是创建创建对象的工厂 Bean，两者之间有区别</span>
+			bean = getObjectForBeanInstance(sharedInstance, name, beanName, <span class="hljs-keyword">null</span>);
+		}
+
+		<span class="hljs-keyword">else</span> {
+			<span class="hljs-comment">// Fail if we're already creating this bean instance:</span>
+			<span class="hljs-comment">// We're assumably within a circular reference.</span>
+			<span class="hljs-comment">//缓存没有正在创建的单例模式 Bean </span>
+			<span class="hljs-comment">//缓存中已经有已经创建的原型模式 Bean </span>
+			<span class="hljs-comment">//但是由于循环引用的问题导致实例化对象失败</span>
+			<span class="hljs-keyword">if</span> (isPrototypeCurrentlyInCreation(beanName)) {
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCurrentlyInCreationException(beanName);
+			}
+
+			<span class="hljs-comment">// Check if bean definition exists in this factory.</span>
+			<span class="hljs-comment">//对 IOC 容器中是否存在指定名称的 BeanDefinition 进行检查，首先检查是否 </span>
+			<span class="hljs-comment">//能在当前的 BeanFactory 中获取的所需要的 Bean，如果不能则委托当前容器 </span>
+			<span class="hljs-comment">//的父级容器去查找，如果还是找不到则沿着容器的继承体系向父级容器查找</span>
+			BeanFactory parentBeanFactory = getParentBeanFactory();
+			<span class="hljs-keyword">if</span> (parentBeanFactory != <span class="hljs-keyword">null</span> &amp;&amp; !containsBeanDefinition(beanName)) {
+				<span class="hljs-comment">// Not found -&gt; check parent.</span>
+				String nameToLookup = originalBeanName(name);
+				<span class="hljs-keyword">if</span> (parentBeanFactory <span class="hljs-keyword">instanceof</span> AbstractBeanFactory) {
+					<span class="hljs-keyword">return</span> ((AbstractBeanFactory) parentBeanFactory).doGetBean(
+							nameToLookup, requiredType, args, typeCheckOnly);
+				}
+				<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (args != <span class="hljs-keyword">null</span>) {
+					<span class="hljs-comment">// Delegation to parent with explicit args.</span>
+					<span class="hljs-keyword">return</span> (T) parentBeanFactory.getBean(nameToLookup, args);
+				}
+				<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (requiredType != <span class="hljs-keyword">null</span>) {
+					<span class="hljs-comment">// No args -&gt; delegate to standard getBean method.</span>
+					<span class="hljs-keyword">return</span> parentBeanFactory.getBean(nameToLookup, requiredType);
+				}
+				<span class="hljs-keyword">else</span> {
+					<span class="hljs-keyword">return</span> (T) parentBeanFactory.getBean(nameToLookup);
+				}
+			}
+
+			<span class="hljs-keyword">if</span> (!typeCheckOnly) {
+				markBeanAsCreated(beanName);
+			}
+
+			<span class="hljs-keyword">try</span> {
+				<span class="hljs-keyword">final</span> RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
+				checkMergedBeanDefinition(mbd, beanName, args);
+
+				<span class="hljs-comment">// Guarantee initialization of beans that the current bean depends on.</span>
+				String[] dependsOn = mbd.getDependsOn();
+				<span class="hljs-keyword">if</span> (dependsOn != <span class="hljs-keyword">null</span>) {
+					<span class="hljs-keyword">for</span> (String dep : dependsOn) {
+						<span class="hljs-keyword">if</span> (isDependent(beanName, dep)) {
+							<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(mbd.getResourceDescription(), beanName,
+									<span class="hljs-string">"Circular depends-on relationship between '"</span> + beanName + <span class="hljs-string">"' and '"</span> + dep + <span class="hljs-string">"'"</span>);
+						}
+						registerDependentBean(dep, beanName);
+						<span class="hljs-keyword">try</span> {
+							getBean(dep);
+						}
+						<span class="hljs-keyword">catch</span> (NoSuchBeanDefinitionException ex) {
+							<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(mbd.getResourceDescription(), beanName,
+									<span class="hljs-string">"'"</span> + beanName + <span class="hljs-string">"' depends on missing bean '"</span> + dep + <span class="hljs-string">"'"</span>, ex);
+						}
+					}
+				}
+
+				<span class="hljs-comment">// Create bean instance.</span>
+				<span class="hljs-keyword">if</span> (mbd.isSingleton()) {
+					sharedInstance = getSingleton(beanName, () -&gt; {
+						<span class="hljs-keyword">try</span> {
+							<span class="hljs-keyword">return</span> createBean(beanName, mbd, args);
+						}
+						<span class="hljs-keyword">catch</span> (BeansException ex) {
+							<span class="hljs-comment">// Explicitly remove instance from singleton cache: It might have been put there</span>
+							<span class="hljs-comment">// eagerly by the creation process, to allow for circular reference resolution.</span>
+							<span class="hljs-comment">// Also remove any beans that received a temporary reference to the bean.</span>
+							destroySingleton(beanName);
+							<span class="hljs-keyword">throw</span> ex;
+						}
+					});
+					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
+				}
+
+				<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mbd.isPrototype()) {
+					<span class="hljs-comment">// It's a prototype -&gt; create a new instance.</span>
+					Object prototypeInstance = <span class="hljs-keyword">null</span>;
+					<span class="hljs-keyword">try</span> {
+						beforePrototypeCreation(beanName);
+						prototypeInstance = createBean(beanName, mbd, args);
+					}
+					<span class="hljs-keyword">finally</span> {
+						afterPrototypeCreation(beanName);
+					}
+					bean = getObjectForBeanInstance(prototypeInstance, name, beanName, mbd);
+				}
+
+				<span class="hljs-keyword">else</span> {
+					String scopeName = mbd.getScope();
+					<span class="hljs-keyword">final</span> Scope scope = <span class="hljs-keyword">this</span>.scopes.get(scopeName);
+					<span class="hljs-keyword">if</span> (scope == <span class="hljs-keyword">null</span>) {
+						<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">"No Scope registered for scope name '"</span> + scopeName + <span class="hljs-string">"'"</span>);
+					}
+					<span class="hljs-keyword">try</span> {
+						Object scopedInstance = scope.get(beanName, () -&gt; {
+							beforePrototypeCreation(beanName);
+							<span class="hljs-keyword">try</span> {
+								<span class="hljs-keyword">return</span> createBean(beanName, mbd, args);
+							}
+							<span class="hljs-keyword">finally</span> {
+								afterPrototypeCreation(beanName);
+							}
+						});
+						bean = getObjectForBeanInstance(scopedInstance, name, beanName, mbd);
+					}
+					<span class="hljs-keyword">catch</span> (IllegalStateException ex) {
+						<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(beanName,
+								<span class="hljs-string">"Scope '"</span> + scopeName + <span class="hljs-string">"' is not active for the current thread; consider "</span> +
+								<span class="hljs-string">"defining a scoped proxy for this bean if you intend to refer to it from a singleton"</span>,
+								ex);
+					}
+				}
+			}
+			<span class="hljs-keyword">catch</span> (BeansException ex) {
+				cleanupAfterBeanCreationFailure(beanName);
+				<span class="hljs-keyword">throw</span> ex;
+			}
+		}
+
+		<span class="hljs-comment">// Check if required type matches the type of the actual bean instance.</span>
+		<span class="hljs-keyword">if</span> (requiredType != <span class="hljs-keyword">null</span> &amp;&amp; !requiredType.isInstance(bean)) {
+			<span class="hljs-keyword">try</span> {
+				T convertedBean = getTypeConverter().convertIfNecessary(bean, requiredType);
+				<span class="hljs-keyword">if</span> (convertedBean == <span class="hljs-keyword">null</span>) {
+					<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanNotOfRequiredTypeException(name, requiredType, bean.getClass());
+				}
+				<span class="hljs-keyword">return</span> convertedBean;
+			}
+			<span class="hljs-keyword">catch</span> (TypeMismatchException ex) {
+				<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+					logger.trace(<span class="hljs-string">"Failed to convert bean '"</span> + name + <span class="hljs-string">"' to required type '"</span> +
+							ClassUtils.getQualifiedName(requiredType) + <span class="hljs-string">"'"</span>, ex);
+				}
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanNotOfRequiredTypeException(name, requiredType, bean.getClass());
+			}
+		}
+		<span class="hljs-keyword">return</span> (T) bean;
+	}
+
+</code></pre>
+<h2 id="%E5%BC%80%E5%A7%8B%E5%AE%9E%E4%BE%8B%E5%8C%96">开始实例化 <a class="header-anchor" href="#%E5%BC%80%E5%A7%8B%E5%AE%9E%E4%BE%8B%E5%8C%96">#</a></h2>
+<pre><code class="language-java">
+<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">protected</span> Object <span class="hljs-title">createBean</span><span class="hljs-params">(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)</span>
+			<span class="hljs-keyword">throws</span> BeanCreationException </span>{
+
+		<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+			logger.trace(<span class="hljs-string">"Creating instance of bean '"</span> + beanName + <span class="hljs-string">"'"</span>);
+		}
+		RootBeanDefinition mbdToUse = mbd;
+
+		<span class="hljs-comment">// Make sure bean class is actually resolved at this point, and</span>
+		<span class="hljs-comment">// clone the bean definition in case of a dynamically resolved Class</span>
+		<span class="hljs-comment">// which cannot be stored in the shared merged bean definition.</span>
+		<span class="hljs-comment">//判断需要创建的 Bean 是否可以实例化，即是否可以通过当前的类加载器加载</span>
+		Class&lt;?&gt; resolvedClass = resolveBeanClass(mbd, beanName);
+		<span class="hljs-keyword">if</span> (resolvedClass != <span class="hljs-keyword">null</span> &amp;&amp; !mbd.hasBeanClass() &amp;&amp; mbd.getBeanClassName() != <span class="hljs-keyword">null</span>) {
+			mbdToUse = <span class="hljs-keyword">new</span> RootBeanDefinition(mbd);
+			mbdToUse.setBeanClass(resolvedClass);
+		}
+
+		<span class="hljs-comment">// Prepare method overrides.</span>
+		<span class="hljs-comment">//校验和准备 Bean 中的方法覆盖</span>
+		<span class="hljs-keyword">try</span> {
+			mbdToUse.prepareMethodOverrides();
+		}
+		<span class="hljs-keyword">catch</span> (BeanDefinitionValidationException ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanDefinitionStoreException(mbdToUse.getResourceDescription(),
+					beanName, <span class="hljs-string">"Validation of method overrides failed"</span>, ex);
+		}
+
+		<span class="hljs-keyword">try</span> {
+			<span class="hljs-comment">// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.</span>
+			<span class="hljs-comment">//如果 Bean 配置了初始化前和初始化后的处理器，则试图返回一个需要创建 Bean 的代理对象</span>
+			Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
+			<span class="hljs-keyword">if</span> (bean != <span class="hljs-keyword">null</span>) {
+				<span class="hljs-keyword">return</span> bean;
+			}
+		}
+		<span class="hljs-keyword">catch</span> (Throwable ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(mbdToUse.getResourceDescription(), beanName,
+					<span class="hljs-string">"BeanPostProcessor before instantiation of bean failed"</span>, ex);
+		}
+
+		<span class="hljs-keyword">try</span> {
+			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
+			<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+				logger.trace(<span class="hljs-string">"Finished creating instance of bean '"</span> + beanName + <span class="hljs-string">"'"</span>);
+			}
+			<span class="hljs-keyword">return</span> beanInstance;
+		}
+		<span class="hljs-keyword">catch</span> (BeanCreationException | ImplicitlyAppearedSingletonException ex) {
+			<span class="hljs-comment">// A previously detected exception with proper bean creation context already,</span>
+			<span class="hljs-comment">// or illegal singleton state to be communicated up to DefaultSingletonBeanRegistry.</span>
+			<span class="hljs-keyword">throw</span> ex;
+		}
+		<span class="hljs-keyword">catch</span> (Throwable ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(
+					mbdToUse.getResourceDescription(), beanName, <span class="hljs-string">"Unexpected exception during bean creation"</span>, ex);
+		}
+	}
+
+	<span class="hljs-comment">//真正创建 Bean 的方法</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> Object <span class="hljs-title">doCreateBean</span><span class="hljs-params">(<span class="hljs-keyword">final</span> String beanName, <span class="hljs-keyword">final</span> RootBeanDefinition mbd, <span class="hljs-keyword">final</span> @Nullable Object[] args)</span>
+			<span class="hljs-keyword">throws</span> BeanCreationException </span>{
+
+		<span class="hljs-comment">// Instantiate the bean.</span>
+		BeanWrapper instanceWrapper = <span class="hljs-keyword">null</span>;
+		<span class="hljs-keyword">if</span> (mbd.isSingleton()) {
+			instanceWrapper = <span class="hljs-keyword">this</span>.factoryBeanInstanceCache.remove(beanName);
+		}
+		<span class="hljs-keyword">if</span> (instanceWrapper == <span class="hljs-keyword">null</span>) {
+			instanceWrapper = createBeanInstance(beanName, mbd, args);
+		}
+		<span class="hljs-keyword">final</span> Object bean = instanceWrapper.getWrappedInstance();
+		Class&lt;?&gt; beanType = instanceWrapper.getWrappedClass();
+		<span class="hljs-keyword">if</span> (beanType != NullBean<span class="hljs-class">.<span class="hljs-keyword">class</span>) </span>{
+			mbd.resolvedTargetType = beanType;
+		}
+
+		<span class="hljs-comment">// Allow post-processors to modify the merged bean definition.</span>
+		<span class="hljs-keyword">synchronized</span> (mbd.postProcessingLock) {
+			<span class="hljs-keyword">if</span> (!mbd.postProcessed) {
+				<span class="hljs-keyword">try</span> {
+					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
+				}
+				<span class="hljs-keyword">catch</span> (Throwable ex) {
+					<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(mbd.getResourceDescription(), beanName,
+							<span class="hljs-string">"Post-processing of merged bean definition failed"</span>, ex);
+				}
+				mbd.postProcessed = <span class="hljs-keyword">true</span>;
+			}
+		}
+
+		<span class="hljs-comment">// Eagerly cache singletons to be able to resolve circular references</span>
+		<span class="hljs-comment">// even when triggered by lifecycle interfaces like BeanFactoryAware.</span>
+		<span class="hljs-comment">//向容器中缓存单例模式的 Bean 对象，以防循环引用</span>
+		<span class="hljs-keyword">boolean</span> earlySingletonExposure = (mbd.isSingleton() &amp;&amp; <span class="hljs-keyword">this</span>.allowCircularReferences &amp;&amp;
+				isSingletonCurrentlyInCreation(beanName));
+		<span class="hljs-keyword">if</span> (earlySingletonExposure) {
+			<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+				logger.trace(<span class="hljs-string">"Eagerly caching bean '"</span> + beanName +
+						<span class="hljs-string">"' to allow for resolving potential circular references"</span>);
+			}
+			<span class="hljs-comment">//这里是一个匿名内部类，为了防止循环引用，尽早持有对象的引用</span>
+			addSingletonFactory(beanName, () -&gt; getEarlyBeanReference(beanName, mbd, bean));
+		}
+
+		<span class="hljs-comment">// Initialize the bean instance.</span>
+		<span class="hljs-comment">//Bean 对象的初始化，依赖注入在此触发</span>
+		<span class="hljs-comment">//这个 exposedObject 在初始化完成之后返回作为依赖注入完成后的 Bean</span>
+		Object exposedObject = bean;
+		<span class="hljs-keyword">try</span> {
+			<span class="hljs-comment">//将 Bean 实例对象封装，并且 Bean 定义中配置的属性值赋值给实例对象</span>
+			populateBean(beanName, mbd, instanceWrapper);
+			<span class="hljs-comment">//初始化 Bean 对象</span>
+			exposedObject = initializeBean(beanName, exposedObject, mbd);
+		}
+		<span class="hljs-keyword">catch</span> (Throwable ex) {
+			<span class="hljs-keyword">if</span> (ex <span class="hljs-keyword">instanceof</span> BeanCreationException &amp;&amp; beanName.equals(((BeanCreationException) ex).getBeanName())) {
+				<span class="hljs-keyword">throw</span> (BeanCreationException) ex;
+			}
+			<span class="hljs-keyword">else</span> {
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(
+						mbd.getResourceDescription(), beanName, <span class="hljs-string">"Initialization of bean failed"</span>, ex);
+			}
+		}
+
+		<span class="hljs-keyword">if</span> (earlySingletonExposure) {
+			<span class="hljs-comment">//获取指定名称的已注册的单例模式 Bean 对象</span>
+			Object earlySingletonReference = getSingleton(beanName, <span class="hljs-keyword">false</span>);
+			<span class="hljs-keyword">if</span> (earlySingletonReference != <span class="hljs-keyword">null</span>) {
+				<span class="hljs-comment">//根据名称获取的已注册的 Bean 和正在实例化的 Bean 是同一个</span>
+				<span class="hljs-keyword">if</span> (exposedObject == bean) {
+					exposedObject = earlySingletonReference;
+				}
+				<span class="hljs-comment">//当前 Bean 依赖其他 Bean，并且当发生循环引用时不允许新创建实例对象</span>
+				<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.allowRawInjectionDespiteWrapping &amp;&amp; hasDependentBean(beanName)) {
+					String[] dependentBeans = getDependentBeans(beanName);
+					Set&lt;String&gt; actualDependentBeans = <span class="hljs-keyword">new</span> LinkedHashSet&lt;&gt;(dependentBeans.length);
+					<span class="hljs-keyword">for</span> (String dependentBean : dependentBeans) {
+						<span class="hljs-keyword">if</span> (!removeSingletonIfCreatedForTypeCheckOnly(dependentBean)) {
+							actualDependentBeans.add(dependentBean);
+						}
+					}
+					<span class="hljs-keyword">if</span> (!actualDependentBeans.isEmpty()) {
+						<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCurrentlyInCreationException(beanName,
+								<span class="hljs-string">"Bean with name '"</span> + beanName + <span class="hljs-string">"' has been injected into other beans ["</span> +
+								StringUtils.collectionToCommaDelimitedString(actualDependentBeans) +
+								<span class="hljs-string">"] in its raw version as part of a circular reference, but has eventually been "</span> +
+								<span class="hljs-string">"wrapped. This means that said other beans do not use the final version of the "</span> +
+								<span class="hljs-string">"bean. This is often the result of over-eager type matching - consider using "</span> +
+								<span class="hljs-string">"'getBeanNamesOfType' with the 'allowEagerInit' flag turned off, for example."</span>);
+					}
+				}
+			}
+		}
+
+		<span class="hljs-comment">// Register bean as disposable.</span>
+		<span class="hljs-comment">//注册完成依赖注入的 Bean</span>
+		<span class="hljs-keyword">try</span> {
+			registerDisposableBeanIfNecessary(beanName, bean, mbd);
+		}
+		<span class="hljs-keyword">catch</span> (BeanDefinitionValidationException ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(
+					mbd.getResourceDescription(), beanName, <span class="hljs-string">"Invalid destruction signature"</span>, ex);
+		}
+
+		<span class="hljs-keyword">return</span> exposedObject;
+	}
+
+
+</code></pre>
+<p>通过上面的源码注释，我们看到具体的依赖注入实现其实就在以下两个方法中:</p>
+<ol>
+<li>createBeanInstance()方法，生成 Bean 所包含的 java 对象实例。</li>
+<li>populateBean()方法，对 Bean 属性的依赖注入进行处理。 下面继续分析这两个方法的代码实现。</li>
+</ol>
+<h2 id="%E9%80%89%E6%8B%A9-bean-%E5%AE%9E%E4%BE%8B%E5%8C%96%E7%AD%96%E7%95%A5">选择 Bean 实例化策略 <a class="header-anchor" href="#%E9%80%89%E6%8B%A9-bean-%E5%AE%9E%E4%BE%8B%E5%8C%96%E7%AD%96%E7%95%A5">#</a></h2>
+<p>在 createBeanInstance()方法中，根据指定的初始化策略，使用简单工厂、工厂方法或者容器的自动装 配特性生成 Java 实例对象，创建对象的源码如下:</p>
+<pre><code class="language-java"><span class="hljs-comment">//创建 Bean 的实例对象</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> BeanWrapper <span class="hljs-title">createBeanInstance</span><span class="hljs-params">(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)</span> </span>{
+		<span class="hljs-comment">// Make sure bean class is actually resolved at this point.</span>
+		<span class="hljs-comment">//检查确认 Bean 是可实例化的</span>
+		Class&lt;?&gt; beanClass = resolveBeanClass(mbd, beanName);
+
+		<span class="hljs-comment">//使用工厂方法对 Bean 进行实例化</span>
+		<span class="hljs-keyword">if</span> (beanClass != <span class="hljs-keyword">null</span> &amp;&amp; !Modifier.isPublic(beanClass.getModifiers()) &amp;&amp; !mbd.isNonPublicAccessAllowed()) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(mbd.getResourceDescription(), beanName,
+					<span class="hljs-string">"Bean class isn't public, and non-public access not allowed: "</span> + beanClass.getName());
+		}
+
+		Supplier&lt;?&gt; instanceSupplier = mbd.getInstanceSupplier();
+		<span class="hljs-keyword">if</span> (instanceSupplier != <span class="hljs-keyword">null</span>) {
+			
+			<span class="hljs-keyword">return</span> obtainFromSupplier(instanceSupplier, beanName);
+		}
+
+		<span class="hljs-keyword">if</span> (mbd.getFactoryMethodName() != <span class="hljs-keyword">null</span>) {
+			<span class="hljs-comment">//调用工厂方法实例化</span>
+			<span class="hljs-keyword">return</span> instantiateUsingFactoryMethod(beanName, mbd, args);
+		}
+
+		<span class="hljs-comment">// Shortcut when re-creating the same bean...</span>
+		<span class="hljs-comment">//使用容器的自动装配方法进行实例化</span>
+		<span class="hljs-keyword">boolean</span> resolved = <span class="hljs-keyword">false</span>;
+		<span class="hljs-keyword">boolean</span> autowireNecessary = <span class="hljs-keyword">false</span>;
+		<span class="hljs-keyword">if</span> (args == <span class="hljs-keyword">null</span>) {
+			<span class="hljs-keyword">synchronized</span> (mbd.constructorArgumentLock) {
+				<span class="hljs-keyword">if</span> (mbd.resolvedConstructorOrFactoryMethod != <span class="hljs-keyword">null</span>) {
+					resolved = <span class="hljs-keyword">true</span>;
+					autowireNecessary = mbd.constructorArgumentsResolved;
+				}
+			}
+		}
+		<span class="hljs-keyword">if</span> (resolved) {
+			<span class="hljs-keyword">if</span> (autowireNecessary) {
+				<span class="hljs-comment">//配置了自动装配属性，使用容器的自动装配实例化 </span>
+				<span class="hljs-comment">//容器的自动装配是根据参数类型匹配 Bean 的构造方法</span>
+				<span class="hljs-keyword">return</span> autowireConstructor(beanName, mbd, <span class="hljs-keyword">null</span>, <span class="hljs-keyword">null</span>);
+			}
+			<span class="hljs-keyword">else</span> {
+				<span class="hljs-comment">//使用默认的无参构造方法实例化</span>
+				<span class="hljs-keyword">return</span> instantiateBean(beanName, mbd);
+			}
+		}
+
+		<span class="hljs-comment">// Candidate constructors for autowiring?</span>
+		<span class="hljs-comment">//使用 Bean 的构造方法进行实例化</span>
+		Constructor&lt;?&gt;[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
+		<span class="hljs-keyword">if</span> (ctors != <span class="hljs-keyword">null</span> || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
+				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+			<span class="hljs-comment">//使用容器的自动装配特性，调用匹配的构造方法实例化</span>
+			<span class="hljs-keyword">return</span> autowireConstructor(beanName, mbd, ctors, args);
+		}
+
+		<span class="hljs-comment">// Preferred constructors for default construction?</span>
+		ctors = mbd.getPreferredConstructors();
+		<span class="hljs-keyword">if</span> (ctors != <span class="hljs-keyword">null</span>) {
+			<span class="hljs-keyword">return</span> autowireConstructor(beanName, mbd, ctors, <span class="hljs-keyword">null</span>);
+		}
+
+		<span class="hljs-comment">// No special handling: simply use no-arg constructor.</span>
+		<span class="hljs-comment">//使用默认的无参构造方法实例化</span>
+		<span class="hljs-keyword">return</span> instantiateBean(beanName, mbd);
+	}
+<span class="hljs-comment">//使用默认的无参构造方法实例化 Bean 对象</span>
+		<span class="hljs-function"><span class="hljs-keyword">protected</span> BeanWrapper <span class="hljs-title">instantiateBean</span><span class="hljs-params">(<span class="hljs-keyword">final</span> String beanName, <span class="hljs-keyword">final</span> RootBeanDefinition mbd)</span> </span>{
+		<span class="hljs-keyword">try</span> {
+			Object beanInstance;
+			<span class="hljs-keyword">final</span> BeanFactory parent = <span class="hljs-keyword">this</span>;
+			<span class="hljs-comment">//获取系统的安全管理接口，JDK 标准的安全管理 API</span>
+			<span class="hljs-keyword">if</span> (System.getSecurityManager() != <span class="hljs-keyword">null</span>) {
+				<span class="hljs-comment">//这里是一个匿名内置类，根据实例化策略创建实例对象</span>
+				beanInstance = AccessController.doPrivileged((PrivilegedAction&lt;Object&gt;) () -&gt;
+						getInstantiationStrategy().instantiate(mbd, beanName, parent),
+						getAccessControlContext());
+			}
+			<span class="hljs-keyword">else</span> {
+				beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, parent);
+			}
+			BeanWrapper bw = <span class="hljs-keyword">new</span> BeanWrapperImpl(beanInstance);
+			initBeanWrapper(bw);
+			<span class="hljs-keyword">return</span> bw;
+		}
+		<span class="hljs-keyword">catch</span> (Throwable ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(
+					mbd.getResourceDescription(), beanName, <span class="hljs-string">"Instantiation of bean failed"</span>, ex);
+		}
+	}
+</code></pre>
+<p>经过对上面的代码分析，我们可以看出，对使用工厂方法和自动装配特性的 Bean 的实例化相当比较清 楚，调用相应的工厂方法或者参数匹配的构造方法即可完成实例化对象的工作，但是对于我们最常使用 的默认无参构造方法就需要使用相应的初始化策略(JDK 的反射机制或者 CGLib)来进行初始化了，在方 法 getInstantiationStrategy().instantiate()中就具体实现类使用初始策略实例化对象。</p>
+<h2 id="%E6%89%A7%E8%A1%8C-bean-%E5%AE%9E%E4%BE%8B%E5%8C%96">执行 Bean 实例化 <a class="header-anchor" href="#%E6%89%A7%E8%A1%8C-bean-%E5%AE%9E%E4%BE%8B%E5%8C%96">#</a></h2>
+<p>在使用默认的无参构造方法创建 Bean 的实例化对象时，方法 getInstantiationStrategy().instantiate() 调用了 SimpleInstantiationStrategy 类中的实例化 Bean 的方法，其源码如下:</p>
+<pre><code class="language-java"><span class="hljs-comment">//使用初始化策略实例化 Bean 对象</span>
+<span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">instantiate</span><span class="hljs-params">(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner)</span> </span>{
+		<span class="hljs-comment">// Don't override the class with CGLIB if no overrides.</span>
+		<span class="hljs-comment">//如果 Bean 定义中没有方法覆盖，则就不需要 CGLib 父类类的方法</span>
+		<span class="hljs-keyword">if</span> (!bd.hasMethodOverrides()) {
+			Constructor&lt;?&gt; constructorToUse;
+			<span class="hljs-keyword">synchronized</span> (bd.constructorArgumentLock) {
+				<span class="hljs-comment">//获取对象的构造方法或工厂方法</span>
+				constructorToUse = (Constructor&lt;?&gt;) bd.resolvedConstructorOrFactoryMethod;
+				<span class="hljs-keyword">if</span> (constructorToUse == <span class="hljs-keyword">null</span>) {
+					<span class="hljs-comment">//使用 JDK 的反射机制，判断要实例化的 Bean 是否是接口</span>
+					<span class="hljs-keyword">final</span> Class&lt;?&gt; clazz = bd.getBeanClass();
+					<span class="hljs-keyword">if</span> (clazz.isInterface()) {
+						<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanInstantiationException(clazz, <span class="hljs-string">"Specified class is an interface"</span>);
+					}
+					<span class="hljs-keyword">try</span> {
+						<span class="hljs-keyword">if</span> (System.getSecurityManager() != <span class="hljs-keyword">null</span>) {
+							constructorToUse = AccessController.doPrivileged(
+									(PrivilegedExceptionAction&lt;Constructor&lt;?&gt;&gt;) clazz::getDeclaredConstructor);
+						}
+						<span class="hljs-keyword">else</span> {
+							constructorToUse = clazz.getDeclaredConstructor();
+						}
+						bd.resolvedConstructorOrFactoryMethod = constructorToUse;
+					}
+					<span class="hljs-keyword">catch</span> (Throwable ex) {
+						<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanInstantiationException(clazz, <span class="hljs-string">"No default constructor found"</span>, ex);
+					}
+				}
+			}
+			<span class="hljs-keyword">return</span> BeanUtils.instantiateClass(constructorToUse);
+		}
+		<span class="hljs-keyword">else</span> {
+			<span class="hljs-comment">// Must generate CGLIB subclass.</span>
+			<span class="hljs-keyword">return</span> instantiateWithMethodInjection(bd, beanName, owner);
+		}
+	}
+
+</code></pre>
+<p>通过上面的代码分析，我们看到了如果 Bean 有方法被覆盖了，则使用 JDK 的反射机制进行实例化，否 则，使用 CGLib 进行实例化。
+instantiateWithMethodInjection() 方 法 调 用 SimpleInstantiationStrategy 的 子 类 CGLibSubclassingInstantiationStrategy 使用 CGLib 来进行初始化，其源码如下:</p>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">instantiateClass</span><span class="hljs-params">(Constructor&lt;T&gt; ctor, Object... args)</span> <span class="hljs-keyword">throws</span> BeanInstantiationException </span>{
+		Assert.notNull(ctor, <span class="hljs-string">"Constructor must not be null"</span>);
+		<span class="hljs-keyword">try</span> {
+			ReflectionUtils.makeAccessible(ctor);
+			<span class="hljs-keyword">return</span> (KotlinDetector.isKotlinReflectPresent() &amp;&amp; KotlinDetector.isKotlinType(ctor.getDeclaringClass()) ?
+					KotlinDelegate.instantiateClass(ctor, args) : ctor.newInstance(args));
+		}
+		<span class="hljs-keyword">catch</span> (InstantiationException ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanInstantiationException(ctor, <span class="hljs-string">"Is it an abstract class?"</span>, ex);
+		}
+		<span class="hljs-keyword">catch</span> (IllegalAccessException ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanInstantiationException(ctor, <span class="hljs-string">"Is the constructor accessible?"</span>, ex);
+		}
+		<span class="hljs-keyword">catch</span> (IllegalArgumentException ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanInstantiationException(ctor, <span class="hljs-string">"Illegal arguments for constructor"</span>, ex);
+		}
+		<span class="hljs-keyword">catch</span> (InvocationTargetException ex) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanInstantiationException(ctor, <span class="hljs-string">"Constructor threw exception"</span>, ex.getTargetException());
+		}
+	}
+
+</code></pre>
+<p>CGLib 是一个常用的字节码生成器的类库，它提供了一系列 API 实现 Java 字节码的生成和转换功能。 我们在学习 JDK 的动态代理时都知道，JDK 的动态代理只能针对接口，如果一个类没有实现任何接口， 要对其进行动态代理只能使用 CGLib。</p>
+<h2 id="%E5%87%86%E5%A4%87%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5">准备依赖注入 <a class="header-anchor" href="#%E5%87%86%E5%A4%87%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5">#</a></h2>
+<p>在前面的分析中我们已经了解到 Bean 的依赖注入主要分为两个步骤，首先调用 createBeanInstance() 方法生成 Bean 所包含的 Java 对象实例。然后，调用 populateBean()方法，对 Bean 属性的依赖注入 进行处理。</p>
+<pre><code class="language-java">
+	<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">populateBean</span><span class="hljs-params">(String beanName, RootBeanDefinition mbd, @Nullable BeanWrapper bw)</span> </span>{
+		<span class="hljs-keyword">if</span> (bw == <span class="hljs-keyword">null</span>) {
+			<span class="hljs-keyword">if</span> (mbd.hasPropertyValues()) {
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(
+						mbd.getResourceDescription(), beanName, <span class="hljs-string">"Cannot apply property values to null instance"</span>);
+			}
+			<span class="hljs-keyword">else</span> {
+				<span class="hljs-comment">// Skip property population phase for null instance.</span>
+				<span class="hljs-keyword">return</span>;
+			}
+		}
+
+		<span class="hljs-comment">// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the</span>
+		<span class="hljs-comment">// state of the bean before properties are set. This can be used, for example,</span>
+		<span class="hljs-comment">// to support styles of field injection.</span>
+		<span class="hljs-keyword">boolean</span> continueWithPropertyPopulation = <span class="hljs-keyword">true</span>;
+
+		<span class="hljs-keyword">if</span> (!mbd.isSynthetic() &amp;&amp; hasInstantiationAwareBeanPostProcessors()) {
+			<span class="hljs-keyword">for</span> (BeanPostProcessor bp : getBeanPostProcessors()) {
+				<span class="hljs-keyword">if</span> (bp <span class="hljs-keyword">instanceof</span> InstantiationAwareBeanPostProcessor) {
+					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+					<span class="hljs-keyword">if</span> (!ibp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
+						continueWithPropertyPopulation = <span class="hljs-keyword">false</span>;
+						<span class="hljs-keyword">break</span>;
+					}
+				}
+			}
+		}
+
+		<span class="hljs-keyword">if</span> (!continueWithPropertyPopulation) {
+			<span class="hljs-keyword">return</span>;
+		}
+
+		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : <span class="hljs-keyword">null</span>);
+
+		<span class="hljs-keyword">if</span> (mbd.getResolvedAutowireMode() == AUTOWIRE_BY_NAME || mbd.getResolvedAutowireMode() == AUTOWIRE_BY_TYPE) {
+			MutablePropertyValues newPvs = <span class="hljs-keyword">new</span> MutablePropertyValues(pvs);
+			<span class="hljs-comment">// Add property values based on autowire by name if applicable.</span>
+			<span class="hljs-keyword">if</span> (mbd.getResolvedAutowireMode() == AUTOWIRE_BY_NAME) {
+				autowireByName(beanName, mbd, bw, newPvs);
+			}
+			<span class="hljs-comment">// Add property values based on autowire by type if applicable.</span>
+			<span class="hljs-keyword">if</span> (mbd.getResolvedAutowireMode() == AUTOWIRE_BY_TYPE) {
+				autowireByType(beanName, mbd, bw, newPvs);
+			}
+			pvs = newPvs;
+		}
+
+		<span class="hljs-keyword">boolean</span> hasInstAwareBpps = hasInstantiationAwareBeanPostProcessors();
+		<span class="hljs-keyword">boolean</span> needsDepCheck = (mbd.getDependencyCheck() != AbstractBeanDefinition.DEPENDENCY_CHECK_NONE);
+
+		PropertyDescriptor[] filteredPds = <span class="hljs-keyword">null</span>;
+		<span class="hljs-keyword">if</span> (hasInstAwareBpps) {
+			<span class="hljs-keyword">if</span> (pvs == <span class="hljs-keyword">null</span>) {
+				pvs = mbd.getPropertyValues();
+			}
+			<span class="hljs-keyword">for</span> (BeanPostProcessor bp : getBeanPostProcessors()) {
+				<span class="hljs-keyword">if</span> (bp <span class="hljs-keyword">instanceof</span> InstantiationAwareBeanPostProcessor) {
+					InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;
+					PropertyValues pvsToUse = ibp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
+					<span class="hljs-keyword">if</span> (pvsToUse == <span class="hljs-keyword">null</span>) {
+						<span class="hljs-keyword">if</span> (filteredPds == <span class="hljs-keyword">null</span>) {
+							filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
+						}
+						pvsToUse = ibp.postProcessPropertyValues(pvs, filteredPds, bw.getWrappedInstance(), beanName);
+						<span class="hljs-keyword">if</span> (pvsToUse == <span class="hljs-keyword">null</span>) {
+							<span class="hljs-keyword">return</span>;
+						}
+					}
+					pvs = pvsToUse;
+				}
+			}
+		}
+		<span class="hljs-keyword">if</span> (needsDepCheck) {
+			<span class="hljs-keyword">if</span> (filteredPds == <span class="hljs-keyword">null</span>) {
+				filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
+			}
+			checkDependencies(beanName, mbd, filteredPds, pvs);
+		}
+
+		<span class="hljs-keyword">if</span> (pvs != <span class="hljs-keyword">null</span>) {
+			applyPropertyValues(beanName, mbd, bw, pvs);
+		}
+	}
+</code></pre>
+<p>分析上述代码，我们可以看出，对属性的注入过程分以下两种情况:</p>
+<ol>
+<li>属性值类型不需要强制转换时，不需要解析属性值，直接准备进行依赖注入。</li>
+<li>属性值需要进行类型强制转换时，如对其他对象的引用等，首先需要解析属性值，然后对解析后的 属性值进行依赖注入。对属性值的解析是在 BeanDefinitionValueResolver 类中的 resolveValueIfNecessary()方法中进行的， 对属性值的依赖注入是通过 bw.setPropertyValues()方法实现的，在分析属性值的依赖注入之前，我们 先分析一下对属性值的解析过程。</li>
+</ol>
+<h2 id="%E8%A7%A3%E6%9E%90%E5%B1%9E%E6%80%A7%E6%B3%A8%E5%85%A5%E8%A7%84%E5%88%99">解析属性注入规则 <a class="header-anchor" href="#%E8%A7%A3%E6%9E%90%E5%B1%9E%E6%80%A7%E6%B3%A8%E5%85%A5%E8%A7%84%E5%88%99">#</a></h2>
+<p>当容器在对属性进行依赖注入时，如果发现属性值需要进行类型转换，如属性值是容器中另一个 Bean 实例对象的引用，则容器首先需要根据属性值解析出所引用的对象，然后才能将该引用对象注入到目标 实例对象的属性上去，对属性进行解析的由 resolveValueIfNecessary()方法实现</p>
+<pre><code class="language-java"><span class="hljs-meta">@Nullable</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">resolveValueIfNecessary</span><span class="hljs-params">(Object argName, @Nullable Object value)</span> </span>{
+		<span class="hljs-comment">// We must check each value to see whether it requires a runtime reference</span>
+		<span class="hljs-comment">// to another bean to be resolved.</span>
+		<span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> RuntimeBeanReference) {
+			RuntimeBeanReference ref = (RuntimeBeanReference) value;
+			<span class="hljs-keyword">return</span> resolveReference(argName, ref);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> RuntimeBeanNameReference) {
+			String refName = ((RuntimeBeanNameReference) value).getBeanName();
+			refName = String.valueOf(doEvaluate(refName));
+			<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.beanFactory.containsBean(refName)) {
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanDefinitionStoreException(
+						<span class="hljs-string">"Invalid bean name '"</span> + refName + <span class="hljs-string">"' in bean reference for "</span> + argName);
+			}
+			<span class="hljs-keyword">return</span> refName;
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> BeanDefinitionHolder) {
+			<span class="hljs-comment">// Resolve BeanDefinitionHolder: contains BeanDefinition with name and aliases.</span>
+			BeanDefinitionHolder bdHolder = (BeanDefinitionHolder) value;
+			<span class="hljs-keyword">return</span> resolveInnerBean(argName, bdHolder.getBeanName(), bdHolder.getBeanDefinition());
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> BeanDefinition) {
+			<span class="hljs-comment">// Resolve plain BeanDefinition, without contained name: use dummy name.</span>
+			BeanDefinition bd = (BeanDefinition) value;
+			String innerBeanName = <span class="hljs-string">"(inner bean)"</span> + BeanFactoryUtils.GENERATED_BEAN_NAME_SEPARATOR +
+					ObjectUtils.getIdentityHexString(bd);
+			<span class="hljs-keyword">return</span> resolveInnerBean(argName, innerBeanName, bd);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> ManagedArray) {
+			<span class="hljs-comment">// May need to resolve contained runtime references.</span>
+			ManagedArray array = (ManagedArray) value;
+			Class&lt;?&gt; elementType = array.resolvedElementType;
+			<span class="hljs-keyword">if</span> (elementType == <span class="hljs-keyword">null</span>) {
+				String elementTypeName = array.getElementTypeName();
+				<span class="hljs-keyword">if</span> (StringUtils.hasText(elementTypeName)) {
+					<span class="hljs-keyword">try</span> {
+						elementType = ClassUtils.forName(elementTypeName, <span class="hljs-keyword">this</span>.beanFactory.getBeanClassLoader());
+						array.resolvedElementType = elementType;
+					}
+					<span class="hljs-keyword">catch</span> (Throwable ex) {
+						<span class="hljs-comment">// Improve the message by showing the context.</span>
+						<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(
+								<span class="hljs-keyword">this</span>.beanDefinition.getResourceDescription(), <span class="hljs-keyword">this</span>.beanName,
+								<span class="hljs-string">"Error resolving array type for "</span> + argName, ex);
+					}
+				}
+				<span class="hljs-keyword">else</span> {
+					elementType = Object<span class="hljs-class">.<span class="hljs-keyword">class</span></span>;
+				}
+			}
+			<span class="hljs-keyword">return</span> resolveManagedArray(argName, (List&lt;?&gt;) value, elementType);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> ManagedList) {
+			<span class="hljs-comment">// May need to resolve contained runtime references.</span>
+			<span class="hljs-keyword">return</span> resolveManagedList(argName, (List&lt;?&gt;) value);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> ManagedSet) {
+			<span class="hljs-comment">// May need to resolve contained runtime references.</span>
+			<span class="hljs-keyword">return</span> resolveManagedSet(argName, (Set&lt;?&gt;) value);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> ManagedMap) {
+			<span class="hljs-comment">// May need to resolve contained runtime references.</span>
+			<span class="hljs-keyword">return</span> resolveManagedMap(argName, (Map&lt;?, ?&gt;) value);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> ManagedProperties) {
+			Properties original = (Properties) value;
+			Properties copy = <span class="hljs-keyword">new</span> Properties();
+			original.forEach((propKey, propValue) -&gt; {
+				<span class="hljs-keyword">if</span> (propKey <span class="hljs-keyword">instanceof</span> TypedStringValue) {
+					propKey = evaluate((TypedStringValue) propKey);
+				}
+				<span class="hljs-keyword">if</span> (propValue <span class="hljs-keyword">instanceof</span> TypedStringValue) {
+					propValue = evaluate((TypedStringValue) propValue);
+				}
+				<span class="hljs-keyword">if</span> (propKey == <span class="hljs-keyword">null</span> || propValue == <span class="hljs-keyword">null</span>) {
+					<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(
+							<span class="hljs-keyword">this</span>.beanDefinition.getResourceDescription(), <span class="hljs-keyword">this</span>.beanName,
+							<span class="hljs-string">"Error converting Properties key/value pair for "</span> + argName + <span class="hljs-string">": resolved to null"</span>);
+				}
+				copy.put(propKey, propValue);
+			});
+			<span class="hljs-keyword">return</span> copy;
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> TypedStringValue) {
+			<span class="hljs-comment">// Convert value to target type here.</span>
+			TypedStringValue typedStringValue = (TypedStringValue) value;
+			Object valueObject = evaluate(typedStringValue);
+			<span class="hljs-keyword">try</span> {
+				Class&lt;?&gt; resolvedTargetType = resolveTargetType(typedStringValue);
+				<span class="hljs-keyword">if</span> (resolvedTargetType != <span class="hljs-keyword">null</span>) {
+					<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.typeConverter.convertIfNecessary(valueObject, resolvedTargetType);
+				}
+				<span class="hljs-keyword">else</span> {
+					<span class="hljs-keyword">return</span> valueObject;
+				}
+			}
+			<span class="hljs-keyword">catch</span> (Throwable ex) {
+				<span class="hljs-comment">// Improve the message by showing the context.</span>
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanCreationException(
+						<span class="hljs-keyword">this</span>.beanDefinition.getResourceDescription(), <span class="hljs-keyword">this</span>.beanName,
+						<span class="hljs-string">"Error converting typed String value for "</span> + argName, ex);
+			}
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (value <span class="hljs-keyword">instanceof</span> NullBean) {
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+		}
+		<span class="hljs-keyword">else</span> {
+			<span class="hljs-keyword">return</span> evaluate(value);
+		}
+	}
+</code></pre>
+<p>通过上面的代码分析，我们明白了 Spring 是如何将引用类型，内部类以及集合类型等属性进行解析的， 属性值解析完成后就可以进行依赖注入了，依赖注入的过程就是 Bean 对象实例设置到它所依赖的 Bean 对象属性上去。而真正的依赖注入是通过 bw.setPropertyValues()方法实现的，该方法也使用了委托模 式，在 BeanWrapper 接口中至少定义了方法声明，依赖注入的具体实现交由其实现类 BeanWrapperImpl 来完成，下面我们就分析依 BeanWrapperImpl 中赖注入相关的源码。</p>
+<h2 id="%E6%B3%A8%E5%85%A5%E8%B5%8B%E5%80%BC">注入赋值 <a class="header-anchor" href="#%E6%B3%A8%E5%85%A5%E8%B5%8B%E5%80%BC">#</a></h2>
+<p>BeanWrapperImpl 类主要是对容器中完成初始化的 Bean 实例对象进行属性的依赖注入，即把 Bean 对象设置到它所依赖的另一个 Bean 的属性中去。然而，BeanWrapperImpl 中的注入方法实际上由 AbstractNestablePropertyAccessor 来实现的</p>
+<pre><code class="language-java">
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setPropertyValue</span><span class="hljs-params">(PropertyTokenHolder tokens, PropertyValue pv)</span> <span class="hljs-keyword">throws</span> BeansException </span>{
+		<span class="hljs-keyword">if</span> (tokens.keys != <span class="hljs-keyword">null</span>) {
+			processKeyedProperty(tokens, pv);
+		}
+		<span class="hljs-keyword">else</span> {
+			processLocalProperty(tokens, pv);
+		}
+	}
+	
+</code></pre>
+<p>Spring IOC 容器是如何将属性的值注入到 Bean 实 例对象中去的:</p>
+<ol>
+<li>对于集合类型的属性，将其属性值解析为目标类型的集合后直接赋值给属性。</li>
+<li>对于非集合类型的属性，大量使用了 JDK 的反射机制，通过属性的 getter()方法获取指定属性注入 以前的值，同时调用属性的 setter()方法为属性设置注入后的值。看到这里相信很多人都明白了 Spring 的 setter()注入原理。</li>
+</ol>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

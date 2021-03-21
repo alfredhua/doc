@@ -75,18 +75,18 @@ export default {
       {
         key: 'docs',
         text: '文档',
-        link: '/zh-cn/docs/demo1.html',
+        link: '/zh-cn/docs/begin.html',
       },
       {
         key: 'blog',
         text: '博客',
         link: '/zh-cn/blog/index.html',
       },
-      {
-        key: 'community',
-        text: '关于我',
-        link: '/zh-cn/community/index.html',
-      },
+      // {
+      //   key: 'community',
+      //   text: '关于我',
+      //   link: '/zh-cn/community/index.html',
+      // },
     ],
     disclaimer: {
       title: '码农阿华',

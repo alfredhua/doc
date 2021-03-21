@@ -1,0 +1,6 @@
+{
+  "filename": "错误.md",
+  "__html": "<h3 id=\"1.-elasticsearch6.x-%7B%22error%22%3A%22content-type-header-%5Bapplication%2Fx-www-form-urlencoded%5D-is-not-supported%22\">1. elasticsearch6.x {&quot;error&quot;:&quot;Content-Type header [application/x-www-form-urlencoded] is not supported&quot; <a class=\"header-anchor\" href=\"#1.-elasticsearch6.x-%7B%22error%22%3A%22content-type-header-%5Bapplication%2Fx-www-form-urlencoded%5D-is-not-supported%22\">#</a></h3>\n<pre><code class=\"language-shell\">curl -X PUT 'localhost:9200/accounts/person/1' -d '\n{\n  \"user\": \"张三\",\n  \"title\": \"工程师\",\n  \"desc\": \"数据库管理\"\n}'\n\n{\"error\":\"Content-Type header [application/json-X] is not supported\",\"status\":406}%\n\n</code></pre>\n<p>解决办法：</p>\n<pre><code class=\"language-shell\">curl -H \"Content-Type: application/json\" -X PUT 'localhost:9200/accounts/person/1' -d '\n{\n  \"user\": \"张三\",\n  \"title\": \"工程师\",\n  \"desc\": \"数据库管理\"\n}'\n</code></pre>\n<p>curl -H &quot;Content-Type: application/json&quot; -X POST 'localhost:9200/accounts/person' -d '\n{\n&quot;user&quot;: &quot;李四&quot;,\n&quot;title&quot;: &quot;工程师&quot;,\n&quot;desc&quot;: &quot;系统管理&quot;\n}'</p>\n",
+  "link": "/zh-cn/docs/3.数据库/elasticsearch/错误.html",
+  "meta": {}
+}

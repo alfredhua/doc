@@ -1,0 +1,6 @@
+{
+  "filename": "1.jdbc连接流程.md",
+  "__html": "<h3 id=\"jdbc-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93\">JDBC 连接数据库 <a class=\"header-anchor\" href=\"#jdbc-%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93\">#</a></h3>\n<ol>\n<li>注册驱动</li>\n</ol>\n<pre><code>Class.forName(&quot;com.mysql.jdbc.Driver&quot;);\n</code></pre>\n<ol start=\"2\">\n<li>打开连接，通过DriverManager获取一个连接</li>\n</ol>\n<pre><code>conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);\n</code></pre>\n<ol start=\"3\">\n<li>通过connection创建statement对象</li>\n</ol>\n<pre><code>stmt = conn.createStatement();\n</code></pre>\n<ol start=\"4\">\n<li>通过statement执行execute执行sql，返回resultSet结果集</li>\n</ol>\n<pre><code>ResultSet rs = stmt.executeQuery(sql);\n</code></pre>\n<p>5.获取对象，我们通过 ResultSet 获取数据。转换成一个 POJO 对象。</p>\n<pre><code>while(rs.next()){\n    int bid  = rs.getInt(&quot;bid&quot;);\n    String name = rs.getString(&quot;name&quot;);\n    String authorId = rs.getString(&quot;author_id&quot;);\n}\n</code></pre>\n<p>6.关闭资源，关闭数据库相关的资源，包括 ResultSet、Statement、Connection， 它们的关闭顺序和打开的顺序正好是相反的</p>\n",
+  "link": "/zh-cn/docs/5.框架/mybatis/1.jdbc连接流程.html",
+  "meta": {}
+}

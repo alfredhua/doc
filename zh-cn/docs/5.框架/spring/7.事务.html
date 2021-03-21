@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="7.事务" />
+	<meta name="description" content="7.事务" />
+	<!-- 网页标签标题 -->
+	<title>7.事务</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE">基础配置 <a class="header-anchor" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE">#</a></h2>
+<pre><code class="language-xml">    <span class="hljs-tag">&lt;<span class="hljs-name">aop:aspectj-autoproxy</span> <span class="hljs-attr">proxy-target-class</span>=<span class="hljs-string">"true"</span>/&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">bean</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"transactionManager"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"dataSource"</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">"dataSource"</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">bean</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">tx:annotation-driven</span> <span class="hljs-attr">transaction-manager</span>=<span class="hljs-string">"transactionManager"</span>/&gt;</span>
+        <span class="hljs-comment">&lt;!-- 配置事务传播特性 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">tx:advice</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"transactionAdvice"</span> <span class="hljs-attr">transaction-manager</span>=<span class="hljs-string">"transactionManager"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">tx:attributes</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">tx:method</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"add*"</span> <span class="hljs-attr">propagation</span>=<span class="hljs-string">"REQUIRED"</span> <span class="hljs-attr">rollback-for</span>=<span class="hljs-string">"Exception,RuntimeException,SQLException"</span>/&gt;</span> 
+                <span class="hljs-tag">&lt;<span class="hljs-name">tx:method</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"remove*"</span> <span class="hljs-attr">propagation</span>=<span class="hljs-string">"REQUIRED"</span> <span class="hljs-attr">rollback-for</span>=<span class="hljs-string">"Exception,RuntimeException,SQLException"</span>/&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">tx:method</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"modify*"</span> <span class="hljs-attr">propagation</span>=<span class="hljs-string">"REQUIRED"</span> <span class="hljs-attr">rollback-for</span>=<span class="hljs-string">"Exception,RuntimeException,SQLException"</span>/&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">tx:method</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"login"</span> <span class="hljs-attr">propagation</span>=<span class="hljs-string">"NOT_SUPPORTED"</span>/&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">tx:method</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"query*"</span> <span class="hljs-attr">read-only</span>=<span class="hljs-string">"true"</span>/&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">tx:attributes</span>&gt;</span>
+   <span class="hljs-tag">&lt;/<span class="hljs-name">tx:advice</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">aop:config</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">aop:pointcut</span> <span class="hljs-attr">expression</span>=<span class="hljs-string">"execution(public * com.gupaoedu.vip..*.service..*Service.*(..))"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"transactionPointcut"</span>/&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">aop:advisor</span> <span class="hljs-attr">pointcut-ref</span>=<span class="hljs-string">"transactionPointcut"</span> <span class="hljs-attr">advice-ref</span>=<span class="hljs-string">"transactionAdvice"</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">aop:config</span>&gt;</span>
+
+
+</code></pre>
+<h2 id="%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">基本原理 <a class="header-anchor" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86">#</a></h2>
+<p>Spring 事务的本质其实就是数据库对事务的支持，没有数据库的事务支持，Spring 是无 法提供事务功能的。对于纯 JDBC 操作数据库，想要用到事务，可以按照以下步骤进行:</p>
+<ol>
+<li>获取连接 Connection con = DriverManager.getConnection()</li>
+<li>开启事务 con.setAutoCommit(true/false);</li>
+<li>执行 CRUD</li>
+<li>提交事务/回滚事务 con.commit() / con.rollback();</li>
+<li>关闭连接 conn.close();</li>
+</ol>
+<p>使用Spring的事务管理功能后，我们可以不再写步骤 2 和 4 的代码，而是由Spirng 自动完成。</p>
+<p>那么Spring 是如何在我们书写的 CRUD 之前和之后开启事务和关闭事务的呢?</p>
+<p>解决这个问题，也就可以从整体上理解 Spring 的事务管理实现原理了。下面简单地介绍下，注解方式为例子 配置文件开启注解驱动，在相关的类和方法上通过注解@Transactional 标识。Spring 在启动的时候会去解析生成相关的 bean，这时候会查看拥有相关注解的类和方 法，并且为这些类和方法生成代理，并根据@Transaction 的相关参数进行相关配置注入， 这样就在代理中为我们把相关的事务处理掉了(开启正常提交事务，异常回滚事务)。 真正的数据库层的事务提交和回滚是通过 binlog 或者 redo log 实现的。</p>
+<table>
+<thead>
+<tr>
+<th>常量名称</th>
+<th>常量解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PROPAGATION_REQUIRED</td>
+<td>支持当前事务，如果当前没有事务，就新建 一个事务。这是最常见的选择，也是 Spring 默认的事务的传播。</td>
+</tr>
+<tr>
+<td>PROPAGATION_REQUIRES_NEW</td>
+<td>新建事务，如果当前存在事务，把当前事务 挂起。新建的事务将和被挂起的事务没有任 何关系，是两个独立的事务，外层事务失败 回滚之后，不能回滚内层事务执行的结果， 内层事务失败抛出异常，外层事务捕获，也 可以不处理回滚操作</td>
+</tr>
+<tr>
+<td>PROPAGATION_SUPPORTS</td>
+<td>支持当前事务，如果当前没有事务，就以非 事务方式执行。</td>
+</tr>
+<tr>
+<td>PROPAGATION_MANDATORY</td>
+<td>支持当前事务，如果当前没有事务，就抛出 异常。</td>
+</tr>
+<tr>
+<td>PROPAGATION_NOT_SUPPORTED</td>
+<td>以非事务方式执行操作，如果当前存在事 务，就把当前事务挂起。</td>
+</tr>
+<tr>
+<td>PROPAGATION_NEVER</td>
+<td>以非事务方式执行，如果当前存在事务，则 抛出异常。</td>
+</tr>
+<tr>
+<td>PROPAGATION_NESTED</td>
+<td>如果一个活动的事务存在，则运行在一个嵌套的事务中。如果没有活动事务，则按 REQUIRED 属性执行。它使用了一个单独的 事务，这个事务拥有多个可以回滚的保存 点。内部事务的回滚不会对外部事务造成影 响。它只对 DataSourceTransactionManager 事务管 理器起效。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="spring-%E4%B8%AD%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">Spring 中的隔离级别 <a class="header-anchor" href="#spring-%E4%B8%AD%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>常量</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ISOLATION_DEFAULT</td>
+<td>这是个 PlatfromTransactionManager 默 认的隔离级别，使用数据库默认的事务隔离 级别。另外四个与 JDBC 的隔离级别相对 应。</td>
+</tr>
+<tr>
+<td>ISOLATION_READ_UNCOMMITTED</td>
+<td>这是事务最低的隔离级别，它允许另外一个 事务可以看到这个事务未提交的数据。这种 隔离级别会产生脏读，不可重复读和幻像 读。</td>
+</tr>
+<tr>
+<td>ISOLATION_READ_COMMITTED</td>
+<td>保证一个事务修改的数据提交后才能被另 外一个事务读取。另外一个事务不能读取该 事务未提交的数据。</td>
+</tr>
+<tr>
+<td>ISOLATION_REPEATABLE_READ</td>
+<td>这种事务隔离级别可以防止脏读，不可重复 读。但是可能出现幻像读。</td>
+</tr>
+<tr>
+<td>ISOLATION_SERIALIZABLE</td>
+<td>这是花费最高代价但是最可靠的事务隔离 级别。事务被处理为顺序执行。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%B5%8C%E5%A5%97">事务的嵌套 <a class="header-anchor" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%B5%8C%E5%A5%97">#</a></h2>
+<ul>
+<li>PROPAGATION_REQUIRED</li>
+</ul>
+<p>如果 ServiceB.MethodB() 的事务级别定义为 PROPAGATION_REQUIRED，那么执行 ServiceA.MethodA() 的时候 Spring 已经起了事务，这时调用 ServiceB.MethodB()， ServiceB.MethodB() 看到自己已经运行在 ServiceA.MethodA() 的事务内部，就不再 起新的事务。</p>
+<p>假如 ServiceB.MethodB() 运行的时候发现自己没有在事务中，他就会为自己分配一个 事务。</p>
+<p>这样，在 ServiceA.MethodA() 或者在 ServiceB.MethodB() 内的任何地方出现异常， 事务都会被回滚。</p>
+<ul>
+<li>PROPAGATION_REQUIRES_NEW</li>
+</ul>
+<p>比如我们设计 ServiceA.MethodA() 的事务级别为 PROPAGATION_REQUIRED， ServiceB.MethodB() 的事务级别为 PROPAGATION_REQUIRES_NEW。</p>
+<p>那么当执行到 ServiceB.MethodB() 的时候，ServiceA.MethodA() 所在的事务就会挂 起，ServiceB.MethodB() 会起一个新的事务，等待 ServiceB.MethodB() 的事务完成 以后，它才继续执行。</p>
+<p>他与 PROPAGATION_REQUIRED 的事务区别在于事务的回滚程度了。因为 ServiceB.MethodB() 是新起一个事务，那么就是存在两个不同的事务。如果 ServiceB.MethodB() 已 经 提 交 ， 那 么 ServiceA.MethodA() 失 败 回 滚 ， ServiceB.MethodB() 是不会回滚的。如果 ServiceB.MethodB() 失败回滚，如果他抛出的异常被 ServiceA.MethodA() 捕获，ServiceA.MethodA() 事务仍然可能提交(主要 看 B 抛出的异常是不是 A 会回滚的异常)。</p>
+<ul>
+<li>PROPAGATION_SUPPORTS</li>
+</ul>
+<p>假设 ServiceB.MethodB() 的事务级别为 PROPAGATION_SUPPORTS，那么当执行到 ServiceB.MethodB()时，如果发现 ServiceA.MethodA()已经开启了一个事务，则加入 当前的事务，如果发现 ServiceA.MethodA()没有开启事务，则自己也不开启事务。这种 时候，内部方法的事务性完全依赖于最外层的事务。</p>
+<ul>
+<li>PROPAGATION_NESTED</li>
+</ul>
+<p>现在的情况就变得比较复杂了, ServiceB.MethodB() 的事务属性被配置为 PROPAGATION_NESTED, 此时两者之间又将如何协作呢?
+ServiceB.MethodB() 如 果 rollback, 那么内部事务(即 ServiceB.MethodB()) 将回滚到它执行前的 SavePoint 而外部事务(即 ServiceA.MethodA()) 可以有以下两种处理方式:</p>
+<pre><code class="language-java">
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">MethodA</span><span class="hljs-params">()</span> </span>{
+   <span class="hljs-keyword">try</span> {
+ServiceB.MethodB();
+} <span class="hljs-keyword">catch</span> (SomeException) {
+<span class="hljs-comment">// 执行其他业务, 如 ServiceC.MethodC(); }</span>
+}
+</code></pre>
+<p>这种方式也是嵌套事务最有价值的地方, 它起到了分支执行的效果, 如果 ServiceB.MethodB()失败, 那么执行 ServiceC.MethodC(), 而 ServiceB.MethodB() 已经回滚到它执行之前的 SavePoint, 所以不会产生脏数据(相当于此方法从未执行过), 这种特性可以用在某些特殊的业务中, 而 PROPAGATION_REQUIRED 和 PROPAGATION_REQUIRES_NEW 都没有办法做到这一点。</p>
+<p>外部事务回滚/提交 代码不做任何修改, 那么如果内部事务(ServiceB.MethodB()) rollback, 那么首先 ServiceB.MethodB() 回滚到它执行之前的 SavePoint(在任何情况 下都会如此), 外部事务(即 ServiceA.MethodA()) 将根据具体的配置决定自己是 commit 还是 rollback。</p>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

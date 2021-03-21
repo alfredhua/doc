@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="2.IOC的XML方式源码分析" />
+	<meta name="description" content="2.IOC的XML方式源码分析" />
+	<!-- 网页标签标题 -->
+	<title>2.IOC的XML方式源码分析</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h1 id="ioc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90">IOC源码分析 <a class="header-anchor" href="#ioc%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90">#</a></h1>
+<p>IOC(Inversion of Control)控制反转：所谓控制反转，就是把原先我们代码里面需要实现的对象创 建、依赖的代码，反转给容器来帮忙实现。那么必然的我们需要创建一个容器，同时需要一种描述来让 容器知道需要创建的对象与对象的关系。这个描述最具体表现就是我们所看到的配置文件。</p>
+<p>DI(Dependency Injection)依赖注入：就是指对象是被动接受依赖类而不是自己主动去找，换句话说就 是指对象不是从容器中查找它依赖的类，而是在容器实例化对象的时候主动将它依赖的类注入给它。</p>
+<h2 id="beanfactory">BeanFactory <a class="header-anchor" href="#beanfactory">#</a></h2>
+<p>Spring Bean 的创建是典型的工厂模式，这一系列的 Bean 工厂，也即 IOC 容器为开发者管理对象 间的依赖关系提供了很多便利和基础服务，在 Spring 中有许多的 IOC 容器的实现供用户选择和使用， 其相互关系如下:
+<img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/cc889ab8b7fe4d539207ad14cd303fed.png" alt="image"></p>
+<p>BeanFactory 作为最顶层的一个接口类，它定义了 IOC 容器的基本功能规范，BeanFactory 有三 个重要的子类:ListableBeanFactory、HierarchicalBeanFactory 和 AutowireCapableBeanFactory。 但是从类图中我们可以发现最终的默认实现类是 DefaultListableBeanFactory，它实现了所有的接口。</p>
+<p>每个接口都有它使用的场合，它 主要是为了区分在 Spring 内部在操作过程中对象的传递和转化过程时，对对象的数据访问所做的限制。 例如 ListableBeanFactory 接口表示这些 Bean 是可列表化的，而 HierarchicalBeanFactory 表示的是 这些 Bean 是有继承关系的，也就是每个 Bean 有可能有父 Bean。AutowireCapableBeanFactory 接 口定义 Bean 的自动装配规则。</p>
+<p>ApplicationContext 是 Spring 提供的一个高级的 IOC 容器，它除了能够提供 IOC 容器的基本功能 外，还为用户提供了以下的附加服务。从 ApplicationContext 接口的实现，我们看出其特点:</p>
+<ol>
+<li>支持信息源，可以实现国际化。(实现 MessageSource 接口)</li>
+<li>访问资源。(实现 ResourcePatternResolver 接口，后面章节会讲到)</li>
+<li>支持应用事件。(实现 ApplicationEventPublisher 接口)</li>
+</ol>
+<h1 id="%E5%9F%BA%E4%BA%8E-xml-%E7%9A%84-ioc-%E5%AE%B9%E5%99%A8%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96">基于 Xml 的 IOC 容器的初始化 <a class="header-anchor" href="#%E5%9F%BA%E4%BA%8E-xml-%E7%9A%84-ioc-%E5%AE%B9%E5%99%A8%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96">#</a></h1>
+<p>ApplicationContext 系列容器也许是我们最熟悉的，因为 Web 项目中使用的 XmlWebApplicationContext 就属于这个继承体系，还有 ClasspathXmlApplicationContext 等</p>
+<p>IOC运行方法调用时序图：
+<img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/24c0331c15c942eeb6388c7058d0e15e" alt="image"></p>
+<p>继承关系图：</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/f568acfc47634ec3906fa5e9ea93ddb4" alt="image"></p>
+<h2 id="1.-%E5%AF%BB%E6%89%BE%E5%85%A5%E5%8F%A3">1. 寻找入口 <a class="header-anchor" href="#1.-%E5%AF%BB%E6%89%BE%E5%85%A5%E5%8F%A3">#</a></h2>
+<p>还有一个我们用的比较多的 ClassPathXmlApplicationContext，通过 main()方法启动:</p>
+<pre><code class="language-java">ApplicationContext app = <span class="hljs-keyword">new</span> ClassPathXmlApplicationContext(<span class="hljs-string">"application.xml"</span>);
+</code></pre>
+<p>还有像 AnnotationConfigApplicationContext 、 FileSystemXmlApplicationContext 、 XmlWebApplicationContext 等都继承自父容器 AbstractApplicationContext 主要用到了装饰器模式 和策略模式，最终都是调用 refresh()方法。</p>
+<pre><code class="language-java">	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ClassPathXmlApplicationContext</span><span class="hljs-params">(
+			String[] configLocations, <span class="hljs-keyword">boolean</span> refresh, @Nullable ApplicationContext parent)</span>
+			<span class="hljs-keyword">throws</span> BeansException </span>{
+
+		<span class="hljs-keyword">super</span>(parent);
+		<span class="hljs-comment">//设置配置文件路径,</span>
+		setConfigLocations(configLocations);
+		<span class="hljs-comment">//refresh作用是防止IOC容器多次实例化</span>
+		<span class="hljs-keyword">if</span> (refresh) {
+			refresh();
+		}
+	}
+</code></pre>
+<h2 id="2.-%E8%8E%B7%E5%BE%97%E9%85%8D%E7%BD%AE%E8%B7%AF%E5%BE%84">2. 获得配置路径 <a class="header-anchor" href="#2.-%E8%8E%B7%E5%BE%97%E9%85%8D%E7%BD%AE%E8%B7%AF%E5%BE%84">#</a></h2>
+<p>父类AbstractRefreshableConfigApplicationContext中设置文件路径，
+configLocations是一个全局的私有变量,依靠：getConfigLocations来使子类可以获取到
+configLocations的值。</p>
+<pre><code class="language-java">	<span class="hljs-meta">@Nullable</span>
+	<span class="hljs-keyword">protected</span> String[] getConfigLocations() {
+			<span class="hljs-keyword">return</span> (<span class="hljs-keyword">this</span>.configLocations != <span class="hljs-keyword">null</span> ? <span class="hljs-keyword">this</span>.configLocations : getDefaultConfigLocations());
+	}
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setConfigLocation</span><span class="hljs-params">(String location)</span> </span>{
+		setConfigLocations(StringUtils.tokenizeToStringArray(location, CONFIG_LOCATION_DELIMITERS));
+	}
+
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">setConfigLocations</span><span class="hljs-params">(@Nullable String... locations)</span> </span>{
+			<span class="hljs-keyword">if</span> (locations != <span class="hljs-keyword">null</span>) {
+				Assert.noNullElements(locations, <span class="hljs-string">"Config locations must not be null"</span>);
+				<span class="hljs-keyword">this</span>.configLocations = <span class="hljs-keyword">new</span> String[locations.length];
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; locations.length; i++) {
+					<span class="hljs-keyword">this</span>.configLocations[i] = resolvePath(locations[i]).trim();
+				}
+			}<span class="hljs-keyword">else</span> {
+				<span class="hljs-keyword">this</span>.configLocations = <span class="hljs-keyword">null</span>;
+			}
+	}
+</code></pre>
+<h1 id="3.-%E5%BC%80%E5%A7%8B%E5%90%AF%E5%8A%A8(%E6%95%B4%E4%BD%93%E8%AE%B2%E8%A7%A3%E5%90%84%E4%B8%AA%E6%96%B9%E6%B3%95%E4%BD%9C%E7%94%A8)">3. 开始启动(整体讲解各个方法作用) <a class="header-anchor" href="#3.-%E5%BC%80%E5%A7%8B%E5%90%AF%E5%8A%A8(%E6%95%B4%E4%BD%93%E8%AE%B2%E8%A7%A3%E5%90%84%E4%B8%AA%E6%96%B9%E6%B3%95%E4%BD%9C%E7%94%A8)">#</a></h1>
+<p>设置完文件的配置路径之后。真正启动是第一步的refresh()方法。</p>
+<p>refresh()：在AbstractApplicationContext类中。</p>
+<pre><code class="language-java">	<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">refresh</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> BeansException, IllegalStateException </span>{
+		<span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.startupShutdownMonitor) {
+			<span class="hljs-comment">// Prepare this context for refreshing.</span>
+			<span class="hljs-comment">//1、调用容器准备刷新的方法，获取容器的当时时间，同时给容器设置同步标识</span>
+			prepareRefresh();
+
+			<span class="hljs-comment">// Tell the subclass to refresh the internal bean factory.</span>
+			<span class="hljs-comment">//2、告诉子类启动 refreshBeanFactory()方法，Bean 定义资源文件的载入从 //子类的 refreshBeanFactory()方法启动</span>
+			<span class="hljs-comment">//创建了一个DefaultListableBeanFactory,当然还进行了资源的载入。在这个内部有loadBeanDefinitions(beanFactory);方法，目的就是寻找xml文件，进行xml解析，最后一只调用到了XmlBeanDefinitionReader中的doLoadDocument来获取一个完整的xml文档，也就是我们的spring的xml配置文件</span>
+			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+
+			<span class="hljs-comment">// Prepare the bean factory for use in this context.</span>
+			<span class="hljs-comment">//3、为 BeanFactory 配置容器特性，例如类加载器、事件处理器等,实际上就是为ConfigurableListableBeanFactory beanFactory对象进行属性设定值。BeanFactory是个容器，所以是配置当前容器所应该有的属性。</span>
+			prepareBeanFactory(beanFactory);
+
+			<span class="hljs-keyword">try</span> {
+				<span class="hljs-comment">// Allows post-processing of the bean factory in context subclasses.</span>
+				<span class="hljs-comment">//4、为容器的某些子类指定特殊的 BeanPost 事件处理器，因为有些属性是不同的BeanFactory容器特有的，对于这写特有的BeanFactory进行处理，默认是AbstractApplicationContext，所以里面没有进行任何的操作行为</span>
+				postProcessBeanFactory(beanFactory);
+
+				<span class="hljs-comment">// Invoke factory processors registered as beans in the context.</span>
+				<span class="hljs-comment">//5、调用所有注册的 BeanFactoryPostProcessor 的 Bean,内部方法：PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());的属性beanFactoryPostProcessors是在第4步进行初始化的，如果没有的话，只是一个空数组。</span>
+				invokeBeanFactoryPostProcessors(beanFactory);
+
+				<span class="hljs-comment">// Register bean processors that intercept bean creation.</span>
+				<span class="hljs-comment">//6、为 BeanFactory 注册 BeanPost 事件处理器. </span>
+				<span class="hljs-comment">//BeanPostProcessor 是 Bean 后置处理器，用于监听容器触发的事件</span>
+				registerBeanPostProcessors(beanFactory);
+
+				<span class="hljs-comment">// Initialize message source for this context.</span>
+				<span class="hljs-comment">//7、初始化信息源，和国际化相关.</span>
+				initMessageSource();
+
+				<span class="hljs-comment">// Initialize event multicaster for this context.</span>
+				<span class="hljs-comment">//8、初始化容器事件传播器.</span>
+				initApplicationEventMulticaster();
+
+				<span class="hljs-comment">// Initialize other special beans in specific context subclasses.</span>
+				<span class="hljs-comment">//9、调用子类的某些特殊 Bean 初始化方法</span>
+				onRefresh();
+
+				<span class="hljs-comment">// Check for listener beans and register them.</span>
+				<span class="hljs-comment">//10、为事件传播器注册事件监听器.</span>
+				registerListeners();
+
+				<span class="hljs-comment">// Instantiate all remaining (non-lazy-init) singletons.</span>
+				finishBeanFactoryInitialization(beanFactory);
+
+				<span class="hljs-comment">// Last step: publish corresponding event.</span>
+				finishRefresh();
+			}
+
+			<span class="hljs-keyword">catch</span> (BeansException ex) {
+				<span class="hljs-keyword">if</span> (logger.isWarnEnabled()) {
+					logger.warn(<span class="hljs-string">"Exception encountered during context initialization - "</span> +
+							<span class="hljs-string">"cancelling refresh attempt: "</span> + ex);
+				}
+				<span class="hljs-comment">// Destroy already created singletons to avoid dangling resources.</span>
+				destroyBeans();
+				<span class="hljs-comment">// Reset 'active' flag.</span>
+				cancelRefresh(ex);
+				<span class="hljs-comment">// Propagate exception to caller.</span>
+				<span class="hljs-keyword">throw</span> ex;
+			}
+
+			<span class="hljs-keyword">finally</span> {
+				<span class="hljs-comment">// Reset common introspection caches in Spring's core, since we</span>
+				<span class="hljs-comment">// might not ever need metadata for singleton beans anymore...</span>
+				resetCommonCaches();
+			}
+		}
+	}
+</code></pre>
+<h2 id="4.-%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8">4. 创建容器 <a class="header-anchor" href="#4.-%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8">#</a></h2>
+<p>obtainFreshBeanFactory()方法调用子类容器的 refreshBeanFactory()方法，启动容器载入 Bean 配置 信息的过程</p>
+<pre><code class="language-java"><span class="hljs-function"><span class="hljs-keyword">protected</span> ConfigurableListableBeanFactory <span class="hljs-title">obtainFreshBeanFactory</span><span class="hljs-params">()</span> </span>{
+		<span class="hljs-comment">//这里使用了委派设计模式，父类定义了抽象的 refreshBeanFactory()方法，具体实现调用子类容器的 refreshBeanFactory()方法</span>
+		refreshBeanFactory();
+		<span class="hljs-keyword">return</span> getBeanFactory();
+}
+
+</code></pre>
+<p>AbstractApplicationContext 类中只抽象定义了 refreshBeanFactory()方法，容器真正调用的是 其子类AbstractRefreshableApplicationContext实现的refreshBeanFactory()方法，方法的源 码如下:</p>
+<pre><code class="language-java">
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title">refreshBeanFactory</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> BeansException </span>{ <span class="hljs-comment">//如果已经有容器，销毁容器中的 bean，关闭容器</span>
+<span class="hljs-keyword">if</span> (hasBeanFactory()) {
+     destroyBeans();
+     closeBeanFactory();
+   }
+<span class="hljs-keyword">try</span> {
+<span class="hljs-comment">//创建 IOC 容器</span>
+DefaultListableBeanFactory beanFactory = createBeanFactory();
+beanFactory.setSerializationId(getId());
+<span class="hljs-comment">//对 IOC 容器进行定制化，如设置启动参数，开启注解的自动装配等</span>
+customizeBeanFactory(beanFactory);
+<span class="hljs-comment">//调用载入 Bean 定义的方法，主要这里又使用了一个委派模式，在当前类中只定义了抽象的 loadBeanDefinitions 方法，具体的实现调用子类容器</span>
+loadBeanDefinitions(beanFactory);
+	<span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.beanFactoryMonitor) {
+	<span class="hljs-keyword">this</span>.beanFactory = beanFactory;
+	}
+}<span class="hljs-keyword">catch</span> (IOException ex) {
+<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ApplicationContextException(<span class="hljs-string">"I/O error parsing bean definition source for "</span> + getDisplayName(),
+ex);
+ }
+}
+</code></pre>
+<p>在这个方法中，先判断 BeanFactory 是否存在，如果存在则先销毁 beans 并关闭 beanFactory，接着
+创建 DefaultListableBeanFactory，并调用 loadBeanDefinitions(beanFactory)装载 bean 定义。</p>
+<h2 id="5.%E8%BD%BD%E5%85%A5%E9%85%8D%E7%BD%AE%E8%B7%AF%E5%BE%84">5.载入配置路径 <a class="header-anchor" href="#5.%E8%BD%BD%E5%85%A5%E9%85%8D%E7%BD%AE%E8%B7%AF%E5%BE%84">#</a></h2>
+<p>AbstractRefreshableApplicationContext 中只定义了抽象的 loadBeanDefinitions 方法，容器真正调 用的是其子类 AbstractXmlApplicationContext 对该方法的实现，AbstractXmlApplicationContext</p>
+<pre><code class="language-java">
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractXmlApplicationContext</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractRefreshableConfigApplicationContext</span> </span>{ ...
+<span class="hljs-comment">//实现父类抽象的载入 Bean 定义方法</span>
+<span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">loadBeanDefinitions</span><span class="hljs-params">(DefaultListableBeanFactory beanFactory)</span> <span class="hljs-keyword">throws</span> BeansException, IOException
+</span>{
+<span class="hljs-comment">//创建 XmlBeanDefinitionReader，即创建 Bean 读取器，并通过回调设置到容器中去，容器使用该读取器读取 Bean 配置资源 XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);</span>
+<span class="hljs-comment">//为 Bean 读取器设置 Spring 资源加载器，AbstractXmlApplicationContext 的</span>
+<span class="hljs-comment">//祖先父类 AbstractApplicationContext 继承 DefaultResourceLoader，因此，容器本身也是一个资源加载器 beanDefinitionReader.setEnvironment(this.getEnvironment()); beanDefinitionReader.setResourceLoader(this);</span>
+<span class="hljs-comment">//为 Bean 读取器设置 SAX xml 解析器</span>
+beanDefinitionReader.setEntityResolver(<span class="hljs-keyword">new</span> ResourceEntityResolver(<span class="hljs-keyword">this</span>));
+<span class="hljs-comment">//当 Bean 读取器读取 Bean 定义的 Xml 资源文件时，启用 Xml 的校验机制 initBeanDefinitionReader(beanDefinitionReader);</span>
+<span class="hljs-comment">//Bean 读取器真正实现加载的方法</span>
+
+    loadBeanDefinitions(beanDefinitionReader);
+}
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initBeanDefinitionReader</span><span class="hljs-params">(XmlBeanDefinitionReader reader)</span> </span>{ reader.setValidating(<span class="hljs-keyword">this</span>.validating);
+}
+<span class="hljs-comment">//Xml Bean 读取器加载 Bean 配置资源</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">loadBeanDefinitions</span><span class="hljs-params">(XmlBeanDefinitionReader reader)</span> <span class="hljs-keyword">throws</span> BeansException, IOException </span>{
+<span class="hljs-comment">//获取 Bean 配置资源的定位</span>
+	Resource[] configResources = getConfigResources(); <span class="hljs-keyword">if</span> (configResources != <span class="hljs-keyword">null</span>) {
+	<span class="hljs-comment">//Xml Bean 读取器调用其父类 AbstractBeanDefinitionReader 读取定位的 Bean 配置资源</span>
+	reader.loadBeanDefinitions(configResources); 
+  }
+<span class="hljs-comment">// 如果子类中获取的 Bean 配置资源定位为空，则获取 ClassPathXmlApplicationContext // 构造方法中 setConfigLocations 方法设置的资源</span>
+	String[] configLocations = getConfigLocations();
+	<span class="hljs-keyword">if</span> (configLocations != <span class="hljs-keyword">null</span>) {
+	<span class="hljs-comment">//Xml Bean 读取器调用其父类 AbstractBeanDefinitionReader 读取定位 //的 Bean 配置资源</span>
+	reader.loadBeanDefinitions(configLocations);
+	} 
+}
+<span class="hljs-comment">//这里又使用了一个委托模式，调用子类的获取 Bean 配置资源定位的方法 //该方法在 ClassPathXmlApplicationContext 中进行实现，对于我们 //举例分析源码的 ClassPathXmlApplicationContext 没有使用该方法 @Nullable</span>
+   <span class="hljs-keyword">protected</span> Resource[] getConfigResources() {
+     <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+  } 
+}
+</code></pre>
+<p>以 XmlBean 读取器的其中一种策略 XmlBeanDefinitionReader 为例。XmlBeanDefinitionReader 调 用其父类AbstractBeanDefinitionReader的 reader.loadBeanDefinitions()方法读取Bean配置资源。 由于我们使用 ClassPathXmlApplicationContext 作为例子分析，因此 getConfigResources 的返回值 为 null，因此程序执行 reader.loadBeanDefinitions(configLocations)分支。</p>
+<h2 id="6.-%E5%88%86%E9%85%8D%E8%B7%AF%E5%BE%84%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5">6. 分配路径处理策略 <a class="header-anchor" href="#6.-%E5%88%86%E9%85%8D%E8%B7%AF%E5%BE%84%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5">#</a></h2>
+<p>在 XmlBeanDefinitionReader 的抽象父类 AbstractBeanDefinitionReader 中定义了载入过程。</p>
+<p>AbstractBeanDefinitionReader 的 loadBeanDefinitions()方法源码如下:</p>
+<pre><code class="language-java">	<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">loadBeanDefinitions</span><span class="hljs-params">(Resource... resources)</span> <span class="hljs-keyword">throws</span> BeanDefinitionStoreException </span>{
+		Assert.notNull(resources, <span class="hljs-string">"Resource array must not be null"</span>);
+		<span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+		<span class="hljs-keyword">for</span> (Resource resource : resources) {
+			count += loadBeanDefinitions(resource);
+		}
+		<span class="hljs-keyword">return</span> count;
+	}
+
+	<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">loadBeanDefinitions</span><span class="hljs-params">(String location)</span> <span class="hljs-keyword">throws</span> BeanDefinitionStoreException </span>{
+		<span class="hljs-keyword">return</span> loadBeanDefinitions(location, <span class="hljs-keyword">null</span>);
+	}
+
+	<span class="hljs-comment">/**
+	 * Load bean definitions from the specified resource location.
+	 * &lt;p&gt;The location can also be a location pattern, provided that the
+	 * ResourceLoader of this bean definition reader is a ResourcePatternResolver.
+	 * <span class="hljs-doctag">@param</span> location the resource location, to be loaded with the ResourceLoader
+	 * (or ResourcePatternResolver) of this bean definition reader
+	 * <span class="hljs-doctag">@param</span> actualResources a Set to be filled with the actual Resource objects
+	 * that have been resolved during the loading process. May be {<span class="hljs-doctag">@code</span> null}
+	 * to indicate that the caller is not interested in those Resource objects.
+	 * <span class="hljs-doctag">@return</span> the number of bean definitions found
+	 * <span class="hljs-doctag">@throws</span> BeanDefinitionStoreException in case of loading or parsing errors
+	 * <span class="hljs-doctag">@see</span> #getResourceLoader()
+	 * <span class="hljs-doctag">@see</span> #loadBeanDefinitions(org.springframework.core.io.Resource)
+	 * <span class="hljs-doctag">@see</span> #loadBeanDefinitions(org.springframework.core.io.Resource[])
+	 */</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">loadBeanDefinitions</span><span class="hljs-params">(String location, @Nullable Set&lt;Resource&gt; actualResources)</span> <span class="hljs-keyword">throws</span> BeanDefinitionStoreException </span>{
+		ResourceLoader resourceLoader = getResourceLoader();
+		<span class="hljs-keyword">if</span> (resourceLoader == <span class="hljs-keyword">null</span>) {
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanDefinitionStoreException(
+					<span class="hljs-string">"Cannot load bean definitions from location ["</span> + location + <span class="hljs-string">"]: no ResourceLoader available"</span>);
+		}
+
+		<span class="hljs-keyword">if</span> (resourceLoader <span class="hljs-keyword">instanceof</span> ResourcePatternResolver) {
+			<span class="hljs-comment">// Resource pattern matching available.</span>
+			<span class="hljs-keyword">try</span> {
+				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
+				
+				<span class="hljs-keyword">int</span> count = loadBeanDefinitions(resources);
+				<span class="hljs-keyword">if</span> (actualResources != <span class="hljs-keyword">null</span>) {
+					Collections.addAll(actualResources, resources);
+				}
+				<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+					logger.trace(<span class="hljs-string">"Loaded "</span> + count + <span class="hljs-string">" bean definitions from location pattern ["</span> + location + <span class="hljs-string">"]"</span>);
+				}
+				<span class="hljs-keyword">return</span> count;
+			}
+			<span class="hljs-keyword">catch</span> (IOException ex) {
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanDefinitionStoreException(
+						<span class="hljs-string">"Could not resolve bean definition resource pattern ["</span> + location + <span class="hljs-string">"]"</span>, ex);
+			}
+		}
+		<span class="hljs-keyword">else</span> {
+<span class="hljs-comment">// Can only load single resources by absolute URL. //将指定位置的 Bean 配置信息解析为 Spring IOC 容器封装的资源 //加载单个指定位置的 Bean 配置信息</span>
+			Resource resource = resourceLoader.getResource(location);
+			<span class="hljs-keyword">int</span> count = loadBeanDefinitions(resource);
+			<span class="hljs-keyword">if</span> (actualResources != <span class="hljs-keyword">null</span>) {
+				actualResources.add(resource);
+			}
+			<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+				logger.trace(<span class="hljs-string">"Loaded "</span> + count + <span class="hljs-string">" bean definitions from location ["</span> + location + <span class="hljs-string">"]"</span>);
+			}
+			<span class="hljs-keyword">return</span> count;
+		}
+	}
+</code></pre>
+<p>AbstractRefreshableConfigApplicationContext 的 loadBeanDefinitions(Resource...resources) 方 法实际上是调用 AbstractBeanDefinitionReader 的 loadBeanDefinitions()方法。
+从对 AbstractBeanDefinitionReader 的 loadBeanDefinitions()方法源码分析可以看出该方法就做了 两件事:
+首先，调用资源加载器的获取资源方法 resourceLoader.getResource(location)，获取到要加载的资源。 其次，真正执行加载功能是其子类 XmlBeanDefinitionReader 的 loadBeanDefinitions()方法。在 loadBeanDefinitions()方法中调用了 AbstractApplicationContext 的 getResources()方法，跟进去之 后发现 getResources()方法其实定义在 ResourcePatternResolver 中，此时，我们有必要来看一下 ResourcePatternResolver 的全类图:
+<img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/19518f20110a4b0ba5578261ef91a34f" alt="image"></p>
+<p>从上面可以看到 ResourceLoader 与 ApplicationContext 的继承关系，可以看出其实际调用的是 DefaultResourceLoader 中 的 getSource() 方 法 定 位 Resource ， 因 为 ClassPathXmlApplicationContext 本身就是 DefaultResourceLoader 的实现类，所以此时又回到了 ClassPathXmlApplicationContext 中来。</p>
+<h2 id="7.-%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84">7. 解析配置文件路径 <a class="header-anchor" href="#7.-%E8%A7%A3%E6%9E%90%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%B7%AF%E5%BE%84">#</a></h2>
+<p>XmlBeanDefinitionReader 通 过 调 用 ClassPathXmlApplicationContext 的 父 类
+DefaultResourceLoader 的 getResource()方法获取要加载的资源</p>
+<p>DefaultResourceLoader 提供了 getResourceByPath()方法的实现，就是为了处理既不是 classpath 标识，又不是 URL 标识的 Resource 定位这种情况。</p>
+<p>在 ClassPathResource 中完成了对整个路径的解析。这样，就可以从类路径上对 IOC 配置文件进行加 载，当然我们可以按照这个逻辑从任何地方加载，在 Spring 中我们看到它提供的各种资源抽象，比如 ClassPathResource、URLResource、FileSystemResource 等来供我们使用。上面我们看到的是定位Resource 的一个过程，而这只是加载过程的一部分。例如 FileSystemXmlApplication 容器就重写了getResourceByPath方法。
+通过子类的覆盖，巧妙地完成了将类路径变为文件路径的转换。</p>
+<pre><code class="language-java"><span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">protected</span> Resource <span class="hljs-title">getResourceByPath</span><span class="hljs-params">(String path)</span> </span>{ <span class="hljs-keyword">if</span> (path.startsWith(<span class="hljs-string">"/"</span>)) {
+path = path.substring(<span class="hljs-number">1</span>); }
+<span class="hljs-comment">//这里使用文件系统资源对象来定义 bean 文件</span>
+<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> FileSystemResource(path); }
+</code></pre>
+<h2 id="8.%E5%BC%80%E5%A7%8B%E8%AF%BB%E5%8F%96%E9%85%8D%E7%BD%AE%E5%86%85%E5%AE%B9">8.开始读取配置内容 <a class="header-anchor" href="#8.%E5%BC%80%E5%A7%8B%E8%AF%BB%E5%8F%96%E9%85%8D%E7%BD%AE%E5%86%85%E5%AE%B9">#</a></h2>
+<p>在XmlBeanDefinitionReader 的 loadBeanDefinitions(Resource ...)方法看到代表 bean 文件 的资源定义以后的载入过程。</p>
+<p>载入 Bean 配置信息的最后一步是将 Bean 配置信息转换为 Document 对象，该过程由
+documentLoader()方法实现。</p>
+<h2 id="9.-%E5%87%86%E5%A4%87%E6%96%87%E6%A1%A3%E5%AF%B9%E8%B1%A1">9. 准备文档对象 <a class="header-anchor" href="#9.-%E5%87%86%E5%A4%87%E6%96%87%E6%A1%A3%E5%AF%B9%E8%B1%A1">#</a></h2>
+<p>DocumentLoader 将 Bean 配置资源转换成 Document 对象的源码如下:</p>
+<pre><code class="language-java">
+<span class="hljs-comment">/**
+	 * Load the {<span class="hljs-doctag">@link</span> Document} at the supplied {<span class="hljs-doctag">@link</span> InputSource} using the standard JAXP-configured
+	 * XML parser.
+	 */</span>
+	<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> Document <span class="hljs-title">loadDocument</span><span class="hljs-params">(InputSource inputSource, EntityResolver entityResolver,
+			ErrorHandler errorHandler, <span class="hljs-keyword">int</span> validationMode, <span class="hljs-keyword">boolean</span> namespaceAware)</span> <span class="hljs-keyword">throws</span> Exception </span>{
+		<span class="hljs-comment">//创建文件解析器工厂</span>
+		DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
+		<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+			logger.trace(<span class="hljs-string">"Using JAXP provider ["</span> + factory.getClass().getName() + <span class="hljs-string">"]"</span>);
+		}
+		<span class="hljs-comment">//创建文档解析器</span>
+		DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);
+		<span class="hljs-comment">//解析 Spring 的 Bean 配置资源</span>
+		<span class="hljs-keyword">return</span> builder.parse(inputSource);
+	}
+
+	<span class="hljs-comment">/**
+	 * Create the {<span class="hljs-doctag">@link</span> DocumentBuilderFactory} instance.
+	 * <span class="hljs-doctag">@param</span> validationMode the type of validation: {<span class="hljs-doctag">@link</span> XmlValidationModeDetector#VALIDATION_DTD DTD}
+	 * or {<span class="hljs-doctag">@link</span> XmlValidationModeDetector#VALIDATION_XSD XSD})
+	 * <span class="hljs-doctag">@param</span> namespaceAware whether the returned factory is to provide support for XML namespaces
+	 * <span class="hljs-doctag">@return</span> the JAXP DocumentBuilderFactory
+	 * <span class="hljs-doctag">@throws</span> ParserConfigurationException if we failed to build a proper DocumentBuilderFactory
+	 */</span>
+	<span class="hljs-function"><span class="hljs-keyword">protected</span> DocumentBuilderFactory <span class="hljs-title">createDocumentBuilderFactory</span><span class="hljs-params">(<span class="hljs-keyword">int</span> validationMode, <span class="hljs-keyword">boolean</span> namespaceAware)</span>
+			<span class="hljs-keyword">throws</span> ParserConfigurationException </span>{
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(namespaceAware);
+
+		<span class="hljs-keyword">if</span> (validationMode != XmlValidationModeDetector.VALIDATION_NONE) {
+			factory.setValidating(<span class="hljs-keyword">true</span>);
+			<span class="hljs-keyword">if</span> (validationMode == XmlValidationModeDetector.VALIDATION_XSD) {
+				<span class="hljs-comment">// Enforce namespace aware for XSD...</span>
+				factory.setNamespaceAware(<span class="hljs-keyword">true</span>);
+				<span class="hljs-keyword">try</span> {
+					factory.setAttribute(SCHEMA_LANGUAGE_ATTRIBUTE, XSD_SCHEMA_LANGUAGE);
+				}
+				<span class="hljs-keyword">catch</span> (IllegalArgumentException ex) {
+					ParserConfigurationException pcex = <span class="hljs-keyword">new</span> ParserConfigurationException(
+							<span class="hljs-string">"Unable to validate using XSD: Your JAXP provider ["</span> + factory +
+							<span class="hljs-string">"] does not support XML Schema. Are you running on Java 1.4 with Apache Crimson? "</span> +
+							<span class="hljs-string">"Upgrade to Apache Xerces (or Java 1.5) for full XSD support."</span>);
+					pcex.initCause(ex);
+					<span class="hljs-keyword">throw</span> pcex;
+				}
+			}
+		}
+
+		<span class="hljs-keyword">return</span> factory;
+	}
+</code></pre>
+<h2 id="10.-%E5%88%86%E9%85%8D%E8%A7%A3%E6%9E%90%E7%AD%96%E7%95%A5">10. 分配解析策略 <a class="header-anchor" href="#10.-%E5%88%86%E9%85%8D%E8%A7%A3%E6%9E%90%E7%AD%96%E7%95%A5">#</a></h2>
+<p>XmlBeanDefinitionReader 类中的 doLoadBeanDefinition()方法是从特定 XML 文件中实际载入 Bean 配置资源的方法，该方法在载入 Bean 配置资源之后将其转换为 Document 对象，接下来调用 registerBeanDefinitions() 启 动 Spring IOC 容 器 对 Bean 定 义 的 解 析 过 程 ， registerBeanDefinitions()方法源码如下:</p>
+<pre><code class="language-java"><span class="hljs-comment">//按照 Spring 的 Bean 语义要求将 Bean 配置资源解析并转换为容器内部数据结构</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">registerBeanDefinitions</span><span class="hljs-params">(Document doc, Resource resource)</span> <span class="hljs-keyword">throws</span> BeanDefinitionStoreException </span>{
+		<span class="hljs-comment">//得到 BeanDefinitionDocumentReader 来对 xml 格式的 BeanDefinition 解析</span>
+		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		<span class="hljs-comment">//获得容器中注册的 Bean 数量</span>
+		<span class="hljs-keyword">int</span> countBefore = getRegistry().getBeanDefinitionCount();
+		<span class="hljs-comment">//解析过程入口，这里使用了委派模式，BeanDefinitionDocumentReader 只是个接口,</span>
+		<span class="hljs-comment">//具体的解析实现过程有实现类 DefaultBeanDefinitionDocumentReader 完成</span>
+		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		<span class="hljs-comment">//统计解析的 Bean 数量</span>
+		<span class="hljs-keyword">return</span> getRegistry().getBeanDefinitionCount() - countBefore;
+	}
+
+	
+</code></pre>
+<h2 id="11.%E5%B0%86%E9%85%8D%E7%BD%AE%E8%BD%BD%E5%85%A5%E5%86%85%E5%AD%98">11.将配置载入内存 <a class="header-anchor" href="#11.%E5%B0%86%E9%85%8D%E7%BD%AE%E8%BD%BD%E5%85%A5%E5%86%85%E5%AD%98">#</a></h2>
+<p>BeanDefinitionDocumentReader 接 口 通 过 registerBeanDefinitions() 方 法 调 用 其 实 现 类 DefaultBeanDefinitionDocumentReader 对 Document 对象进行解析，解析的代码如下:</p>
+<pre><code class="language-java">
+<span class="hljs-meta">@Override</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">registerBeanDefinitions</span><span class="hljs-params">(Document doc, XmlReaderContext readerContext)</span> </span>{
+	<span class="hljs-comment">//获得 XML 描述符</span>
+	<span class="hljs-keyword">this</span>.readerContext = readerContext; logger.debug(<span class="hljs-string">"Loading bean definitions"</span>); 
+	<span class="hljs-comment">//获得 Document 的根元素</span>
+	Element root = doc.getDocumentElement();	
+	doRegisterBeanDefinitions(root);
+}
+
+
+<span class="hljs-comment">/**
+	 * Register each bean definition within the given root {<span class="hljs-doctag">@code</span> &lt;beans/&gt;} element.
+	 */</span>
+	<span class="hljs-meta">@SuppressWarnings</span>(<span class="hljs-string">"deprecation"</span>)  <span class="hljs-comment">// for Environment.acceptsProfiles(String...)</span>
+	<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doRegisterBeanDefinitions</span><span class="hljs-params">(Element root)</span> </span>{
+		<span class="hljs-comment">// Any nested &lt;beans&gt; elements will cause recursion in this method. In</span>
+		<span class="hljs-comment">// order to propagate and preserve &lt;beans&gt; default-* attributes correctly,</span>
+		<span class="hljs-comment">// keep track of the current (parent) delegate, which may be null. Create</span>
+		<span class="hljs-comment">// the new (child) delegate with a reference to the parent for fallback purposes,</span>
+		<span class="hljs-comment">// then ultimately reset this.delegate back to its original (parent) reference.</span>
+		<span class="hljs-comment">// this behavior emulates a stack of delegates without actually necessitating one.</span>
+		BeanDefinitionParserDelegate parent = <span class="hljs-keyword">this</span>.delegate;
+		<span class="hljs-keyword">this</span>.delegate = createDelegate(getReaderContext(), root, parent);
+
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.delegate.isDefaultNamespace(root)) {
+			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
+			<span class="hljs-keyword">if</span> (StringUtils.hasText(profileSpec)) {
+				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
+						profileSpec, BeanDefinitionParserDelegate.MULTI_VALUE_ATTRIBUTE_DELIMITERS);
+				<span class="hljs-comment">// We cannot use Profiles.of(...) since profile expressions are not supported</span>
+				<span class="hljs-comment">// in XML config. See SPR-12458 for details.</span>
+				<span class="hljs-keyword">if</span> (!getReaderContext().getEnvironment().acceptsProfiles(specifiedProfiles)) {
+					<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) {
+						logger.debug(<span class="hljs-string">"Skipped XML bean definition file due to specified profiles ["</span> + profileSpec +
+								<span class="hljs-string">"] not matching: "</span> + getReaderContext().getResource());
+					}
+					<span class="hljs-keyword">return</span>;
+				}
+			}
+		}
+
+		<span class="hljs-comment">//在解析 Bean 定义之前，进行自定义的解析，增强解析过程的可扩展性 </span>
+		preProcessXml(root);
+		<span class="hljs-comment">//从 Document 的根元素开始进行 Bean 定义的 Document 对象，这里也是第16步，注册bean的起始方法！！！！！！！</span>
+		<span class="hljs-comment">//这里也是第16步，注册bean的起始方法！！！！！！！</span>
+		<span class="hljs-comment">//这里也是第16步，注册bean的起始方法！！！！！！！</span>
+		parseBeanDefinitions(root, <span class="hljs-keyword">this</span>.delegate);
+		<span class="hljs-comment">//在解析 Bean 定义之后，进行自定义的解析，增加解析过程的可扩展性 </span>
+		postProcessXml(root);
+
+		<span class="hljs-keyword">this</span>.delegate = parent;
+	}
+   <span class="hljs-comment">//创建 BeanDefinitionParserDelegate，用于完成真正的解析过程</span>
+	<span class="hljs-function"><span class="hljs-keyword">protected</span> BeanDefinitionParserDelegate <span class="hljs-title">createDelegate</span><span class="hljs-params">(
+			XmlReaderContext readerContext, Element root, @Nullable BeanDefinitionParserDelegate parentDelegate)</span> </span>{
+
+		BeanDefinitionParserDelegate delegate = <span class="hljs-keyword">new</span> BeanDefinitionParserDelegate(readerContext);
+		delegate.initDefaults(root, parentDelegate);
+		<span class="hljs-keyword">return</span> delegate;
+	}
+
+	<span class="hljs-comment">/**
+	 * Parse the elements at the root level in the document:
+	 * "import", "alias", "bean".
+	 * <span class="hljs-doctag">@param</span> root the DOM root element of the document
+	 */</span>
+	<span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">parseBeanDefinitions</span><span class="hljs-params">(Element root, BeanDefinitionParserDelegate delegate)</span> </span>{
+		<span class="hljs-keyword">if</span> (delegate.isDefaultNamespace(root)) {
+			NodeList nl = root.getChildNodes();
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; nl.getLength(); i++) {
+				Node node = nl.item(i);
+				<span class="hljs-keyword">if</span> (node <span class="hljs-keyword">instanceof</span> Element) {
+					Element ele = (Element) node;
+					<span class="hljs-keyword">if</span> (delegate.isDefaultNamespace(ele)) {
+						parseDefaultElement(ele, delegate);
+					}
+					<span class="hljs-keyword">else</span> {
+						delegate.parseCustomElement(ele);
+					}
+				}
+			}
+		}
+		<span class="hljs-keyword">else</span> {
+			delegate.parseCustomElement(root);
+		}
+	}
+
+	<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">parseDefaultElement</span><span class="hljs-params">(Element ele, BeanDefinitionParserDelegate delegate)</span> </span>{
+		<span class="hljs-keyword">if</span> (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
+			importBeanDefinitionResource(ele);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+			processAliasRegistration(ele);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+			processBeanDefinition(ele, delegate);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
+			<span class="hljs-comment">// recurse</span>
+			doRegisterBeanDefinitions(ele);
+		}
+	}
+</code></pre>
+<p>通过上述 Spring IOC 容器对载入的 Bean 定义 Document 解析可以看出，我们使用 Spring 时，在 Spring 配置文件中可以使用<import>元素来导入 IOC 容器所需要的其他资源，Spring IOC 容器在解 析时会首先将指定导入的资源加载进容器中。使用<ailas>别名时，Spring IOC 容器首先将别名元素所 定义的别名注册到容器中。
+对于既不是<import>元素，又不是<alias>元素的元素，即 Spring 配置文件中普通的<bean>元素的 解析由 BeanDefinitionParserDelegate 类的 parseBeanDefinitionElement()方法来实现。这个解析的 过程非常复杂，我们在 mini 版本的时候，就用 properties 文件代替了。</p>
+<h2 id="12.%E8%BD%BD%E5%85%A5%E5%85%83%E7%B4%A0">12.载入<bean>元素 <a class="header-anchor" href="#12.%E8%BD%BD%E5%85%A5%E5%85%83%E7%B4%A0">#</a></h2>
+<p>Bean 配置信息中的<import>和<alias>元素解析在 DefaultBeanDefinitionDocumentReader 中已 经完成，对 Bean 配置信息中使用最多的<bean>元素交由 BeanDefinitionParserDelegate 来解析，</p>
+<pre><code class="language-java"><span class="hljs-meta">@Nullable</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> BeanDefinitionHolder <span class="hljs-title">parseBeanDefinitionElement</span><span class="hljs-params">(Element ele)</span> </span>{
+		<span class="hljs-keyword">return</span> parseBeanDefinitionElement(ele, <span class="hljs-keyword">null</span>);
+	}
+
+	<span class="hljs-comment">/**
+	 * Parses the supplied {<span class="hljs-doctag">@code</span> &lt;bean&gt;} element. May return {<span class="hljs-doctag">@code</span> null}
+	 * if there were errors during parse. Errors are reported to the
+	 * {<span class="hljs-doctag">@link</span> org.springframework.beans.factory.parsing.ProblemReporter}.
+	 */</span>
+	<span class="hljs-meta">@Nullable</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> BeanDefinitionHolder <span class="hljs-title">parseBeanDefinitionElement</span><span class="hljs-params">(Element ele, @Nullable BeanDefinition containingBean)</span> </span>{
+		String id = ele.getAttribute(ID_ATTRIBUTE);
+		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
+
+		List&lt;String&gt; aliases = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+		<span class="hljs-keyword">if</span> (StringUtils.hasLength(nameAttr)) {
+			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
+			aliases.addAll(Arrays.asList(nameArr));
+		}
+
+		String beanName = id;
+		<span class="hljs-keyword">if</span> (!StringUtils.hasText(beanName) &amp;&amp; !aliases.isEmpty()) {
+			beanName = aliases.remove(<span class="hljs-number">0</span>);
+			<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+				logger.trace(<span class="hljs-string">"No XML 'id' specified - using '"</span> + beanName +
+						<span class="hljs-string">"' as bean name and "</span> + aliases + <span class="hljs-string">" as aliases"</span>);
+			}
+		}
+
+		<span class="hljs-keyword">if</span> (containingBean == <span class="hljs-keyword">null</span>) {
+			checkNameUniqueness(beanName, aliases, ele);
+		}
+
+		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
+		<span class="hljs-keyword">if</span> (beanDefinition != <span class="hljs-keyword">null</span>) {
+			<span class="hljs-keyword">if</span> (!StringUtils.hasText(beanName)) {
+				<span class="hljs-keyword">try</span> {
+					<span class="hljs-keyword">if</span> (containingBean != <span class="hljs-keyword">null</span>) {
+						beanName = BeanDefinitionReaderUtils.generateBeanName(
+								beanDefinition, <span class="hljs-keyword">this</span>.readerContext.getRegistry(), <span class="hljs-keyword">true</span>);
+					}
+					<span class="hljs-keyword">else</span> {
+						beanName = <span class="hljs-keyword">this</span>.readerContext.generateBeanName(beanDefinition);
+						<span class="hljs-comment">// Register an alias for the plain bean class name, if still possible,</span>
+						<span class="hljs-comment">// if the generator returned the class name plus a suffix.</span>
+						<span class="hljs-comment">// This is expected for Spring 1.2/2.0 backwards compatibility.</span>
+						String beanClassName = beanDefinition.getBeanClassName();
+						<span class="hljs-keyword">if</span> (beanClassName != <span class="hljs-keyword">null</span> &amp;&amp;
+								beanName.startsWith(beanClassName) &amp;&amp; beanName.length() &gt; beanClassName.length() &amp;&amp;
+								!<span class="hljs-keyword">this</span>.readerContext.getRegistry().isBeanNameInUse(beanClassName)) {
+							aliases.add(beanClassName);
+						}
+					}
+					<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+						logger.trace(<span class="hljs-string">"Neither XML 'id' nor 'name' specified - "</span> +
+								<span class="hljs-string">"using generated bean name ["</span> + beanName + <span class="hljs-string">"]"</span>);
+					}
+				}
+				<span class="hljs-keyword">catch</span> (Exception ex) {
+					error(ex.getMessage(), ele);
+					<span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+				}
+			}
+			String[] aliasesArray = StringUtils.toStringArray(aliases);
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
+		}
+
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+	}
+
+</code></pre>
+<h2 id="13.-%E8%BD%BD%E5%85%A5%E5%85%83%E7%B4%A0">13. 载入<property>元素 <a class="header-anchor" href="#13.-%E8%BD%BD%E5%85%A5%E5%85%83%E7%B4%A0">#</a></h2>
+<p>和Bean类似，方法名为：parsePropertyElements();</p>
+<h2 id="14.-%E8%BD%BD%E5%85%A5%E7%9A%84%E5%AD%90%E5%85%83%E7%B4%A0">14. 载入<property>的子元素 <a class="header-anchor" href="#14.-%E8%BD%BD%E5%85%A5%E7%9A%84%E5%AD%90%E5%85%83%E7%B4%A0">#</a></h2>
+<p>和Bean类似，方法为：public Object parsePropertySubElement(Element ele, @Nullable BeanDefinition bd, @Nullable String defaultValueType)</p>
+<h2 id="15.-%E8%BD%BD%E5%85%A5%E7%9A%84%E5%AD%90%E5%85%83%E7%B4%A0">15. 载入<list>的子元素 <a class="header-anchor" href="#15.-%E8%BD%BD%E5%85%A5%E7%9A%84%E5%AD%90%E5%85%83%E7%B4%A0">#</a></h2>
+<p>和Bean类似，方法为：public List<Object> parseListElement(Element collectionEle, @Nullable BeanDefinition bd)</p>
+<h2 id="16.-%E5%88%86%E9%85%8D%E6%B3%A8%E5%86%8C%E7%AD%96%E7%95%A5">16. 分配注册策略 <a class="header-anchor" href="#16.-%E5%88%86%E9%85%8D%E6%B3%A8%E5%86%8C%E7%AD%96%E7%95%A5">#</a></h2>
+<p>让我们继续跟踪程序的执行顺序，接下来我们来分析 DefaultBeanDefinitionDocumentReader 对
+Bean 定义转换的 Document 对象解析的流程中，在其 parseDefaultElement()方法中完成对
+Document 对象的解析后得到封装 BeanDefinition 的 BeanDefinitionHold 对象，然后调用
+BeanDefinitionReaderUtils 的 registerBeanDefinition() 方 法 向 IOC 容 器 注 册 解 析 的 Bean ， BeanDefinitionReaderUtils 的注册的源码如下:</p>
+<pre><code class="language-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">registerBeanDefinition</span><span class="hljs-params">(
+			BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)</span>
+			<span class="hljs-keyword">throws</span> BeanDefinitionStoreException </span>{
+
+		<span class="hljs-comment">// Register bean definition under primary name.</span>
+		String beanName = definitionHolder.getBeanName();
+		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
+
+		<span class="hljs-comment">// Register aliases for bean name, if any.</span>
+		String[] aliases = definitionHolder.getAliases();
+		<span class="hljs-keyword">if</span> (aliases != <span class="hljs-keyword">null</span>) {
+			<span class="hljs-keyword">for</span> (String alias : aliases) {
+				registry.registerAlias(beanName, alias);
+			}
+		}
+	}
+
+</code></pre>
+<p>当调用 BeanDefinitionReaderUtils 向 IOC 容器注册解析的 BeanDefinition 时，真正完成注册功能的
+是 DefaultListableBeanFactory。</p>
+<h2 id="17.-%E5%90%91%E5%AE%B9%E5%99%A8%E6%B3%A8%E5%86%8C">17. 向容器注册 <a class="header-anchor" href="#17.-%E5%90%91%E5%AE%B9%E5%99%A8%E6%B3%A8%E5%86%8C">#</a></h2>
+<p>DefaultListableBeanFactory 中使用一个 HashMap：beanDefinitionMap 的集合对象存放 IOC 容器中注册解析的 BeanDefinition，向 IOC 容器注册的主要源码如下:
+beanDefinitionMap</p>
+<pre><code class="language-java">
+<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">registerBeanDefinition</span><span class="hljs-params">(String beanName, BeanDefinition beanDefinition)</span>
+			<span class="hljs-keyword">throws</span> BeanDefinitionStoreException </span>{
+
+		Assert.hasText(beanName, <span class="hljs-string">"Bean name must not be empty"</span>);
+		Assert.notNull(beanDefinition, <span class="hljs-string">"BeanDefinition must not be null"</span>);
+
+		<span class="hljs-keyword">if</span> (beanDefinition <span class="hljs-keyword">instanceof</span> AbstractBeanDefinition) {
+			<span class="hljs-keyword">try</span> {
+				((AbstractBeanDefinition) beanDefinition).validate();
+			}
+			<span class="hljs-keyword">catch</span> (BeanDefinitionValidationException ex) {
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
+						<span class="hljs-string">"Validation of bean definition failed"</span>, ex);
+			}
+		}
+
+		BeanDefinition existingDefinition = <span class="hljs-keyword">this</span>.beanDefinitionMap.get(beanName);
+		<span class="hljs-keyword">if</span> (existingDefinition != <span class="hljs-keyword">null</span>) {
+			<span class="hljs-keyword">if</span> (!isAllowBeanDefinitionOverriding()) {
+				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> BeanDefinitionOverrideException(beanName, beanDefinition, existingDefinition);
+			}
+			<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (existingDefinition.getRole() &lt; beanDefinition.getRole()) {
+				<span class="hljs-comment">// e.g. was ROLE_APPLICATION, now overriding with ROLE_SUPPORT or ROLE_INFRASTRUCTURE</span>
+				<span class="hljs-keyword">if</span> (logger.isInfoEnabled()) {
+					logger.info(<span class="hljs-string">"Overriding user-defined bean definition for bean '"</span> + beanName +
+							<span class="hljs-string">"' with a framework-generated bean definition: replacing ["</span> +
+							existingDefinition + <span class="hljs-string">"] with ["</span> + beanDefinition + <span class="hljs-string">"]"</span>);
+				}
+			}
+			<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!beanDefinition.equals(existingDefinition)) {
+				<span class="hljs-keyword">if</span> (logger.isDebugEnabled()) {
+					logger.debug(<span class="hljs-string">"Overriding bean definition for bean '"</span> + beanName +
+							<span class="hljs-string">"' with a different definition: replacing ["</span> + existingDefinition +
+							<span class="hljs-string">"] with ["</span> + beanDefinition + <span class="hljs-string">"]"</span>);
+				}
+			}
+			<span class="hljs-keyword">else</span> {
+				<span class="hljs-keyword">if</span> (logger.isTraceEnabled()) {
+					logger.trace(<span class="hljs-string">"Overriding bean definition for bean '"</span> + beanName +
+							<span class="hljs-string">"' with an equivalent definition: replacing ["</span> + existingDefinition +
+							<span class="hljs-string">"] with ["</span> + beanDefinition + <span class="hljs-string">"]"</span>);
+				}
+			}
+			<span class="hljs-keyword">this</span>.beanDefinitionMap.put(beanName, beanDefinition);
+		}
+		<span class="hljs-keyword">else</span> {
+			<span class="hljs-keyword">if</span> (hasBeanCreationStarted()) {
+				<span class="hljs-comment">// Cannot modify startup-time collection elements anymore (for stable iteration)</span>
+				<span class="hljs-keyword">synchronized</span> (<span class="hljs-keyword">this</span>.beanDefinitionMap) {
+					<span class="hljs-keyword">this</span>.beanDefinitionMap.put(beanName, beanDefinition);
+					List&lt;String&gt; updatedDefinitions = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(<span class="hljs-keyword">this</span>.beanDefinitionNames.size() + <span class="hljs-number">1</span>);
+					updatedDefinitions.addAll(<span class="hljs-keyword">this</span>.beanDefinitionNames);
+					updatedDefinitions.add(beanName);
+					<span class="hljs-keyword">this</span>.beanDefinitionNames = updatedDefinitions;
+					removeManualSingletonName(beanName);
+				}
+			}
+			<span class="hljs-keyword">else</span> {
+				<span class="hljs-comment">// Still in startup registration phase</span>
+				<span class="hljs-keyword">this</span>.beanDefinitionMap.put(beanName, beanDefinition);
+				<span class="hljs-keyword">this</span>.beanDefinitionNames.add(beanName);
+				removeManualSingletonName(beanName);
+			}
+			<span class="hljs-keyword">this</span>.frozenBeanDefinitionNames = <span class="hljs-keyword">null</span>;
+		}
+
+		<span class="hljs-keyword">if</span> (existingDefinition != <span class="hljs-keyword">null</span> || containsSingleton(beanName)) {
+			resetBeanDefinition(beanName);
+		}
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (isConfigurationFrozen()) {
+			clearByTypeCache();
+		}
+	}
+</code></pre>
+<p>至此，Bean 配置信息中配置的 Bean 被解析过后，已经注册到 IOC 容器中，被容器管理起来，真正完 成了 IOC 容器初始化所做的全部工作。现在 IOC 容器中已经建立了整个 Bean 的配置信息，这些 BeanDefinition 信息已经可以使用，并且可以被检索，IOC 容器的作用就是对这些注册的 Bean 定义信 息进行处理和维护。这些的注册的 Bean 定义信息是 IOC 容器控制反转的基础，正是有了这些注册的数 据，容器才可以进行依赖注入。</p>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

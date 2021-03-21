@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="4.消息可靠性投递" />
+	<meta name="description" content="4.消息可靠性投递" />
+	<!-- 网页标签标题 -->
+	<title>4.消息可靠性投递</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h1 id="%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92">消息可靠性投递 <a class="header-anchor" href="#%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E6%80%A7%E6%8A%95%E9%80%92">#</a></h1>
+<h2 id="%E6%B6%88%E6%81%AF%E8%90%BD%E5%BA%93%EF%BC%8C%E5%AF%B9%E6%B6%88%E6%81%AF%E7%8A%B6%E6%80%81%E6%89%93%E6%A0%87%E3%80%82%2B%E8%BD%AE%E8%AE%AD">消息落库，对消息状态打标。+轮训 <a class="header-anchor" href="#%E6%B6%88%E6%81%AF%E8%90%BD%E5%BA%93%EF%BC%8C%E5%AF%B9%E6%B6%88%E6%81%AF%E7%8A%B6%E6%80%81%E6%89%93%E6%A0%87%E3%80%82%2B%E8%BD%AE%E8%AE%AD">#</a></h2>
+<p>状态0，未处理，1：已经处理，2：失败（需要补偿机制）。</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/0013e84930e34651932a5adc1a7e48e4" alt="image"></p>
+<ol>
+<li>将业务订单数据和生成的Message进行持久化操作</li>
+<li>将Message发送到Broker服务器中</li>
+<li>通过RabbitMQ的Confirm机制，在producer端，监听服务器是否ACK。</li>
+<li>如果ACK了，就将Message这条数据状态更新为已发送。如果失败，修改为失败状态。</li>
+<li>分布式定时任务查询数据库3分钟（这个具体时间应该根据的时效性来定）之前的发送失败的消息</li>
+<li>重新发送消息，记录发送次数</li>
+<li>如果发送次数过多仍然失败，那么就需要人工排查之类的操作。</li>
+</ol>
+<p>优点：</p>
+<blockquote>
+<p>能够保证消息百分百不丢失</p>
+</blockquote>
+<p>缺点：</p>
+<blockquote>
+<p>第一步中涉及到分布式事务问题，分布式事务一点会降低时效性。</p>
+</blockquote>
+<h2 id="%E6%B6%88%E6%81%AF%E7%9A%84%E5%BB%B6%E8%BF%9F%E6%8A%95%E9%80%92%EF%BC%8C%E5%81%9A%E4%BA%8C%E6%AC%A1%E7%A1%AE%E8%AE%A4%EF%BC%8C%E5%9B%9E%E8%B0%83%E6%A3%80%E6%9F%A5%E3%80%82">消息的延迟投递，做二次确认，回调检查。 <a class="header-anchor" href="#%E6%B6%88%E6%81%AF%E7%9A%84%E5%BB%B6%E8%BF%9F%E6%8A%95%E9%80%92%EF%BC%8C%E5%81%9A%E4%BA%8C%E6%AC%A1%E7%A1%AE%E8%AE%A4%EF%BC%8C%E5%9B%9E%E8%B0%83%E6%A3%80%E6%9F%A5%E3%80%82">#</a></h2>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/6f11c4835f234c11885298e36f667d8d" alt="image"></p>
+<p>流程图中，颜色不同的代表不同的message</p>
+<ol>
+<li>将业务订单持久化</li>
+<li>发送一条Message到broker(称之为主Message)，再发送相同的一条到不同的队列或者交换机(这条称为确认Message)中。</li>
+<li>主Message由实际业务处理端消费后，生成一条响应Message。之前的确认Message由Message Service应用处理入库。
+4~6. 实际业务处理端发送的确认Message由Message Service接收后，将原Message状态修改。</li>
+<li>如果该条Message没有被确认，则通过rpc调用重新由producer进行全过程。</li>
+</ol>
+<p>优点：</p>
+<blockquote>
+<p>相对于数据库持久化方案来说响应速度有所提升</p>
+</blockquote>
+<p>缺点：</p>
+<blockquote>
+<p>系统复杂性有点高
+万一两条消息都失败了，消息存在丢失情况，仍需Confirm机制做补偿</p>
+</blockquote>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

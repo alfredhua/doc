@@ -60,7 +60,7 @@ export default {
     },
     start: {
       title: '查看文章',
-      desc: '简单描述',
+      desc: '',
       img: '/img/quick_start.png',
       button: {
         text: '阅读更多',

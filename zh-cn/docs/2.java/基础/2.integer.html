@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="2.integer" />
+	<meta name="description" content="2.integer" />
+	<!-- 网页标签标题 -->
+	<title>2.integer</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><p>将 Integer对象i和j进行互换：</p>
+<pre><code>
+public class IntegetTest {
+
+  public static void main(String[] args) {
+      Integer i=1,j=2;
+      swap(i,j);
+      System.out.println(&quot;i=&quot;+i+&quot;,j=&quot;+j);
+  }
+
+  private static void swap(Integer i,Integer j){
+    Integer tmp=j;
+    j=i;
+    i=tmp;
+  }
+}
+
+</code></pre>
+<p>以上是正常互换情形，但是输出结果却是：i=1,j=2
+未发生互换。</p>
+<p>解读：
+我们输入，Integer i=1；实际上的操作是 Integer i=Integer.value(1);
+此时我们可以看到Integer.value方法如下：</p>
+<pre><code>public static Integer valueOf(int i) {
+    if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)
+        return IntegerCache.cache[i + (-IntegerCache.low)];
+    return new Integer(i);
+}
+
+</code></pre>
+<p>当i&gt;= IntegerCache.low即（-128） &amp;&amp; i &lt;= IntegerCache.high（127）
+是从 IntegerCache.cache对应的下标获取值。即 -128到127存放在cache下标为：0到256的位置上。
+所以，我们在进行</p>
+<pre><code> private static void swap(Integer i,Integer j){
+    Integer tmp=j;
+    j=i;
+    i=tmp;
+  }
+</code></pre>
+<p>操作时，实际上是获取的Integer.cache中的对应的下标值，所以并没有发生变化。
+由此可以发现：
+在-128到127之间，我们进行互换操作时，不受影响，但是其他的值会发生变化。</p>
+<pre><code>private static void swap(Integer i,Integer j) throws NoSuchFieldException, IllegalAccessException {
+  Field value = i.getClass().getDeclaredField(&quot;value&quot;);
+  value.setAccessible(true);
+  int tmp=i;
+  value.set(i,j);
+  System.out.println(tmp);
+  value.set(j, new Integer(tmp));
+}
+
+
+</code></pre>
+<p>new Integer(tmp)的时候才会把int类型的值传递给Integer中的value属性。</p>
+<p>反射：
+value.setAccessible(true);
+会设置override属性为true</p>
+<pre><code>private static void setAccessible0(AccessibleObject obj, boolean flag)
+    throws SecurityException
+{
+    if (obj instanceof Constructor &amp;&amp; flag == true) {
+        Constructor&lt;?&gt; c = (Constructor&lt;?&gt;)obj;
+        if (c.getDeclaringClass() == Class.class) {
+            throw new SecurityException(&quot;Cannot make a java.lang.Class&quot; +
+                                        &quot; constructor accessible&quot;);
+        }
+    }
+    obj.override = flag;
+}
+
+public void set(Object obj, Object value)
+    throws IllegalArgumentException, IllegalAccessException
+{
+    if (!override) {
+        if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+            Class&lt;?&gt; caller = Reflection.getCallerClass();
+            checkAccess(caller, clazz, obj, modifiers);
+        }
+    }
+    getFieldAccessor(obj).set(obj, value);
+}
+
+</code></pre>
+<p>我们在调用Set方法时候可以看到会先判断override属性，如果是true的话才允许设置。</p>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

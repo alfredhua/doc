@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="11.lock" />
+	<meta name="description" content="11.lock" />
+	<!-- 网页标签标题 -->
+	<title>11.lock</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="redis%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81">Redis实现分布式锁 <a class="header-anchor" href="#redis%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81">#</a></h2>
+<p>Redis实现分布式锁利用 SETNX 和 SETEX</p>
+<p>基本命令主要有：</p>
+<ul>
+<li>SETNX(SET If Not Exists)：</li>
+</ul>
+<p>当且仅当 Key 不存在时，则可以设置，否则不做任何动作。</p>
+<p>当且仅当 key 不存在，将 key 的值设为 value ，并返回1；若给定的 key 已经存在，则 SETNX 不做任何动作，并返回0。</p>
+<ul>
+<li>SETEX：</li>
+</ul>
+<p>基于SETNX功能外,还可以设置超时时间，防止死锁。</p>
+<p>分布式锁其实大白话，本质上要实现的目标(客户端)在redis中占一个位置，等到这个客户试用，别的人进来就必须得等着，等我试用完了，走了，你再来。感觉跟多线程锁一样，意思大致是一样的，多线程是针对单机的，在同一个Jvm中，但是分布式石锁，是跨机器的，多个进程不同机器上发来得请求，去对同一个数据进行操作。</p>
+<p>比如，分布式架构下的秒杀系统，几万人对10个商品进行抢购，10个商品存在redis中，就是表示10个位置，第一个人进来了，商品就剩9个了，第二个人进来就剩8个，在第一个人进来的时候，其他人必须等到10个商品数量成功减去1之后你才能进来。</p>
+<p>这个过程中第一个人进来的时候还没操作减1然后异常了，没有释放锁，然后后面人一直等待着，这就是死锁。真对这种情况可以设置超时时间，如果超过10s中还是没出来，就让他超时失效。</p>
+<pre><code class="language-java">
+<span class="hljs-comment">/**
+ * 获取锁
+ * <span class="hljs-doctag">@param</span> lockKey 锁
+ * <span class="hljs-doctag">@param</span> identity 身份标识（保证锁不会被其他人释放）
+ * <span class="hljs-doctag">@param</span> expireTime 锁的过期时间（单位：秒）
+ * <span class="hljs-doctag">@return</span>
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">lock</span><span class="hljs-params">(String lockKey, String identity, <span class="hljs-keyword">long</span> expireTime)</span></span>{
+  <span class="hljs-keyword">boolean</span> lockResult = redisTemplate.opsForValue().setIfAbsent(lockKey, identity, expireTime, TimeUnit.SECONDS);
+  <span class="hljs-keyword">return</span> opsForValue;
+}
+
+<span class="hljs-comment">/**
+ * 释放锁
+ * <span class="hljs-doctag">@param</span> lockKey 锁
+ * <span class="hljs-doctag">@param</span> identity 身份标识（保证锁不会被其他人释放）
+ * <span class="hljs-doctag">@return</span>
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">boolean</span> <span class="hljs-title">releaseLock</span><span class="hljs-params">(String lockKey, String identity)</span></span>{
+  String luaScript =
+    <span class="hljs-string">"if "</span> +
+    <span class="hljs-string">"  redis.call('get', KEYS[1]) == ARGV[1] "</span> +
+    <span class="hljs-string">"then "</span> +
+    <span class="hljs-string">"  return redis.call('del', KEYS[1]) "</span> +
+    <span class="hljs-string">"else "</span> +
+    <span class="hljs-string">"  return 0 "</span> +
+    <span class="hljs-string">"end"</span>;
+  DefaultRedisScript&lt;Boolean&gt; redisScript = <span class="hljs-keyword">new</span> DefaultRedisScript&lt;&gt;();
+  redisScript.setResultType(Boolean<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>;
+  redisScript.setScriptText(luaScript);
+  List&lt;String&gt; keys = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;();
+  keys.add(lockKey);
+  <span class="hljs-keyword">boolean</span> result = redisTemplate.execute(redisScript, keys, identity);
+  <span class="hljs-keyword">return</span> result;
+}
+</code></pre>
+<p>解锁的方法只需两个参数：lockKey、identity。</p>
+<ul>
+<li>第一个参数lockKey为key，一个资源对应一个唯一的key。</li>
+<li>第二个参数identity为身份标识，作为此key对应的value存储，为了判断在释放锁时是不是和加锁的身份相同，防止别人释放锁。</li>
+</ul>
+<p>此处使用Lua脚本来判断身份，身份相同就删除，身份不同就不对数据做操作并返回失败。为什么要使用Lua脚本呢？这是为了要保证操作的原子性，redis在执行Lua脚本的时候是把脚本当作一个命令来执行的，我们都知道redis的命令是都是原子操作，这样就保证了操作的原子性。</p>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

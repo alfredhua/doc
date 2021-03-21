@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="2.排序" />
+	<meta name="description" content="2.排序" />
+	<!-- 网页标签标题 -->
+	<title>2.排序</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6">时间复杂度 <a class="header-anchor" href="#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6">#</a></h2>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/4c47e605fc85475db4208ea2aae29cd3" alt="image"></p>
+<h2 id="%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F-o(n%C2%B2)">冒泡排序 O(n²) <a class="header-anchor" href="#%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F-o(n%C2%B2)">#</a></h2>
+<ul>
+<li>比较相邻的元素。如果第一个比第二个大，就交换它们两个；</li>
+<li>对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对，这样在最后的元素应该会是最大的数；</li>
+<li>针对所有的元素重复以上的步骤，除了最后一个；</li>
+<li>重复步骤1~3，直到排序完成。</li>
+</ul>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BubbleSort</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IArraySort</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] sourceArray) <span class="hljs-keyword">throws</span> Exception {
+        <span class="hljs-comment">// 对 arr 进行拷贝，不改变参数内容</span>
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(sourceArray, sourceArray.length);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; arr.length; i++) {
+            <span class="hljs-comment">// 设定一个标记，若为true，则表示此次循环没有进行交换，也就是待排序列已经有序，排序已经完成。</span>
+            <span class="hljs-keyword">boolean</span> flag = <span class="hljs-keyword">true</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; arr.length - i; j++) {
+                <span class="hljs-keyword">if</span> (arr[j] &gt; arr[j + <span class="hljs-number">1</span>]) {
+                    <span class="hljs-keyword">int</span> tmp = arr[j];
+                    arr[j] = arr[j + <span class="hljs-number">1</span>];
+                    arr[j + <span class="hljs-number">1</span>] = tmp;
+                    flag = <span class="hljs-keyword">false</span>;
+                }
+            }
+            <span class="hljs-keyword">if</span> (flag) {
+                <span class="hljs-keyword">break</span>;
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+}
+</code></pre>
+<h2 id="%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8Fo(n%C2%B2)">选择排序O(n²) <a class="header-anchor" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8Fo(n%C2%B2)">#</a></h2>
+<p>首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置。</p>
+<p>再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。</p>
+<p>重复第二步，直到所有元素均排序完毕。</p>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SelectionSort</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IArraySort</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] sourceArray) <span class="hljs-keyword">throws</span> Exception {
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(sourceArray, sourceArray.length);
+        <span class="hljs-comment">// 总共要经过 N-1 轮比较</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; arr.length - <span class="hljs-number">1</span>; i++) {
+            <span class="hljs-keyword">int</span> min = i;
+            <span class="hljs-comment">// 每轮需要比较的次数 N-i，0</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = i + <span class="hljs-number">1</span>; j &lt; arr.length; j++) {
+                <span class="hljs-keyword">if</span> (arr[j] &lt; arr[min]) {
+                    <span class="hljs-comment">// 记录目前能找到的最小值元素的下标</span>
+                    min = j;
+                }
+            }
+            <span class="hljs-comment">// 将找到的最小值和i位置所在的值进行交换</span>
+            <span class="hljs-keyword">if</span> (i != min) {
+                <span class="hljs-keyword">int</span> tmp = arr[i];
+                arr[i] = arr[min];
+                arr[min] = tmp;
+            }
+
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+}
+</code></pre>
+<h2 id="%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F">插入排序 <a class="header-anchor" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F">#</a></h2>
+<p>将第一待排序序列第一个元素看做一个有序序列，把第二个元素到最后一个元素当成是未排序序列。</p>
+<p>从头到尾依次扫描未排序序列，将扫描到的每个元素插入有序序列的适当位置。（如果待插入的元素与有序序列中的某个元素相等，则将待插入元素插入到相等元素的后面。）</p>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InsertSort</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IArraySort</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] sourceArray) <span class="hljs-keyword">throws</span> Exception {
+        <span class="hljs-comment">// 对 arr 进行拷贝，不改变参数内容</span>
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(sourceArray, sourceArray.length);
+        <span class="hljs-comment">// 从下标为1的元素开始选择合适的位置插入，因为下标为0的只有一个元素，默认是有序的</span>
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; arr.length; i++) {
+            <span class="hljs-comment">// 记录要插入的数据</span>
+            <span class="hljs-keyword">int</span> tmp = arr[i];
+            <span class="hljs-comment">// 从已经排序的序列最右边的开始比较，找到比其小的数</span>
+            <span class="hljs-keyword">int</span> j = i;
+            <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; tmp &lt; arr[j - <span class="hljs-number">1</span>]) {
+                arr[j] = arr[j - <span class="hljs-number">1</span>];
+                j--;
+            }
+            <span class="hljs-comment">// 存在比其小的数，插入</span>
+            <span class="hljs-keyword">if</span> (j != i) {
+                arr[j] = tmp;
+            }
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+}
+</code></pre>
+<h2 id="%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F">希尔排序 <a class="header-anchor" href="#%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F">#</a></h2>
+<p>希尔排序的基本思想是：先将整个待排序的记录序列分割成为若干子序列分别进行直接插入排序，待整个序列中的记录&quot;基本有序&quot;时，再对全体记录进行依次直接插入排序。</p>
+<p>选择一个增量序列 t1，t2，……，tk，其中 ti &gt; tj, tk = 1；</p>
+<p>按增量序列个数 k，对序列进行 k 趟排序；</p>
+<p>每趟排序，根据对应的增量 ti，将待排序列分割成若干长度为 m 的子序列，分别对各子表进行直接插入排序。仅增量因子为 1 时，整个序列作为一个表来处理，表长度即为整个序列的长度。</p>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShellSort</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IArraySort</span> </span>{
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] sourceArray) <span class="hljs-keyword">throws</span> Exception {
+        <span class="hljs-comment">// 对 arr 进行拷贝，不改变参数内容</span>
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(sourceArray, sourceArray.length);
+        <span class="hljs-keyword">int</span> gap = <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">while</span> (gap &lt; arr.length) {
+            gap = gap * <span class="hljs-number">3</span> + <span class="hljs-number">1</span>;
+        }
+        <span class="hljs-keyword">while</span> (gap &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = gap; i &lt; arr.length; i++) {
+                <span class="hljs-keyword">int</span> tmp = arr[i];
+                <span class="hljs-keyword">int</span> j = i - gap;
+                <span class="hljs-keyword">while</span> (j &gt;= <span class="hljs-number">0</span> &amp;&amp; arr[j] &gt; tmp) {
+                    arr[j + gap] = arr[j];
+                    j -= gap;
+                }
+                arr[j + gap] = tmp;
+            }
+            gap = (<span class="hljs-keyword">int</span>) Math.floor(gap / <span class="hljs-number">3</span>);
+        }
+
+        <span class="hljs-keyword">return</span> arr;
+    }
+}
+</code></pre>
+<h2 id="%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F">归并排序 <a class="header-anchor" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F">#</a></h2>
+<ol>
+<li>申请空间，使其大小为两个已经排序序列之和，该空间用来存放合并后的序列；</li>
+<li>设定两个指针，最初位置分别为两个已经排序序列的起始位置；</li>
+<li>比较两个指针所指向的元素，选择相对小的元素放入到合并空间，并移动指针到下一位置；</li>
+<li>重复步骤 3 直到某一指针达到序列尾；</li>
+<li>将另一序列剩下的所有元素直接复制到合并序列尾。</li>
+</ol>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MergeSort</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IArraySort</span> </span>{
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] sourceArray) <span class="hljs-keyword">throws</span> Exception {
+        <span class="hljs-comment">// 对 arr 进行拷贝，不改变参数内容</span>
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(sourceArray, sourceArray.length);
+        <span class="hljs-keyword">if</span> (arr.length &lt; <span class="hljs-number">2</span>) {
+            <span class="hljs-keyword">return</span> arr;
+        }
+        <span class="hljs-keyword">int</span> middle = (<span class="hljs-keyword">int</span>) Math.floor(arr.length / <span class="hljs-number">2</span>);
+        <span class="hljs-keyword">int</span>[] left = Arrays.copyOfRange(arr, <span class="hljs-number">0</span>, middle);
+        <span class="hljs-keyword">int</span>[] right = Arrays.copyOfRange(arr, middle, arr.length);
+        <span class="hljs-keyword">return</span> merge(sort(left), sort(right));
+    }
+
+    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">int</span>[] merge(<span class="hljs-keyword">int</span>[] left, <span class="hljs-keyword">int</span>[] right) {
+        <span class="hljs-keyword">int</span>[] result = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[left.length + right.length];
+        <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">while</span> (left.length &gt; <span class="hljs-number">0</span> &amp;&amp; right.length &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">if</span> (left[<span class="hljs-number">0</span>] &lt;= right[<span class="hljs-number">0</span>]) {
+                result[i++] = left[<span class="hljs-number">0</span>];
+                left = Arrays.copyOfRange(left, <span class="hljs-number">1</span>, left.length);
+            } <span class="hljs-keyword">else</span> {
+                result[i++] = right[<span class="hljs-number">0</span>];
+                right = Arrays.copyOfRange(right, <span class="hljs-number">1</span>, right.length);
+            }
+        }
+        <span class="hljs-keyword">while</span> (left.length &gt; <span class="hljs-number">0</span>) {
+            result[i++] = left[<span class="hljs-number">0</span>];
+            left = Arrays.copyOfRange(left, <span class="hljs-number">1</span>, left.length);
+        }
+        <span class="hljs-keyword">while</span> (right.length &gt; <span class="hljs-number">0</span>) {
+            result[i++] = right[<span class="hljs-number">0</span>];
+            right = Arrays.copyOfRange(right, <span class="hljs-number">1</span>, right.length);
+        }
+        <span class="hljs-keyword">return</span> result;
+    }
+
+}
+</code></pre>
+<h2 id="%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F-o(-n*log-n-)">快速排序 O( n*log n ) <a class="header-anchor" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F-o(-n*log-n-)">#</a></h2>
+<ol>
+<li>从数列中挑出一个元素，称为 &quot;基准&quot;（pivot）;</li>
+<li>重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作；</li>
+<li>递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序；</li>
+</ol>
+<pre><code class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">QuickSort</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">IArraySort</span> </span>{
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>[] sort(<span class="hljs-keyword">int</span>[] sourceArray) <span class="hljs-keyword">throws</span> Exception {
+        <span class="hljs-comment">// 对 arr 进行拷贝，不改变参数内容</span>
+        <span class="hljs-keyword">int</span>[] arr = Arrays.copyOf(sourceArray, sourceArray.length);
+
+        <span class="hljs-keyword">return</span> quickSort(arr, <span class="hljs-number">0</span>, arr.length - <span class="hljs-number">1</span>);
+    }
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span>[] quickSort(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> left, <span class="hljs-keyword">int</span> right) {
+        <span class="hljs-keyword">if</span> (left &lt; right) {
+            <span class="hljs-keyword">int</span> partitionIndex = partition(arr, left, right);
+            quickSort(arr, left, partitionIndex - <span class="hljs-number">1</span>);
+            quickSort(arr, partitionIndex + <span class="hljs-number">1</span>, right);
+        }
+        <span class="hljs-keyword">return</span> arr;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">partition</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> left, <span class="hljs-keyword">int</span> right)</span> </span>{
+        <span class="hljs-comment">// 设定基准值（pivot）</span>
+        <span class="hljs-keyword">int</span> pivot = left;
+        <span class="hljs-keyword">int</span> index = pivot + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = index; i &lt;= right; i++) {
+            <span class="hljs-keyword">if</span> (arr[i] &lt; arr[pivot]) {
+                swap(arr, i, index);
+                index++;
+            }
+        }
+        swap(arr, pivot, index - <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">return</span> index - <span class="hljs-number">1</span>;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">swap</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] arr, <span class="hljs-keyword">int</span> i, <span class="hljs-keyword">int</span> j)</span> </span>{
+        <span class="hljs-keyword">int</span> temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+}
+</code></pre>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

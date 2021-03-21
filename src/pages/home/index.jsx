@@ -5,9 +5,13 @@ import Header from '../../components/header';
 import Button from '../../components/button';
 import Footer from '../../components/footer';
 import Language from '../../components/language';
-import Item from './featureItem';
 import homeConfig from '../../../site_config/home';
+import blogConfig from '../../../site_config/blog';
+import PageSlider from '../../components/pageSlider';
+import BlogItem from '../blog/blogItem';
+
 import './index.scss';
+import '../blog/index.scss';
 
 class Home extends Language {
 
@@ -36,10 +40,12 @@ class Home extends Language {
   render() {
     const language = this.getLanguage();
     const dataSource = homeConfig[language];
+    const blogDataSource = blogConfig[language];
+    const blogs = blogDataSource.list;
     const { headerType } = this.state;
     const headerLogo = headerType === 'primary' ? '/img/dubbo_white.png' : '/img/dubbo_colorful.png';
     return (
-      <div className="home-page">
+      <div className="home-page blog-list-page">
         <section className="top-section">
           <Header
             currentKey="home"
@@ -65,7 +71,30 @@ class Home extends Language {
           <div className="animation animation4" />
           <div className="animation animation5" />
         </section>
-        <section className="introduction-section">
+
+        <section className="blog-container">
+          <div className="col col-18 left-part">
+            <PageSlider pageSize={5}>
+            {
+              blogs.map((blog, i) => (
+                <BlogItem key={i} dataSource={blog} />
+              ))
+            }
+            </PageSlider>
+          </div>
+          <div className="col col-6 right-part">
+            <h4>{dataSource.postsTitle}</h4>
+            <ul>
+            {
+              blogs.map((blog, i) => (
+                <li key={i}><a href={getLink(blog.link)} target={blog.target || '_self'}><span>{blog.dateStr}&nbsp;&nbsp;</span><span>{blog.title}</span></a></li>
+              ))
+            }
+            </ul>
+          </div>
+        </section>
+
+        {/* <section className="introduction-section">
           <div className="introduction-body">
             <div className="introduction">
               <h3>{dataSource.introduction.title}</h3>
@@ -73,7 +102,7 @@ class Home extends Language {
             </div>
             <img src={getLink(dataSource.introduction.img)} />
           </div>
-        </section>
+        </section> */}
 
         <section className="start-section">
           <div className="start-body">

@@ -1,0 +1,6 @@
+{
+  "filename": "1.安装.md",
+  "__html": "<h2 id=\"linux\">Linux <a class=\"header-anchor\" href=\"#linux\">#</a></h2>\n<pre><code class=\"language-shell\"> wget http://download.redis.io/releases/redis-2.8.17.tar.gz\n tar xzf redis-2.8.17.tar.gz\n cd redis-2.8.17\n ./redis-server\n</code></pre>\n<h2 id=\"mac\">Mac <a class=\"header-anchor\" href=\"#mac\">#</a></h2>\n<pre><code>brew install redis \n</code></pre>\n",
+  "link": "/zh-cn/docs/6.缓存/redis/1.安装.html",
+  "meta": {}
+}

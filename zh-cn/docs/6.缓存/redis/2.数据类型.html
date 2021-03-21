@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="2.数据类型" />
+	<meta name="description" content="2.数据类型" />
+	<!-- 网页标签标题 -->
+	<title>2.数据类型</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h2 id="string">string <a class="header-anchor" href="#string">#</a></h2>
+<p>这是最基本的类型了，没啥可说的，就是普通的set和get，做简单的kv缓存</p>
+<h4 id="%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0">底层实现 <a class="header-anchor" href="#%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0">#</a></h4>
+<p>是一个简单动态字符串，SDS</p>
+<pre><code class="language-c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sdshdr</span>{</span>
+  <span class="hljs-keyword">int</span> len;
+  <span class="hljs-keyword">int</span> <span class="hljs-built_in">free</span>;
+  <span class="hljs-keyword">int</span> buff[];
+}
+</code></pre>
+<ul>
+<li>len 记录buf数组中已经使用字节的数量，也就是SDS类型所保存的字符串的长度。</li>
+<li>free 记录了buf数组中未使用的字节数量。</li>
+<li>buf 是存储字节的数组，用于保存字符串。</li>
+</ul>
+<p>优势：</p>
+<ul>
+<li>体现了用<strong>空间换时间</strong>的算法思想。牺牲了一些空间，来换取更快的查询效率。比如说结构体中len的值5表示这个SDS保存了一个五个字节长的字符串，O(1)的时间复杂度就可以查询出结果</li>
+<li>空间预分配：在申请空间的时候预先分配好一定长度的空间。当空间不够用的时候，通过SDS提供的API可以重新申请一片更大的空间。</li>
+<li>惰性释放空间：当申请的空间不再被使用的时候，不是立刻释放空间，而是在SDS中的free属性将这些字节的数量记录下来，等待将来使用。</li>
+</ul>
+<h4 id="int">int <a class="header-anchor" href="#int">#</a></h4>
+<p>​	就是redis中存放的各种数字 包括一下这种，故意加引号“”的</p>
+<pre><code class="language-shell">set int_key "111"
+输入：object encoding int_key 输出：int
+</code></pre>
+<h2 id="hash">hash <a class="header-anchor" href="#hash">#</a></h2>
+<p>这个是类似map的一种结构，这个一般就是可以将结构化的数据，比如一个对象（前提是这个对象没嵌套其他的对象）给缓存在redis里，然后每次读写缓存的时候，可以就操作hash里的某个字段。</p>
+<pre><code class="language-json">    key=150
+    
+    value={
+    “id”: 150,
+    “name”: “zhangsan”,
+    “age”: 20
+    }
+</code></pre>
+<p>hash类的数据结构，主要是用来存放一些对象，把一些简单的对象给缓存起来，后续操作的时候，你可以直接仅仅修改这个对象中的某个字段的值</p>
+<pre><code class="language-json">value={
+  “id”: 150,
+  “name”: “zhangsan”,
+  “age”: 21
+}
+</code></pre>
+<p>原理：哈希对象的编码可以是 ziplist 或者 hashtable。</p>
+<pre><code class="language-shell">hset profile name "Tom"
+hset profile age 25
+hset profile career "Programmer"
+</code></pre>
+<p>ziplist储存</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/72ff457a8e5542f49630cd53da3a6015" alt="image"></p>
+<p>hasTable 储存</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/a3aa651364bc4eecaec44c4fa0cb8f24" alt="image"></p>
+<h3 id="list">list <a class="header-anchor" href="#list">#</a></h3>
+<p>有序列表，这个是可以玩儿出很多花样的</p>
+<p>微博，某个大v的粉丝，就可以以list的格式放在redis里去缓存</p>
+<p>key=某大v</p>
+<pre><code>value=[zhangsan, lisi, wangwu]
+</code></pre>
+<p>比如可以通过list存储一些列表型的数据结构，类似粉丝列表了、文章的评论列表了之类的东西</p>
+<p>比如可以通过lrange命令，就是从某个元素开始读取多少个元素，可以基于list实现分页查询，这个很棒的一个功能，基于redis实现简单的高性能分页，可以做类似微博那种下拉不断分页的东西，性能高，就一页一页走</p>
+<p>比如可以搞个简单的消息队列，从list头怼进去，从list尾巴那里弄出来</p>
+<p>原理：列表对象的编码可以是 <strong>ziplist(压缩列表)</strong> 和 <strong>linkedlist(双端链表)</strong>。 关于链表和压缩列表的特性</p>
+<p>ziplist如图 hash</p>
+<p>linkedlist存储</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/e6d243581e00429a8da074353a9f9ef6" alt="image"></p>
+<h2 id="set">set <a class="header-anchor" href="#set">#</a></h2>
+<p>无序集合，自动去重</p>
+<p>直接基于set将系统里需要去重的数据扔进去，自动就给去重了，如果你需要对一些数据进行快速的全局去重，你当然也可以基于jvm内存里的HashSet进行去重，但是如果你的某个系统部署在多台机器上呢？</p>
+<p>得基于redis进行全局的set去重</p>
+<p>可以基于set玩儿交集、并集、差集的操作，比如交集吧，可以把两个人的粉丝列表整一个交集，看看俩人的共同好友是谁？对吧</p>
+<p>把两个大v的粉丝都放在两个set中，对两个set做交集</p>
+<h4 id="%E5%8E%9F%E7%90%86">原理 <a class="header-anchor" href="#%E5%8E%9F%E7%90%86">#</a></h4>
+<p>集合对象的编码可以是 intset 或者 hashtable。</p>
+<p>intset存储：</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/4081c6e51f2f4abaaacb03b51f662513" alt="image"></p>
+<p>hashTable 如hash类型存储</p>
+<h2 id="sorted-set">sorted set <a class="header-anchor" href="#sorted-set">#</a></h2>
+<p>排序的set，去重但是可以排序，写进去的时候给一个分数，自动根据分数排序，这个可以玩儿很多的花样，最大的特点是有个分数可以自定义排序规则</p>
+<p>比如说你要是想根据时间对数据排序，那么可以写入进去的时候用某个时间作为分数，人家自动给你按照时间排序了</p>
+<p>排行榜：将每个用户以及其对应的什么分数写入进去，zadd board score username，接着zrevrange board 0 99，就可以获取排名前100的用户；zrank board username，可以看到用户在排行榜里的排名</p>
+<p>原理： 跳表</p>
+<p>链表，相信大家都不陌生，维护一个有序的链表是一件非常简单的事情，我们都知道，在一个有序的链表里面，查询跟插入的算法复杂度都是O(n)。</p>
+<p><img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/5e714a6f52204eb980cf2711826a6131" alt="image"></p>
+<p>我们能不能进行优化呢，比如我们一次比较两个呢？那样不就可以把时间缩小一半？如果我们4个4个比，那不就更快了？
+<img src="http://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/file/b0f47da8b04d4c8786ee9476cab732e0" alt="image"></p>
+<p>跳表就是这样的一种数据结构，结点是跳过一部分的，从而加快了查询的速度。跳表跟红黑树又有什么差别呢？既然两者的算法复杂度差不多，</p>
+<h2 id="%E4%B8%BA%E4%BB%80%E4%B9%88redis%E8%A6%81%E4%BD%BF%E7%94%A8%E8%B7%B3%E8%A1%A8%E8%80%8C%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%E5%91%A2%EF%BC%9F">为什么Redis要使用跳表而不使用红黑树呢？ <a class="header-anchor" href="#%E4%B8%BA%E4%BB%80%E4%B9%88redis%E8%A6%81%E4%BD%BF%E7%94%A8%E8%B7%B3%E8%A1%A8%E8%80%8C%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%E5%91%A2%EF%BC%9F">#</a></h2>
+<p>跳表相对于红黑树，主要有这几个优点：</p>
+<blockquote>
+<ol>
+<li>代码相对简单，手写个跳表还有可能，手写个红黑树试试？</li>
+<li>如果我们要查询一个区间里面的值，用平衡树可能会麻烦。这里的麻烦指的是实现和理解上，平衡二叉树查询一段区间也是可以做到的。</li>
+<li>删除一段区间，这个如果是平衡二叉树，就会相当困难，毕竟设计到树的平衡问题，而跳表则没有这种烦恼。好了，相信你对跳表已经有一些认识了。</li>
+</ol>
+</blockquote>
+<p>实现原理</p>
+<p>​	有序集合的编码可以是 ziplist 或者 skiplist。</p>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

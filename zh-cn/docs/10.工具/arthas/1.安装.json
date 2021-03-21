@@ -1,0 +1,6 @@
+{
+  "filename": "1.安装.md",
+  "__html": "<h2 id=\"%E5%AE%89%E8%A3%85\">安装 <a class=\"header-anchor\" href=\"#%E5%AE%89%E8%A3%85\">#</a></h2>\n<pre><code class=\"language-java\">curl -O https:<span class=\"hljs-comment\">//arthas.aliyun.com/arthas-boot.jar</span>\njava -jar arthas-boot.jar\n</code></pre>\n<ul>\n<li>执行该程序的用户需要和目标进程具有相同的权限。比如以<code>admin</code>用户来执行：<code>sudo su admin &amp;&amp; java -jar arthas-boot.jar</code> 或 <code>sudo -u admin -EH java -jar arthas-boot.jar</code>。</li>\n<li>如果attach不上目标进程，可以查看<code>~/logs/arthas/</code> 目录下的日志。</li>\n<li>如果下载速度比较慢，可以使用aliyun的镜像：<code>java -jar arthas-boot.jar --repo-mirror aliyun --use-http</code></li>\n<li><code>java -jar arthas-boot.jar -h</code> 打印更多参数信息。</li>\n</ul>\n<h2 id=\"%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4\">基本命令 <a class=\"header-anchor\" href=\"#%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4\">#</a></h2>\n<ul>\n<li>dashboard ：当前系统的实时数据面板</li>\n<li>thread：查看当前线程信息，查看线程的堆栈</li>\n<li>jvm：查看当前JVM信息</li>\n</ul>\n",
+  "link": "/zh-cn/docs/10.工具/arthas/1.安装.html",
+  "meta": {}
+}

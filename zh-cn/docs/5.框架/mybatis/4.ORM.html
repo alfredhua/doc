@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="keywords" content="4.ORM" />
+	<meta name="description" content="4.ORM" />
+	<!-- 网页标签标题 -->
+	<title>4.ORM</title>
+	<link rel="shortcut icon" href="/img/docsite.ico"/>
+	<link rel="stylesheet" href="/build/documentation.css" />
+</head>
+<body>
+	<div id="root"><div class="documentation-page" data-reactroot=""><header class="header-container header-container-normal"><div class="header-body"><a class="logo" href="/zh-cn/index.html"><span class="logo-normal">码农阿华| <span class="logo-desc">玩玩技术，说说产品</span></span></a><div class="search search-normal"><span class="icon-search"></span></div><div class="header-menu"><img class="header-menu-toggle" src="/img/system/menu_gray.png"/><ul><li class="menu-item menu-item-normal"><a href="/zh-cn/index.html" target="_self">首页</a></li><li class="menu-item menu-item-normal menu-item-normal-active"><a href="/zh-cn/docs/begin.html" target="_self">文档</a></li><li class="menu-item menu-item-normal"><a href="/zh-cn/blog/index.html" target="_self">博客</a></li></ul></div></div></header><div class="bar"><div class="bar-body"><img src="/img/system/docs.png" class="front-img"/><span>文档</span><img src="/img/system/docs.png" class="back-img"/></div></div><section class="content-section"><div class="sidemenu"><div class="sidemenu-toggle"><img src="https://img.alicdn.com/tfs/TB1E6apXHGYBuNjy0FoXXciBFXa-200-200.png"/></div><ul><li class="menu-item menu-item-level-1"><span>设计模式</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>设计原则<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/2.开闭原则.html" target="_self">开闭原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/3.接口隔离原则.html" target="_self">接口隔离原则</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/1.设计模式/1.单一职责.html" target="_self">单一职责</a></li></ul></li></ul></li><li class="menu-item menu-item-level-1"><span>JAVA</span><ul><li style="height:36px;overflow:hidden" class="menu-item menu-item-level-2"><span>目录<img style="transform:rotate(-90deg)" class="menu-toggle" src="/img/system/arrow_down.png"/></span><ul><li class="menu-item menu-item-level-3"><a href="/zh-cn/docs/dir/demo3.html" target="_self">示例3</a></li></ul></li></ul></li></ul></div><div class="doc-content markdown-body"><h3 id="dbutils">DBUtils <a class="header-anchor" href="#dbutils">#</a></h3>
+<p>如果项目中操作数据库比较少，使用DBUtils</p>
+<p>DbUtils 提供了一个QueryRunner类它对数据库的增删改查的方法进行了封装，那么我们操作数据库就可以直接使用它提供的方法。</p>
+<pre><code>queryRunner = new QueryRunner(dataSource);
+</code></pre>
+<p>在 QueryRunner的构造函数里面，我们又可以传入一个数据源，比如在这里我们Hikari，这样我们就不需要再去写各种创建和释放连接的代码了。</p>
+<p>调用 QueryRunner 的查询方法，传入这个 Handler，它就可以 自动把结果集转换成实体类 Bean 或者 List 或者 Map。</p>
+<pre><code>String sql = &quot;select * from blog&quot;;
+List&lt;BlogDto&gt; list = queryRunner.query(sql, new BeanListHandler&lt;&gt;(BlogDto.class));
+</code></pre>
+<p>DbUtils 要求数据库的字段跟对象 的属性名称完全一致，才可以实现自动映射。</p>
+<h3 id="spring-jdbc">Spring JDBC <a class="header-anchor" href="#spring-jdbc">#</a></h3>
+<p>第一个，我们不再需要去关心资源管理的问题。</p>
+<p>第二个，对于结果集的处理，Spring JDBC 也提供了一个 RowMapper 接口，可以
+把结果集转换成 Java 对象。</p>
+<p>比如我们要把结果集转换成 Employee 对象，就可以针对一个 Employee
+创建一个 RowMapper 对象，实现 RowMapper 接口，并且重写 mapRow()方法。我们 在 mapRow()方法里面完成对结果集的处理。</p>
+<pre><code>public class EmployeeRowMapper implements RowMapper { 
+    @Override
+    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+        Employee employee = new Employee();
+        employee.setEmpId(resultSet.getInt(&quot;emp_id&quot;));
+        employee.setEmpName(resultSet.getString(&quot;emp_name&quot;));
+        employee.setEmail(resultSet.getString(&quot;emial&quot;));
+        return employee;
+    }
+}
+</code></pre>
+<h3 id="dbutils-%E5%92%8Cspring-jdbc%E5%AF%B9%E6%AF%94">DBUtils 和Spring JDBC对比 <a class="header-anchor" href="#dbutils-%E5%92%8Cspring-jdbc%E5%AF%B9%E6%AF%94">#</a></h3>
+<p>1、 无论是 QueryRunner 还是 JdbcTemplate，都可以传入一个数据源进行初始 化，也就是资源管理这一部分的事情，可以交给专门的数据源组件去做，不用 我们手动创建和关闭;</p>
+<p>2、 对操作数据的增删改查的方法进行了封装;</p>
+<p>3、 可以帮助我们映射结果集，无论是映射成 List、Map 还是实体类。</p>
+<h5 id="%E7%BC%BA%E7%82%B9">缺点 <a class="header-anchor" href="#%E7%BC%BA%E7%82%B9">#</a></h5>
+<p>1、 SQL 语句都是写死在代码里面的，依旧存在硬编码的问题;
+2、 参数只能按固定位置的顺序传入(数组)，它是通过占位符去替换的，
+不能自动映射;
+3、 在方法里面，可以把结果集映射成实体类，但是不能直接把实体类映射
+成数据库的记录(没有自动生成 SQL 的功能);
+4、 查询没有缓存的功能。</p>
+<h3 id="mybatis">MyBatis <a class="header-anchor" href="#mybatis">#</a></h3>
+<h4 id="%E7%89%B9%E6%80%A7">特性 <a class="header-anchor" href="#%E7%89%B9%E6%80%A7">#</a></h4>
+<p>1、 使用连接池对连接进行管理</p>
+<p>2、 SQL 和代码分离，集中管理</p>
+<p>3、 结果集映射</p>
+<p>4、 参数映射和动态 SQL</p>
+<p>5、 重复 SQL 的提取</p>
+<p>6、 缓存管理</p>
+<p>7、 插件机制</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>生命周期</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SqlSessionFactoryBuiler</td>
+<td>方法局部(method)</td>
+</tr>
+<tr>
+<td>SqlSessionFactory(单例)</td>
+<td>应用级别(application)</td>
+</tr>
+<tr>
+<td>SqlSession</td>
+<td>请求和操作(request/method)</td>
+</tr>
+<tr>
+<td>Mapper</td>
+<td>方法(method)</td>
+</tr>
+</tbody>
+</table>
+<p>三种执行器Execute：
+Batch Simple Reuse</p>
+<p>1、resultType 和 resultMap 的区别?</p>
+<p>resultMap：当使用resultMap做SQL语句返回结果类型处理时，通常需要在mapper.xml中定义resultMap进行pojo和相应表字段的对应。对于单表查询的话用resultType是最合适的</p>
+<p>resultMap对于一对一表连接的处理方式通常为在主表的pojo中添加嵌套另一个表的pojo，然后在mapper.xml中采用association节点元素进行对另一个表的连接处理。</p>
+<p>2、collection 和 association 的区别?</p>
+</div></section><footer class="footer-container"><div class="footer-body"><div class="cols-container"><div class="col col-12"><h3>码农阿华</h3><p>联系邮箱：alfredhua@aliyun.com</p></div><div class="col col-6"><dl><dt>文档</dt><dd><a href="/zh-cn/docs/demo1.html" target="_self">概览</a></dd></dl></div><div class="col col-6"><dl><dt>资源</dt><dd><a href="/zh-cn/blog/index.html" target="_self">博客</a></dd></dl></div></div><div class="copyright"><span>CopyRight©2019 版权所有 码农阿华 京ICP备19044364号</span></div></div></footer></div></div>
+	<script src="https://f.alicdn.com/react/15.4.1/react-with-addons.min.js"></script>
+	<script src="https://f.alicdn.com/react/15.4.1/react-dom.min.js"></script>
+	<script>
+		window.rootPath = '';
+  </script>
+	<script src="/build/documentation.js"></script>
+</body>
+</html>

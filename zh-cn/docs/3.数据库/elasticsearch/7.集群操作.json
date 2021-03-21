@@ -1,0 +1,6 @@
+{
+  "filename": "7.集群操作.md",
+  "__html": "<h2 id=\"%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF\">查看节点信息 <a class=\"header-anchor\" href=\"#%E6%9F%A5%E7%9C%8B%E8%8A%82%E7%82%B9%E4%BF%A1%E6%81%AF\">#</a></h2>\n<pre><code class=\"language-shell\">GET /_cat/nodes?v\n</code></pre>\n<h2 id=\"%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E7%8A%B6%E6%80%81\">查看集群状态 <a class=\"header-anchor\" href=\"#%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E7%8A%B6%E6%80%81\">#</a></h2>\n<pre><code class=\"language-shell\">GET _cluster/health\n</code></pre>\n<h2 id=\"%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E8%AE%BE%E7%BD%AE\">查看集群设置 <a class=\"header-anchor\" href=\"#%E6%9F%A5%E7%9C%8B%E9%9B%86%E7%BE%A4%E8%AE%BE%E7%BD%AE\">#</a></h2>\n<pre><code class=\"language-shell\">_cluster/settings\n</code></pre>\n",
+  "link": "/zh-cn/docs/3.数据库/elasticsearch/7.集群操作.html",
+  "meta": {}
+}

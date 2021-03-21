@@ -30,34 +30,61 @@ export default {
   'zh-cn': {
     sidemenu: [
       {
-        title: 'JAVA',
+        title: '设计模式',
         children: [
           {
-            title: '目录',
+            title: '设计原则',
             opened: false,
             children: [
               {
-                title: '示例3',
-                link: '/zh-cn/docs/dir/demo3.html',
+                title: '单一职责',
+                link: '/zh-cn/docs/1.设计模式/1.单一职责.html',
+              }, {
+                title: '开闭原则',
+                link: '/zh-cn/docs/1.设计模式/2.开闭原则.html',
+              }, {
+                title: '接口隔离原则',
+                link: '/zh-cn/docs/1.设计模式/3.接口隔离原则.html',
+              }, {
+                title: '工厂模式',
+                link: '/zh-cn/docs/1.设计模式/4.工厂模式.html',
+              }, {
+                title: '单例模式',
+                link: '/zh-cn/docs/1.设计模式/5.单例模式.html',
+              }, {
+                title: '原型模式',
+                link: '/zh-cn/docs/1.设计模式/6.原型模式.html',
+              }, {
+                title: '代理模式',
+                link: '/zh-cn/docs/1.设计模式/7.代理模式.html',
+              }, {
+                title: '策略模式',
+                link: '/zh-cn/docs/1.设计模式/8.策略模式.html',
+              }, {
+                title: '委派模式和适配器模式',
+                link: '/zh-cn/docs/1.设计模式/9.委派模式和适配器模式.html',
+              }, {
+                title: '装饰器模式',
+                link: '/zh-cn/docs/1.设计模式/10.装饰器模式.html',
+              }
+            ],
+          },
+        ],
+      },{
+        title: 'JAVA',
+        children: [
+          {
+            title: '基础',
+            opened: false,
+            children: [
+              {
+                title: 'HashMap',
+                link: '/zh-cn/docs/2.java/基础/1.HashMap.html',
               },
             ],
           }
         ],
-      }, {
-        title: '大标题',
-        children: [
-          {
-            title: '目录',
-            opened: false,
-            children: [
-              {
-                title: '示例3',
-                link: '/zh-cn/docs/dir/demo3.html',
-              },
-            ],
-          },
-        ],
-      }
+      },
     ],
     barText: '文档',
   },

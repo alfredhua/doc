@@ -65,6 +65,14 @@
         "key1": "hello",
         "key2": "world"
       }
+    },
+    {
+      "filename": "1.产品规则优化.md",
+      "link": "/zh-cn/blog/product/1.产品规则优化.html",
+      "meta": {
+        "key1": "hello",
+        "key2": "world"
+      }
     }
   ]
 }

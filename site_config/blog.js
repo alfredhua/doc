@@ -59,11 +59,11 @@ export default {
     postsTitle: '所有文章',
     list: [
       {
-        title: '第一篇博客',
-        author: 'author1',
-        dateStr: 'May 12nd，2018',
-        desc: '博客描述，总结博客的主体内容',
-        link: '/zh-cn/blog/blog1.html',
+        title: '记产品规则优化一件小事',
+        author: '码农阿华',
+        dateStr: '2020-03-07',
+        desc: '产品规则优化',
+        link: '/zh-cn/blog/product/1.产品规则优化.html',
       }
     ],
   },

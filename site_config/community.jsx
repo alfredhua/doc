@@ -169,57 +169,27 @@ export default {
   'zh-cn': {
     barText: '我的技术',
     events: {
-      title: '技术',
+      title: '网站建设',
       list: [
         {
-          img: '/img/brhtqqzh.jpeg',
-          title: 'JAVA',
-          content: '',
+          img: '/img/admin.png',
+          title: '后台管理系统',
+          content: '后台管理系统',
           dateStr: '',
-          link: '/zh-cn/blog/blog1.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: '这是标题',
+          link: 'http://admin.alfredhua.com',
+        },{
+          img: '/img/blog.png',
+          title: '博客系统',
+          content: '博客系统',
+          dateStr: 'May 12nd，2018',
+          link: 'http://blog.alfredhua.com',
+        },{
+          img: '/img/html.jpeg',
+          title: '企业网站',
           content: '这是内容',
           dateStr: 'May 12nd，2018',
-          link: '/zh-cn/blog/blog2.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: '这是标题',
-          content: '这是内容',
-          dateStr: 'May 12nd，2018',
-          link: '/zh-cn/blog/blog3.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: '这是标题',
-          content: '这是内容',
-          dateStr: 'May 12nd，2018',
-          link: '/zh-cn/blog/blog4.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: '这是标题',
-          content: '这是内容',
-          dateStr: 'May 12nd，2018',
-          link: '/zh-cn/blog/blog5.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: '这是标题',
-          content: '这是内容',
-          dateStr: 'May 12nd，2018',
-          link: '/zh-cn/blog/blog6.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: '这是标题',
-          content: '这是内容',
-          dateStr: 'May 12nd，2018',
-          link: '/zh-cn/blog/blog7.html',
-        },
+          link: 'http://website.alfredhua.com',
+        }
       ]
     },
     contacts: {
@@ -279,7 +249,7 @@ export default {
       ],
     },
     ecos: {
-      title: '标签',
+      title: '技术标签',
       list: [
         {
           title: '',
@@ -287,7 +257,7 @@ export default {
           tags: [
             {
               text: '设计模式',
-              link: '',
+              link: '/zh-cn/docs/1.设计模式/1.单一职责.html',
               bgColor: '#7A63FC',
             },
             {

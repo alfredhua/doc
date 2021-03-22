@@ -82,11 +82,11 @@ export default {
         text: '博客',
         link: '/zh-cn/blog/index.html',
       },
-      // {
-      //   key: 'community',
-      //   text: '关于我',
-      //   link: '/zh-cn/community/index.html',
-      // },
+      {
+        key: 'community',
+        text: '网站建设',
+        link: '/zh-cn/community/index.html',
+      },
     ],
     disclaimer: {
       title: '码农阿华',

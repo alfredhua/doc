@@ -573,49 +573,103 @@ export default {
         title: '服务器',
         children: [
           {
-            title: '网络编程',
-            opened: false,
-            children: [ {
-              "title": "Http",
-              "link": "/zh-cn/docs/2.java/网络编程/1.Http.html"
-            },
-            {
-              "title": "Socket",
-              "link": "/zh-cn/docs/2.java/网络编程/2.Socket.html"
-            }],
-          }
+            title: 'centos下软件安装',
+            link: "/zh-cn/docs/8.服务器/1.centos下软件安装.html",
+
+            // children: [ {
+            //   "title": "Http",
+            //   "link": "/zh-cn/docs/2.服务器/1.centos下软件安装.html"
+            // }
+          } 
         ],
       },{
         title: '算法',
         children: [
           {
-            title: '网络编程',
+            title: '算法',
             opened: false,
             children: [ {
-              "title": "Http",
-              "link": "/zh-cn/docs/2.java/网络编程/1.Http.html"
+              "title": "递归",
+              "link": "/zh-cn/docs/9.算法/1.递归.html"
             },
             {
-              "title": "Socket",
-              "link": "/zh-cn/docs/2.java/网络编程/2.Socket.html"
+              "title": "排序",
+              "link": "/zh-cn/docs/9.算法/2.排序.html"
+            },
+            {
+              "title": "双子针",
+              "link": "/zh-cn/docs/9.算法/3.双子针.html"
+            },
+            {
+              "title": "回溯",
+              "link": "/zh-cn/docs/9.算法/4.回溯.html"
             }],
+          }
+        ],
+      },{
+        title: '工具',
+        children: [
+          {
+            title: 'arthas',
+            opened: false,
+            children: [
+              {
+                "title": "安装",
+                "link": "/zh-cn/docs/10.工具/arthas/1.安装.html"
+              },
+              {
+                "title": "dashboard",
+                "link": "/zh-cn/docs/10.工具/arthas/2.dashboard.html"
+              },
+              {
+                "title": "thread",
+                "link": "/zh-cn/docs/10.工具/arthas/3.thread.html"
+              },
+              {
+                "title": "JVM",
+                "link": "/zh-cn/docs/10.工具/arthas/4.JVM.html"
+              }
+            ],
+          },{
+            title: 'docker',
+            opened: false,
+            children: [
+              {
+                "title": "安装",
+                "link": "/zh-cn/docs/10.工具/docker/1.安装.html"
+              }
+            ],
+          },{
+            title: 'k8s',
+            opened: false,
+            children: [
+              {
+                "title": "环境搭建",
+                "link": "/zh-cn/docs/10.工具/k8s/1.环境搭建.html"
+              },
+              {
+                "title": "kubectl",
+                "link": "/zh-cn/docs/10.工具/k8s/2.kubectl.html"
+              }
+            ],
+          },{
+            title: 'maven',
+            opened: false,
+            children: [
+              {
+                "title": "解决依赖冲突",
+                "link": "/zh-cn/docs/10.工具/maven/1.解决依赖冲突.html"
+              }
+            ],
           }
         ],
       },{
         title: '面试',
         children: [
           {
-            title: '网络编程',
-            opened: false,
-            children: [ {
-              "title": "Http",
-              "link": "/zh-cn/docs/2.java/网络编程/1.Http.html"
-            },
-            {
-              "title": "Socket",
-              "link": "/zh-cn/docs/2.java/网络编程/2.Socket.html"
-            }],
-          }
+            title: 'java基础',
+            link: "/zh-cn/docs/面试/java基础.html",
+          } 
         ],
       }
     ],

@@ -158,13 +158,13 @@
       "meta": {}
     },
     {
-      "filename": "1.kubectl.md",
-      "link": "/zh-cn/docs/10.工具/k8s/1.kubectl.html",
+      "filename": "1.环境搭建.md",
+      "link": "/zh-cn/docs/10.工具/k8s/1.环境搭建.html",
       "meta": {}
     },
     {
-      "filename": "1.环境搭建.md",
-      "link": "/zh-cn/docs/10.工具/k8s/1.环境搭建.html",
+      "filename": "2.kubectl.md",
+      "link": "/zh-cn/docs/10.工具/k8s/2.kubectl.html",
       "meta": {}
     },
     {
@@ -173,8 +173,8 @@
       "meta": {}
     },
     {
-      "filename": "解决依赖冲突.md",
-      "link": "/zh-cn/docs/10.工具/maven/解决依赖冲突.html",
+      "filename": "1.解决依赖冲突.md",
+      "link": "/zh-cn/docs/10.工具/maven/1.解决依赖冲突.html",
       "meta": {}
     },
     {
@@ -823,13 +823,13 @@
       "meta": {}
     },
     {
-      "filename": "README.md",
-      "link": "/zh-cn/docs/8.服务器/README.html",
+      "filename": "1.centos下软件安装.md",
+      "link": "/zh-cn/docs/8.服务器/1.centos下软件安装.html",
       "meta": {}
     },
     {
-      "filename": "centos下软件安装.md",
-      "link": "/zh-cn/docs/8.服务器/centos下软件安装.html",
+      "filename": "README.md",
+      "link": "/zh-cn/docs/8.服务器/README.html",
       "meta": {}
     },
     {

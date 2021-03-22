@@ -669,7 +669,55 @@ export default {
           {
             title: 'java基础',
             link: "/zh-cn/docs/面试/java基础.html",
-          } 
+          },{
+            title: 'mybatis',
+            link: "/zh-cn/docs/面试/mybatis.html",
+          },{
+            title: 'mysql',
+            link: "/zh-cn/docs/面试/mysql.html",
+          },{
+            title: 'spring',
+            link: "/zh-cn/docs/面试/spring.html",
+          },{
+            title: 'spring-boot',
+            link: "/zh-cn/docs/面试/springboot.html",
+          },{
+            title: 'zookeeper',
+            link: "/zh-cn/docs/面试/zookeeper.html",
+          },{
+            title: '并发',
+            link: "/zh-cn/docs/面试/并发.html",
+          },{
+            title: '网络',
+            link: "/zh-cn/docs/面试/网络.html",
+          },{
+            title: '锁',
+            link: "/zh-cn/docs/面试/锁.html",
+          },{
+            title: '集合',
+            link: "/zh-cn/docs/面试/集合.html",
+          },{
+            title: '设计模式',
+            link: "/zh-cn/docs/面试/设计模式.html",
+          },{
+            title: 'nginx',
+            link: "/zh-cn/docs/面试/nginx.html",
+          }, {
+            title: 'jvm',
+            link: "/zh-cn/docs/面试/jvm.html",
+          }, {
+            title: 'NodeJs',
+            link: "/zh-cn/docs/面试/Nodejs.html",
+          },{
+            title: 'RabbitMQ',
+            link: "/zh-cn/docs/面试/rabbbitmq.html",
+          },{
+            title: 'redis',
+            link: "/zh-cn/docs/面试/redis.html",
+          },{
+            title: 'rpc',
+            link: "/zh-cn/docs/面试/rpc.html",
+          }               
         ],
       }
     ],

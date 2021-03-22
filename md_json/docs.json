@@ -344,37 +344,65 @@
     {
       "filename": "1.并发基本概念.md",
       "link": "/zh-cn/docs/2.java/并发/1.并发基本概念.html",
-      "meta": {}
+      "meta": {
+        "title": "并发基本概念-码农阿华",
+        "keywords": "并发基本概念，并发级别，CountDownLatch，CyclicBarrier，线程池，原子类同步和异步，并发和并行，临界区，阻塞（Blocking）和非阻塞（Non-Blocking），死锁（Deadlock）、饥饿（Starvation）和活锁（Livelock）",
+        "description": "同步和异步通常用来形容一次方法调用。并行和并发表示两个或者多个任务一起执行。"
+      }
     },
     {
       "filename": "2.并发级别.md",
       "link": "/zh-cn/docs/2.java/并发/2.并发级别.html",
-      "meta": {}
+      "meta": {
+        "title": "并发级别-码农阿华",
+        "keywords": "并发基本概念，并发级别，CountDownLatch，CyclicBarrier，线程池，原子类同步和异步，并发和并行，临界区，阻塞（Blocking）和非阻塞（Non-Blocking），死锁（Deadlock）、饥饿（Starvation）和活锁（Livelock）",
+        "description": "由于临界区的存在，多线程之间的并发必须受到控制。根据控制并发的策略，我们可以把并发的级别进行分类，大致上可以分为阻塞、无饥饿、无障碍、无锁、无等待几种。"
+      }
     },
     {
       "filename": "3.CountDownLatch.md",
       "link": "/zh-cn/docs/2.java/并发/3.CountDownLatch.html",
-      "meta": {}
+      "meta": {
+        "title": "并发级别-码农阿华",
+        "keywords": "并发基本概念，并发级别，CountDownLatch，CyclicBarrier，线程池，原子类同步和异步，并发和并行，临界区，阻塞（Blocking）和非阻塞（Non-Blocking），死锁（Deadlock）、饥饿（Starvation）和活锁（Livelock）",
+        "description": "CountDownLatch是一个非常实用的多线程控制工具类。“Count Down”在英文中意为倒计数，Latch为门闩的意思。如果翻译成为倒计数门闩，我想大家都会觉得不知所云吧！因此，这里简单地称之为倒计数器。在这里，门闩的含义是：把门锁起来，不让里面的线程跑出来。因此，这个工具通常用来控制线程等待，它可以让某一个线程等待直到倒计时结束，再开始执行。"
+      }
     },
     {
       "filename": "4.CyclicBarrier.md",
       "link": "/zh-cn/docs/2.java/并发/4.CyclicBarrier.html",
-      "meta": {}
+      "meta": {
+        "title": "并发级别-码农阿华",
+        "keywords": "并发基本概念，并发级别，CountDownLatch，CyclicBarrier，线程池，原子类同步和异步，并发和并行，临界区，阻塞（Blocking）和非阻塞（Non-Blocking），死锁（Deadlock）、饥饿（Starvation）和活锁（Livelock）",
+        "description": "CyclicBarrier可以理解为循环栅栏。栅栏就是一种障碍物，比如，通常在私人宅邸的周围就可以围上一圈栅栏，阻止闲杂人等入内。这里当然就是用来阻止线程继续执行，要求线程在栅栏处等待。前面Cyclic意为循环，也就是说这个计数器可以反复使用。比如，假设我们将计数器设置为10，那么凑齐第一批10个线程后，计数器就会归零，然后接着凑齐下一批10个线程，这就是循环栅栏内在的含义。"
+      }
     },
     {
       "filename": "5.线程池.md",
       "link": "/zh-cn/docs/2.java/并发/5.线程池.html",
-      "meta": {}
+      "meta": {
+        "title": "线程池-码农阿华",
+        "keywords": "线程池，创建线程，线程池参数",
+        "description": "降低资源消耗。 通过重复利用已创建的线程降低线程创建和销毁造成的消耗。提高响应速度。 当任务到达时，任务可以不需要的等到线程创建就能立即执行。提高线程的可管理性。"
+      }
     },
     {
       "filename": "6.原子类.md",
       "link": "/zh-cn/docs/2.java/并发/6.原子类.html",
-      "meta": {}
+      "meta": {
+        "title": "原子类-码农阿华",
+        "keywords": "- AtomicInteger:整形原子类，AtomicLong:长整型原子类，AtomicBoolean :布尔型原子类",
+        "description": "AtomicInteger 类主要利用 CAS (compare and swap) + volatile 和 native 方法来保证原子操作，从而避免 synchronized 的高开销，执行效率大为提升。"
+      }
     },
     {
       "filename": "7.锁.md",
       "link": "/zh-cn/docs/2.java/并发/7.锁.html",
-      "meta": {}
+      "meta": {
+        "title": "锁-码农阿华",
+        "keywords": "无锁状态，偏向锁，轻量级锁，重量级锁",
+        "description": "AtomicInteger 类主要利用 CAS (compare and swap) + volatile 和 native 方法来保证原子操作，从而避免 synchronized 的高开销，执行效率大为提升。"
+      }
     },
     {
       "filename": "README.md",

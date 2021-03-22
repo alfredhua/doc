@@ -363,7 +363,7 @@ InnoDB使用的是聚簇索引，将主键组织到一棵B+树中，而行数据
 
 ​	S锁，也叫做读锁、共享锁，对应于我们常用的 select * from users where id =1 lock in share mode
 
- 	X锁，也叫做写锁、排它锁、独占锁、互斥锁，对应对于select * from users where id =1 for update
+	X锁，也叫做写锁、排它锁、独占锁、互斥锁，对应对于select * from users where id =1 for update
 
 |      | X    | S    |
 | ---- | ---- | ---- |

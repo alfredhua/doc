@@ -185,7 +185,11 @@
     {
       "filename": "1.jvm类加载.md",
       "link": "/zh-cn/docs/2.java/jvm/1.jvm类加载.html",
-      "meta": {}
+      "meta": {
+        "title": "JVM类加载-码农阿华",
+        "keywords": "JVM，类加载，JAVA，类装载器，ClassLoader，方法区，堆，虚拟机栈，程序计数器，本地方法栈",
+        "description": "JVM，类加载，JAVA，类装载器，ClassLoader，方法区，堆，虚拟机栈，程序计数器，本地方法栈"
+      }
     },
     {
       "filename": "2.栈帧.md",
@@ -195,37 +199,65 @@
     {
       "filename": "3.内存模型.md",
       "link": "/zh-cn/docs/2.java/jvm/3.内存模型.html",
-      "meta": {}
+      "meta": {
+        "title": "栈帧-码农阿华",
+        "keywords": "JVM，类加载，JAVA，类装载器，ClassLoader，栈帧，JVM内存模型，Survivor区，Old区详解",
+        "description": "根据JVM规范，JVM 内存共分为虚拟机栈，堆，方法区，程序计数器，本地方法栈五个部分。"
+      }
     },
     {
       "filename": "4.垃圾回收.md",
       "link": "/zh-cn/docs/2.java/jvm/4.垃圾回收.html",
-      "meta": {}
+      "meta": {
+        "title": "垃圾回收-码农阿华",
+        "keywords": "垃圾收集算法，标记-清除，复制，标记-整理，JVM",
+        "description": "如何确定一个对象是垃圾？垃圾收集算法，标记-清除，复制，标记-整理，JVM，Young区:复制算法，Old区:标记清除或标记整理"
+      }
     },
     {
       "filename": "5.垃圾收集器.md",
       "link": "/zh-cn/docs/2.java/jvm/5.垃圾收集器.html",
-      "meta": {}
+      "meta": {
+        "title": "垃圾收集器-码农阿华",
+        "keywords": "垃圾收集器，Serial收集器，Serial Old收集器，ParNew收集器，Parallel Scavenge收集器，Parallel Old收集器，CMS收集器，G1",
+        "description": "如何选择合适的垃圾收集器？垃圾收集器，Serial收集器，Serial Old收集器，ParNew收集器，Parallel Scavenge收集器，Parallel Old收集器，CMS收集器，G1"
+      }
     },
     {
       "filename": "6.JVM参数.md",
       "link": "/zh-cn/docs/2.java/jvm/6.JVM参数.html",
-      "meta": {}
+      "meta": {
+        "title": "JVM参数-码农阿华",
+        "keywords": "JVM参数，JVM，类加载，JAVA",
+        "description": "设置参数，JVM参数，JVM，类加载，JAVA"
+      }
     },
     {
       "filename": "7.JVM常用命令.md",
       "link": "/zh-cn/docs/2.java/jvm/7.JVM常用命令.html",
-      "meta": {}
+      "meta": {
+        "title": "JVM参数-码农阿华",
+        "keywords": "jvm，java，jps jinfo，jstat，jmap",
+        "description": "jvm，java，jps：查看当前运行的java程序的进程id号。 jinfo，jstat：查看虚拟机性能统计信息，jmap： 打印出堆内存相关信息"
+      }
     },
     {
       "filename": "8.JVM常用工具.md",
       "link": "/zh-cn/docs/2.java/jvm/8.JVM常用工具.html",
-      "meta": {}
+      "meta": {
+        "title": "JVM常用工具-码农阿华",
+        "keywords": "jconsole，jvisualvm，Arthas，MAT",
+        "description": "jconsole，jvisualvm，Arthas，MAT"
+      }
     },
     {
       "filename": "9.常见问题.md",
       "link": "/zh-cn/docs/2.java/jvm/9.常见问题.html",
-      "meta": {}
+      "meta": {
+        "title": "常见问题-码农阿华",
+        "keywords": "垃圾收集发生的时机？内存泄漏与内存溢出的区别?young gc会有stw吗?major gc和full gc的区别?G1与CMS的区别是什么?",
+        "description": "垃圾收集发生的时机？内存泄漏与内存溢出的区别?young gc会有stw吗?major gc和full gc的区别?G1与CMS的区别是什么?"
+      }
     },
     {
       "filename": "README.md",
@@ -235,42 +267,74 @@
     {
       "filename": "1.HashMap.md",
       "link": "/zh-cn/docs/2.java/基础/1.HashMap.html",
-      "meta": {}
+      "meta": {
+        "title": "HashMap-码农阿华",
+        "keywords": "HashMap，JAVA",
+        "description": "HashMap，红黑树，hashMap扩容，冲突"
+      }
     },
     {
       "filename": "2.integer.md",
       "link": "/zh-cn/docs/2.java/基础/2.integer.html",
-      "meta": {}
+      "meta": {
+        "title": "integer-码农阿华",
+        "keywords": "integer，JAVA，基础",
+        "description": "Integer对象，Integer"
+      }
     },
     {
       "filename": "3.calculations.md",
       "link": "/zh-cn/docs/2.java/基础/3.calculations.html",
-      "meta": {}
+      "meta": {
+        "title": "运算-码农阿华",
+        "keywords": "运算，JAVA，基础",
+        "description": "java，运算，位，异或，逻辑与，"
+      }
     },
     {
       "filename": "4.LinkedHashMap.md",
       "link": "/zh-cn/docs/2.java/基础/4.LinkedHashMap.html",
-      "meta": {}
+      "meta": {
+        "title": "LinkHashMap-码农阿华",
+        "keywords": "LinkHashMap，链表",
+        "description": "LinkHashMap，链表"
+      }
     },
     {
       "filename": "5.list.md",
       "link": "/zh-cn/docs/2.java/基础/5.list.html",
-      "meta": {}
+      "meta": {
+        "title": "ArrayList-码农阿华",
+        "keywords": "ArrayList，链表",
+        "description": "ArrayList，链表"
+      }
     },
     {
       "filename": "6.reference.md",
       "link": "/zh-cn/docs/2.java/基础/6.reference.html",
-      "meta": {}
+      "meta": {
+        "title": "引用-码农阿华",
+        "keywords": "强引用，软引用，弱引用，虚引用",
+        "description": "强引用，软引用，弱引用，虚引用"
+      }
     },
     {
       "filename": "7.synchronized.md",
       "link": "/zh-cn/docs/2.java/基础/7.synchronized.html",
-      "meta": {}
+      "meta": {
+        "title": "synchronized-码农阿华",
+        "keywords": "synchronized，锁",
+        "description": "synchronized关键字解决的是多个线程之间访问资源的同步性，synchronized关键字可以保证被它修饰的方法或者 代码块在任意时刻只能有一个线程执行。"
+      }
     },
     {
       "filename": "8.volatile.md",
       "link": "/zh-cn/docs/2.java/基础/8.volatile.html",
-      "meta": {}
+      "meta": {
+        "title": "volatile-码农阿华",
+        "keywords": "volatile，锁，保证可见性",
+        "description": "volatile关键字可以保证多个线程运行时的可见性问题。"
+      }
     },
     {
       "filename": "README.md",

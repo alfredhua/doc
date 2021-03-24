@@ -957,7 +957,11 @@
     {
       "filename": "begin.md",
       "link": "/zh-cn/docs/begin.html",
-      "meta": {}
+      "meta": {
+        "title": "文档-码农阿华",
+        "keywords": "文档，码农阿华，技术学习，java，分布式，linux，centos，数据库，mysql，clickhouse，elasticsearch，算法，spring，spring-boot，spring cloud，mybatis",
+        "description": "文档，码农阿华，技术学习，java，分布式，linux，centos，数据库，mysql，clickhouse，elasticsearch，算法，spring，spring-boot，spring cloud，mybatis"
+      }
     },
     {
       "filename": "Nodejs.md",

@@ -174,21 +174,27 @@ export default {
         {
           img: '/img/admin.png',
           title: '后台管理系统',
-          content: '后台管理系统',
+          content: '该管理系统包含权限控制，博文管理，网站管理，开发管理，人员管理等多个功能内容。',
           dateStr: '',
           link: 'http://admin.alfredhua.com',
         },{
           img: '/img/blog.png',
           title: '博客系统',
-          content: '博客系统',
-          dateStr: 'May 12nd，2018',
-          link: 'http://blog.alfredhua.com',
+          content: '该博客系统可以自由配置博文支持markdown，HTML格式，自定义标签等。',
+          dateStr: '',
+          link: 'http://site.alfredhua.com',
         },{
           img: '/img/html.jpeg',
           title: '企业网站',
-          content: '这是内容',
-          dateStr: 'May 12nd，2018',
-          link: 'http://website.alfredhua.com',
+          content: '该网站可以自由配置菜单，按需配置，自由组合页面模块，快速搭建网站。',
+          dateStr: '',
+          link: 'http://site.alfredhua.com/website/home',
+        },{
+          img: '/img/mobile.jpg',
+          title: '博客系统手机站',
+          content: '该博客系统支持手机端观看，可以与微信结合，进行博文发布管理。可以自由配置博文支持markdown，HTML格式，',
+          dateStr: '',
+          link: 'http://m.alfredhua.com',
         }
       ]
     },

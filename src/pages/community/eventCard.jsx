@@ -6,13 +6,13 @@ class EventCard extends React.Component {
     const { event } = this.props;
     return (
       <div className="event-card">
-        <a href={getLink(event.link)} target={event.target || '_self'}>
+        <a href={getLink(event.link)} target={event.target || '_blank'}>
           <img src={getLink(event.img)} />
         </a>
         <div className="event-introduction">
           <h4>{event.title}</h4>
           <p>{event.content}</p>
-          <a href={getLink(event.link)} target={event.target || '_self'}>
+          <a href={getLink(event.link)} target={event.target || '_blank'}>
             {event.dateStr}
             <img className="arrow" src={getLink('/img/system/arrow_right.png')} />
           </a>

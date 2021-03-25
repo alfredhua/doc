@@ -172,13 +172,13 @@ export default {
       title: '网站建设',
       list: [
         {
-          img: '/img/admin.png',
+          img: 'https://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/blog/admin.png',
           title: '后台管理系统',
           content: '该管理系统包含权限控制，博文管理，网站管理，开发管理，人员管理等多个功能内容。',
           dateStr: '',
           link: 'http://admin.alfredhua.com',
         },{
-          img: '/img/blog.png',
+          img: 'https://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/blog/blog.png',
           title: '博客系统',
           content: '该博客系统可以自由配置博文支持markdown，HTML格式，自定义标签等。',
           dateStr: '',
@@ -190,7 +190,7 @@ export default {
           dateStr: '',
           link: 'http://site.alfredhua.com/website/home',
         },{
-          img: '/img/mobile.jpg',
+          img: 'https://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/blog/mobile.jpg',
           title: '博客系统手机站',
           content: '该博客系统支持手机端观看，可以与微信结合，进行博文发布管理。可以自由配置博文支持markdown，HTML格式，',
           dateStr: '',

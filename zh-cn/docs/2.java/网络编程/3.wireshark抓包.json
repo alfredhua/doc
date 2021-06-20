@@ -1,0 +1,6 @@
+{
+  "filename": "3.wireshark抓包.md",
+  "__html": "<h2 id=\"chrome-%E5%90%AF%E5%8A%A8%E8%AE%BE%E7%BD%AE\">Chrome 启动设置 <a class=\"header-anchor\" href=\"#chrome-%E5%90%AF%E5%8A%A8%E8%AE%BE%E7%BD%AE\">#</a></h2>\n<p>Chrome 启动参数需要配置如下内容：</p>\n<p>--user-data-dir 配置用户使用数据\n--ssl-key-log-file 配置 ssl-key-log 的存储路径</p>\n<pre><code class=\"language-shell\"><span class=\"hljs-meta\">$</span><span class=\"bash\"> /Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --user-data-dir=/tmp/chrome --ssl-key-log-file=/tmp/.ssl-key.log</span>\n\n</code></pre>\n<p>执行命令，会开启一个全新的 Chrome</p>\n<p><img src=\"https://java-run-blog.oss-cn-zhangjiakou.aliyuncs.com/blog/1.jpeg\" alt=\"image\"></p>\n<p>此时：正常解密 HTTPS 流量，可以看到请求。</p>\n<p>注意 筛选的时候，http请求存在，http，HTTP2，http3</p>\n",
+  "link": "/zh-cn/docs/2.java/网络编程/3.wireshark抓包.html",
+  "meta": {}
+}

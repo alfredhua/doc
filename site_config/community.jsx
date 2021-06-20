@@ -182,7 +182,7 @@ export default {
           title: '博客系统',
           content: '该博客系统可以自由配置博文支持markdown，HTML格式，自定义标签等。',
           dateStr: '',
-          link: 'http://site.alfredhua.com',
+          link: 'http://site.alfredhua.com/blog/home',
         },{
           img: '/img/html.jpeg',
           title: '企业网站',

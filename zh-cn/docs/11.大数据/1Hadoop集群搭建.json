@@ -1,0 +1,6 @@
+{
+  "filename": "1Hadoop集群搭建.md",
+  "__html": "<h2 id=\"%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8\">运行容器 <a class=\"header-anchor\" href=\"#%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8\">#</a></h2>\n<p>docker run -itd --privileged=true --name  hadoop03  --net net --ip  172.18.0.3 guozhenhua/centos:1.1</p>\n<p>docker run -itd --privileged=true --name  hadoop04  --net net --ip  172.18.0.4 guozhenhua/centos:1.1</p>\n<p>docker run -itd --privileged=true --name  hadoop05  --net net --ip  172.18.0.5 guozhenhua/centos:1.1</p>\n",
+  "link": "/zh-cn/docs/11.大数据/1Hadoop集群搭建.html",
+  "meta": {}
+}

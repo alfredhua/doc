@@ -1,16 +1,6 @@
 {
   "en-us": [
     {
-      "filename": "demo1.md",
-      "link": "/en-us/docs/demo1.html",
-      "meta": {}
-    },
-    {
-      "filename": "demo2.md",
-      "link": "/en-us/docs/demo2.html",
-      "meta": {}
-    },
-    {
       "filename": "demo3.md",
       "link": "/en-us/docs/dir/demo3.html",
       "meta": {}
@@ -34,6 +24,11 @@
         "keywords": "装饰器模式，设计模式",
         "description": "装饰器的核心就是新接口继承原有的接口，对于原有的实现类，重新注入到新的实现类。"
       }
+    },
+    {
+      "filename": "11.Reactor模式.md",
+      "link": "/zh-cn/docs/1.设计模式/11.Reactor模式.html",
+      "meta": {}
     },
     {
       "filename": "2.开闭原则.md",
@@ -148,6 +143,11 @@
       "meta": {}
     },
     {
+      "filename": "centos.md",
+      "link": "/zh-cn/docs/10.工具/centos.html",
+      "meta": {}
+    },
+    {
       "filename": "1.安装.md",
       "link": "/zh-cn/docs/10.工具/docker/1.安装.html",
       "meta": {}
@@ -155,6 +155,11 @@
     {
       "filename": "README.md",
       "link": "/zh-cn/docs/10.工具/docker/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "教程.md",
+      "link": "/zh-cn/docs/10.工具/docker/教程.html",
       "meta": {}
     },
     {
@@ -175,6 +180,11 @@
     {
       "filename": "1.解决依赖冲突.md",
       "link": "/zh-cn/docs/10.工具/maven/1.解决依赖冲突.html",
+      "meta": {}
+    },
+    {
+      "filename": "1Hadoop集群搭建.md",
+      "link": "/zh-cn/docs/11.大数据/1Hadoop集群搭建.html",
       "meta": {}
     },
     {
@@ -420,6 +430,11 @@
       "meta": {}
     },
     {
+      "filename": "3.wireshark抓包.md",
+      "link": "/zh-cn/docs/2.java/网络编程/3.wireshark抓包.html",
+      "meta": {}
+    },
+    {
       "filename": "README.md",
       "link": "/zh-cn/docs/3.数据库/README.html",
       "meta": {}
@@ -582,6 +597,21 @@
     {
       "filename": "README.md",
       "link": "/zh-cn/docs/4.mq/README.html",
+      "meta": {}
+    },
+    {
+      "filename": "1.安装.md",
+      "link": "/zh-cn/docs/4.mq/kafka/1.安装.html",
+      "meta": {}
+    },
+    {
+      "filename": "2..md",
+      "link": "/zh-cn/docs/4.mq/kafka/2..html",
+      "meta": {}
+    },
+    {
+      "filename": "k.md",
+      "link": "/zh-cn/docs/4.mq/kafka/k.html",
       "meta": {}
     },
     {
@@ -912,7 +942,11 @@
     {
       "filename": "seata.md",
       "link": "/zh-cn/docs/7.分布式/分布式事务/seata.html",
-      "meta": {}
+      "meta": {
+        "title": "分布式事务-码农阿华",
+        "keywords": "分布式事务",
+        "description": "分布式事务"
+      }
     },
     {
       "filename": "1.centos下软件安装.md",

@@ -37,7 +37,7 @@ docker network create -d bridge net --subnet=172.18.0.0/24 --gateway=172.18.0.1
 #### hadoop01
 
 ```shell
-docker run -itd --privileged=true --name  hadoop01 --net net --ip  172.18.0.11 guozhenhua/hadoop:4 /usr/sbin/init
+docker run -itd --privileged=true --name  hadoop01 --net net --ip  172.18.0.11 guozhenhua/hadoop:5 /usr/sbin/init
 ```
 
 #### Hadoop02
@@ -135,7 +135,23 @@ docker run -itd --privileged=true --name  hadoop04 --net net --ip  172.18.0.14 -
   > 配置 core-site.xml
 
   ```xml
-  <configuration><!-- 指定 NameNode 的地址 -->   <property>      <name>fs.defaultFS</name>      <value>hdfs://hadoop02:8020</value>   </property>  <!-- 指定 hadoop 数据的存储目录 -->  <property>    <name>hadoop.tmp.dir</name>    <value>/home/hadoop/data</value>  </property>  <!-- 配置 HDFS 网页登录使用的静态用户为 -->   <property>  <name>hadoop.http.staticuser.user</name>  <value>hadoop</value>   </property></configuration>
+  <configuration>
+    <!-- 指定 NameNode 的地址 -->  
+    <property>     
+      <name>fs.defaultFS</name>    
+      <value>hdfs://hadoop02:8020</value> 
+    </property> 
+    <!-- 指定 hadoop 数据的存储目录 --> 
+    <property> 
+      <name>hadoop.tmp.dir</name>  
+      <value>/home/hadoop/data</value>  <
+      /property> 
+      <!-- 配置 HDFS 网页登录使用的静态用户为 --> 
+      <property> 
+        <name>hadoop.http.staticuser.user</name>
+        <value>hadoop</value>  
+      </property>
+   </configuration>
   ```
 
   
@@ -143,25 +159,60 @@ docker run -itd --privileged=true --name  hadoop04 --net net --ip  172.18.0.14 -
   > 配置hdfs-site.xml
 
   ```xml
-  <configuration>	<property>	     <name>dfs.namenode.http-address</name>        	<value>hadoop02:9870</value>       </property><!-- 2nn web 端访问地址-->        <property>        <name>dfs.namenode.secondary.http-address</name>              <value>hadoop04:9868</value>       </property></configuration>
+  <configuration>
+    <property>	   
+      <name>dfs.namenode.http-address</name>       
+      <value>hadoop02:9870</value>      
+    </property>
+    <!-- 2nn web 端访问地址-->      
+    <property>       
+      <name>dfs.namenode.secondary.http-address</name>       
+      <value>hadoop04:9868</value>    
+    </property>
+  </configuration>
   ```
 
   > 配置 yarn-site.xml
 
   ```xml
-  <configuration><!-- Site specific YARN configuration properties --><!-- 指定 MR 走 shuffle --> <property><name>yarn.nodemanager.aux-services</name><value>mapreduce_shuffle</value> </property><!-- 指定 ResourceManager 的地址--> <property><name>yarn.resourcemanager.hostname</name><value>hadoop03</value> </property><!-- 环境变量的继承 -->    <property>      <name>yarn.nodemanager.env-whitelist</name>     <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CO NF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAP RED_HOME</value>   </property></configuration>
+  <configuration> 
+    <!-- Site specific YARN configuration properties -->  
+    <!-- 指定 MR 走 shuffle -->  
+    <property>
+      <name>yarn.nodemanager.aux-services</name>  
+      <value>mapreduce_shuffle</value> 
+    </property>
+    <!-- 指定 ResourceManager 的地址-->  
+    <property>
+      <name>yarn.resourcemanager.hostname</name>
+      <value>hadoop03</value> 
+    </property>
+    <!-- 环境变量的继承 -->  
+    <property> 
+      <name>yarn.nodemanager.env-whitelist</name>  
+      <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CO NF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAP RED_HOME</value> 
+    </property>
+  </configuration>
+  
   ```
 
   > 配置 mapred-site.xml
 
   ```xml
-  <configuration><property><name>mapreduce.framework.name</name>       <value>yarn</value>   </property></configuration>
+  <configuration>
+    <property>
+      <name>mapreduce.framework.name</name>  
+      <value>yarn</value> 
+    </property>
+  </configuration>
   ```
 
   > 配置 workers
 
   ```xml
-  hadoop02hadoop03hadoop04
+  hadoop02
+  hadoop03
+  hadoop04
   ```
 
 ## docker-compose 配置
@@ -185,7 +236,77 @@ docker run -itd --privileged=true --name  hadoop04 --net net --ip  172.18.0.14 -
 >   
 
 ```yml
-version: "3"services:  hadoop02:    image: guozhenhua/hadoop:5    container_name: hadoop02    privileged: true    ports:      - 9870:9870    networks:      net1:        ipv4_address: 172.18.0.12  hadoop03:    image: guozhenhua/hadoop:5    container_name: hadoop03    privileged: true    ports:      - 8088:8088    networks:      net1:        ipv4_address: 172.18.0.13        hadoop04:    image: guozhenhua/hadoop:5    container_name: hadoop04    privileged: true    ports:      - 9868:9868    networks:      net1:        ipv4_address: 172.18.0.14networks:  net1:    driver: bridge    ipam:      config:        - subnet: 172.18.0.0/24          gateway: 172.18.0.1
+version: "3"
+
+services:
+  hadoop02:
+    image: guozhenhua/hadoop:5
+    container_name: hadoop02
+    privileged: true
+    ports:
+      - 9870:9870
+    networks:
+      net1:
+        ipv4_address: 172.18.0.12
+    extra_hosts:
+      - "hadoop03:172.18.0.13"
+      - "hadoop02:172.18.0.12"
+      - "hadoop04:172.18.0.14"
+    # user: hadoop
+    volumes:
+      - hadoop02:/home/hadoop/data
+    # command: hdfs namenode -format &&  start-dfs.sh
+
+  hadoop03:
+    image: guozhenhua/hadoop:5
+    container_name: hadoop03
+    privileged: true
+    ports:
+      - 8088:8088
+    networks:
+      net1:
+        ipv4_address: 172.18.0.13
+    extra_hosts:
+      - "hadoop03:172.18.0.13"
+      - "hadoop02:172.18.0.12"
+      - "hadoop04:172.18.0.14" 
+    volumes:
+      - hadoop03:/home/hadoop/data
+    # user: hadoop
+    # command: start-yarn.sh  
+
+  hadoop04:
+    image: guozhenhua/hadoop:5
+    container_name: hadoop04
+    privileged: true
+    ports:
+      - 9868:9868
+    networks:
+      net1:
+        ipv4_address: 172.18.0.14
+    extra_hosts:
+      - "hadoop03:172.18.0.13"
+      - "hadoop02:172.18.0.12"
+      - "hadoop04:172.18.0.14"
+    volumes:
+      - hadoop04:/home/hadoop/data
+    # user: hadoop
+
+networks:
+  net1:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/24
+          gateway: 172.18.0.1
+  
+volumes:
+  hadoop02:
+    driver: local
+  hadoop03:
+    driver: local
+  hadoop04:
+    driver: local
 ```
 
 **注意：** 

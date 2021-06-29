@@ -93,10 +93,10 @@
 <pre><code class="language-she">docker network create -d bridge net --subnet=172.18.0.0/24 --gateway=172.18.0.1
 </code></pre>
 <h4 id="hadoop01">hadoop01 <a class="header-anchor" href="#hadoop01">#</a></h4>
-<pre><code class="language-shell">docker run -itd --privileged=true --name  hadoop01 --net net --ip  172.18.0.11 guozhenhua/hadoop:4 /usr/sbin/init
+<pre><code class="language-shell">docker run -itd --privileged=true --name  hadoop01 --net net --ip  172.18.0.11 guozhenhua/hadoop:5 /usr/sbin/init
 </code></pre>
 <h4 id="hadoop02">Hadoop02 <a class="header-anchor" href="#hadoop02">#</a></h4>
-<pre><code class="language-shell">docker run -itd --privileged=true --name  hadoop02 --net net --ip  172.18.0.12 -p 9870:9870 -p 19888:19888 guozhenhua/hadoop:3   /usr/sbin/init
+<pre><code class="language-shell">docker run -itd --privileged=true --name  hadoop02 --net net --ip  172.18.0.12 -p 9870:9870 -p 19888:19888 guozhenhua/hadoop:5   /usr/sbin/init
 </code></pre>
 <h4 id="hadoop03">Hadoop03 <a class="header-anchor" href="#hadoop03">#</a></h4>
 <pre><code class="language-shell">docker run -itd --privileged=true --name  hadoop03 --net net --ip  172.18.0.13 -p 8088:8088 guozhenhua/hadoop:3   /usr/sbin/init
@@ -164,27 +164,78 @@ passwd hadoop
 <blockquote>
 <p>配置 core-site.xml</p>
 </blockquote>
-<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><span class="hljs-comment">&lt;!-- 指定 NameNode 的地址 --&gt;</span>   <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>      <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>fs.defaultFS<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>      <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hdfs://hadoop02:8020<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>   <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>  <span class="hljs-comment">&lt;!-- 指定 hadoop 数据的存储目录 --&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.tmp.dir<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>/home/hadoop/data<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>  <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>  <span class="hljs-comment">&lt;!-- 配置 HDFS 网页登录使用的静态用户为 --&gt;</span>   <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.http.staticuser.user<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>  <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>   <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- 指定 NameNode 的地址 --&gt;</span>  
+  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>     
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>fs.defaultFS<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>    
+    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hdfs://hadoop02:8020<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span> 
+  <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span> 
+  <span class="hljs-comment">&lt;!-- 指定 hadoop 数据的存储目录 --&gt;</span> 
+  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span> 
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.tmp.dir<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>  
+    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>/home/hadoop/data<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>  <span class="hljs-tag">&lt;
+    /<span class="hljs-attr">property</span>&gt;</span> 
+    <span class="hljs-comment">&lt;!-- 配置 HDFS 网页登录使用的静态用户为 --&gt;</span> 
+    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span> 
+      <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.http.staticuser.user<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>  
+    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+ <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
 </code></pre>
 <blockquote>
 <p>配置hdfs-site.xml</p>
 </blockquote>
-<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>	<span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>	     <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.namenode.http-address<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>        	<span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop02:9870<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>       <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><span class="hljs-comment">&lt;!-- 2nn web 端访问地址--&gt;</span>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.namenode.secondary.http-address<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>              <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop04:9868<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>       <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>	   
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.namenode.http-address<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>       
+    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop02:9870<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>      
+  <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- 2nn web 端访问地址--&gt;</span>      
+  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>       
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.namenode.secondary.http-address<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>       
+    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop04:9868<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>    
+  <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
 </code></pre>
 <blockquote>
 <p>配置 yarn-site.xml</p>
 </blockquote>
-<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><span class="hljs-comment">&lt;!-- Site specific YARN configuration properties --&gt;</span><span class="hljs-comment">&lt;!-- 指定 MR 走 shuffle --&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>mapreduce_shuffle<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><span class="hljs-comment">&lt;!-- 指定 ResourceManager 的地址--&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop03<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span> <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><span class="hljs-comment">&lt;!-- 环境变量的继承 --&gt;</span>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>      <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.env-whitelist<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>     <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CO NF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAP RED_HOME<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>   <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span> 
+  <span class="hljs-comment">&lt;!-- Site specific YARN configuration properties --&gt;</span>  
+  <span class="hljs-comment">&lt;!-- 指定 MR 走 shuffle --&gt;</span>  
+  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>  
+    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>mapreduce_shuffle<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span> 
+  <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- 指定 ResourceManager 的地址--&gt;</span>  
+  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop03<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span> 
+  <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- 环境变量的继承 --&gt;</span>  
+  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span> 
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.env-whitelist<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>  
+    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CO NF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAP RED_HOME<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span> 
+  <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+
 </code></pre>
 <blockquote>
 <p>配置 mapred-site.xml</p>
 </blockquote>
-<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>mapreduce.framework.name<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>       <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>yarn<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span>   <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>mapreduce.framework.name<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>  
+    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>yarn<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span> 
+  <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
 </code></pre>
 <blockquote>
 <p>配置 workers</p>
 </blockquote>
-<pre><code class="language-xml">hadoop02hadoop03hadoop04
+<pre><code class="language-xml">hadoop02
+hadoop03
+hadoop04
 </code></pre>
 </li>
 </ul>
@@ -208,7 +259,77 @@ passwd hadoop
 </li>
 </ul>
 </blockquote>
-<pre><code class="language-yml"><span class="hljs-attr">version:</span> <span class="hljs-string">"3"</span><span class="hljs-attr">services:  hadoop02:    image: guozhenhua/hadoop:5    container_name: hadoop02    privileged: true    ports:      - 9870:9870    networks:      net1:        ipv4_address: 172.18.0.12  hadoop03:    image: guozhenhua/hadoop:5    container_name: hadoop03    privileged: true    ports:      - 8088:8088    networks:      net1:        ipv4_address: 172.18.0.13        hadoop04:    image: guozhenhua/hadoop:5    container_name: hadoop04    privileged: true    ports:      - 9868:9868    networks:      net1:        ipv4_address: 172.18.0.14networks:  net1:    driver: bridge    ipam:      config:        - subnet: 172.18.0.0/24          gateway:</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+<pre><code class="language-yml"><span class="hljs-attr">version:</span> <span class="hljs-string">"3"</span>
+
+<span class="hljs-attr">services:</span>
+  <span class="hljs-attr">hadoop02:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">guozhenhua/hadoop:5</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">hadoop02</span>
+    <span class="hljs-attr">privileged:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">9870</span><span class="hljs-string">:9870</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-attr">net1:</span>
+        <span class="hljs-attr">ipv4_address:</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.12</span>
+    <span class="hljs-attr">extra_hosts:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop03:172.18.0.13"</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop02:172.18.0.12"</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop04:172.18.0.14"</span>
+    <span class="hljs-comment"># user: hadoop</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">hadoop02:/home/hadoop/data</span>
+    <span class="hljs-comment"># command: hdfs namenode -format &amp;&amp;  start-dfs.sh</span>
+
+  <span class="hljs-attr">hadoop03:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">guozhenhua/hadoop:5</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">hadoop03</span>
+    <span class="hljs-attr">privileged:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">8088</span><span class="hljs-string">:8088</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-attr">net1:</span>
+        <span class="hljs-attr">ipv4_address:</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.13</span>
+    <span class="hljs-attr">extra_hosts:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop03:172.18.0.13"</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop02:172.18.0.12"</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop04:172.18.0.14"</span> 
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">hadoop03:/home/hadoop/data</span>
+    <span class="hljs-comment"># user: hadoop</span>
+    <span class="hljs-comment"># command: start-yarn.sh  </span>
+
+  <span class="hljs-attr">hadoop04:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">guozhenhua/hadoop:5</span>
+    <span class="hljs-attr">container_name:</span> <span class="hljs-string">hadoop04</span>
+    <span class="hljs-attr">privileged:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">ports:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-number">9868</span><span class="hljs-string">:9868</span>
+    <span class="hljs-attr">networks:</span>
+      <span class="hljs-attr">net1:</span>
+        <span class="hljs-attr">ipv4_address:</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.14</span>
+    <span class="hljs-attr">extra_hosts:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop03:172.18.0.13"</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop02:172.18.0.12"</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"hadoop04:172.18.0.14"</span>
+    <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">hadoop04:/home/hadoop/data</span>
+    <span class="hljs-comment"># user: hadoop</span>
+
+<span class="hljs-attr">networks:</span>
+  <span class="hljs-attr">net1:</span>
+    <span class="hljs-attr">driver:</span> <span class="hljs-string">bridge</span>
+    <span class="hljs-attr">ipam:</span>
+      <span class="hljs-attr">config:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">subnet:</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span><span class="hljs-string">/24</span>
+          <span class="hljs-attr">gateway:</span> <span class="hljs-number">172.18</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>
+  
+<span class="hljs-attr">volumes:</span>
+  <span class="hljs-attr">hadoop02:</span>
+    <span class="hljs-attr">driver:</span> <span class="hljs-string">local</span>
+  <span class="hljs-attr">hadoop03:</span>
+    <span class="hljs-attr">driver:</span> <span class="hljs-string">local</span>
+  <span class="hljs-attr">hadoop04:</span>
+    <span class="hljs-attr">driver:</span> <span class="hljs-string">local</span>
 </code></pre>
 <p><strong>注意：</strong></p>
 <ul>

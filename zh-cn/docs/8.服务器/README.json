@@ -1,6 +1,6 @@
 {
   "filename": "README.md",
-  "__html": "<ul>\n<li><a href=\"./docs/8.%E6%9C%8D%E5%8A%A1%E5%99%A8/README.md\">centos</a>\n<ul>\n<li><a href=\"./docs/8.%E6%9C%8D%E5%8A%A1%E5%99%A8/centos%E4%B8%8B%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85.md\">centos下软件安装</a></li>\n</ul>\n</li>\n</ul>\n",
+  "__html": "<ul>\n<li><a href=\"./README.md\">centos</a>\n<ul>\n<li><a href=\"./centos%E4%B8%8B%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85.md\">centos下软件安装</a></li>\n</ul>\n</li>\n</ul>\n",
   "link": "/zh-cn/docs/8.服务器/README.html",
   "meta": {}
 }

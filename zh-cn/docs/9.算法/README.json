@@ -1,6 +1,6 @@
 {
   "filename": "README.md",
-  "__html": "<ul>\n<li><a href=\"./docs/9.%E7%AE%97%E6%B3%95/README.md\">centos</a>\n<ul>\n<li><a href=\"./docs/9.%E7%AE%97%E6%B3%95/1.%E9%80%92%E5%BD%92.md\">递归</a></li>\n<li><a href=\"./docs/9.%E7%AE%97%E6%B3%95/2.%E6%8E%92%E5%BA%8F.md\">排序</a></li>\n<li><a href=\"./docs/9.%E7%AE%97%E6%B3%95/3.%E5%8F%8C%E5%AD%90%E9%92%88.md\">双子针</a></li>\n<li><a href=\"./docs/9.%E7%AE%97%E6%B3%95/4.%E5%9B%9E%E6%BA%AF.md\">回溯</a></li>\n</ul>\n</li>\n</ul>\n",
+  "__html": "<ul>\n<li><a href=\"./README.md\">centos</a>\n<ul>\n<li><a href=\"./1.%E9%80%92%E5%BD%92.md\">递归</a></li>\n<li><a href=\"./2.%E6%8E%92%E5%BA%8F.md\">排序</a></li>\n<li><a href=\"./3.%E5%8F%8C%E5%AD%90%E9%92%88.md\">双子针</a></li>\n<li><a href=\"./4.%E5%9B%9E%E6%BA%AF.md\">回溯</a></li>\n</ul>\n</li>\n</ul>\n",
   "link": "/zh-cn/docs/9.算法/README.html",
   "meta": {}
 }

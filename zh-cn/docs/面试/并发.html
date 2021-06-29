@@ -238,6 +238,15 @@
 <li>DiscardPolicy策略：该策略默默地丢弃无法处理的任务，不予任何处理。如果允许任务丢失，我觉得这可能是最好的一种方案了吧！</li>
 <li>自己扩展、实现RejectedExecutionHandler接口</li>
 </ul>
+<h2 id="%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B">线程池执行流程 <a class="header-anchor" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B">#</a></h2>
+<ul>
+<li>当线程池中线程数小于corePoolSize时，新提交任务将创建一个新线程执行任务，即使此时线程池中存在空闲线程。</li>
+<li>当线程池中线程数达到corePoolSize时，新提交任务将被放入workQueue中，等待线程池中任务调度执行 。</li>
+<li>当workQueue已满，且maximumPoolSize &gt; corePoolSize时，新提交任务会创建新线程执行任务。</li>
+<li>当workQueue已满，且提交任务数超过maximumPoolSize，任务由RejectedExecutionHandler处理。</li>
+<li>当线程池中线程数超过corePoolSize，且超过这部分的空闲时间达到keepAliveTime时，回收这些线程。</li>
+<li>当设置allowCoreThreadTimeOut(true)时，线程池中corePoolSize范围内的线程空闲时间达到keepAliveTime也将回收。</li>
+</ul>
 <h2 id="%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1">线程通信 <a class="header-anchor" href="#%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1">#</a></h2>
 <ul>
 <li>

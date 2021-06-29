@@ -1,6 +1,6 @@
 {
   "filename": "README.md",
-  "__html": "<ul>\n<li><a href=\"./docs/3.%E6%95%B0%E6%8D%AE%E5%BA%93/README.md\">数据库</a>\n<ul>\n<li><a href=\"./docs/3.%E6%95%B0%E6%8D%AE%E5%BA%93/mysql/README.md\">mysql</a></li>\n<li><a href=\"./docs/3.%E6%95%B0%E6%8D%AE%E5%BA%93/elasticsearch/README.md\">elasticsearch</a></li>\n<li><a href=\"./docs/3.%E6%95%B0%E6%8D%AE%E5%BA%93/clickhouse/README.md\">clickhouse</a></li>\n</ul>\n</li>\n</ul>\n",
+  "__html": "<ul>\n<li><a href=\"./README.md\">数据库</a>\n<ul>\n<li><a href=\"./mysql/README.md\">mysql</a></li>\n<li><a href=\"./elasticsearch/README.md\">elasticsearch</a></li>\n<li><a href=\"./clickhouse/README.md\">clickhouse</a></li>\n</ul>\n</li>\n</ul>\n",
   "link": "/zh-cn/docs/3.数据库/README.html",
   "meta": {}
 }

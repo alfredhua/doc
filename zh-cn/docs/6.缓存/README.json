@@ -1,6 +1,6 @@
 {
   "filename": "README.md",
-  "__html": "<ul>\n<li><a href=\"./docs/6.%E7%BC%93%E5%AD%98/README.md\">缓存</a>\n<ul>\n<li><a href=\"./docs/5.%E7%BC%93%E5%AD%98/redis/README.md\">redis</a></li>\n<li><a href=\"./docs/5.%E7%BC%93%E5%AD%98/guava/README.md\">guava</a></li>\n</ul>\n</li>\n</ul>\n",
+  "__html": "<ul>\n<li><a href=\"./README.md\">缓存</a>\n<ul>\n<li><a href=\"./redis/README.md\">redis</a></li>\n<li><a href=\"./guava/README.md\">guava</a></li>\n</ul>\n</li>\n</ul>\n",
   "link": "/zh-cn/docs/6.缓存/README.html",
   "meta": {}
 }

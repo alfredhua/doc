@@ -1,6 +1,6 @@
 {
   "filename": "README.md",
-  "__html": "<ul>\n<li><a href=\"./docs/10.%E5%B7%A5%E5%85%B7/README.md\">工具</a>\n<ul>\n<li><a href=\"./docs/10.%E5%B7%A5%E5%85%B7/arthas.md\">arthas</a></li>\n<li><a href=\"./docs/10.%E5%B7%A5%E5%85%B7/docker.md\">docker</a></li>\n<li><a href=\"./docs/10.%E5%B7%A5%E5%85%B7/k8s.md\">k8s</a></li>\n</ul>\n</li>\n</ul>\n",
+  "__html": "<ul>\n<li><a href=\"./README.md\">工具</a>\n<ul>\n<li><a href=\"./arthas/README.md\">arthas</a></li>\n<li><a href=\"./docker/README.md\">docker</a></li>\n<li><a href=\"./k8s/README.md\">k8s</a></li>\n<li><a href=\"./maven/README.md\">maven</a></li>\n<li><a href=\"./maven/README.md\">centos</a></li>\n</ul>\n</li>\n</ul>\n",
   "link": "/zh-cn/docs/10.工具/README.html",
   "meta": {}
 }

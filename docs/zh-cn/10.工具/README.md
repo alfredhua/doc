@@ -1,5 +1,6 @@
-* [工具](./docs/10.工具/README.md)
-  * [arthas](./docs/10.工具/arthas.md)
-  * [docker](./docs/10.工具/docker.md)
-  * [k8s](./docs/10.工具/k8s.md)
-
+* [工具](./README.md)
+  * [arthas](./arthas/README.md)
+  * [docker](./docker/README.md)
+  * [k8s](./k8s/README.md)
+  * [maven](./maven/README.md)
+  * [centos](./maven/README.md)

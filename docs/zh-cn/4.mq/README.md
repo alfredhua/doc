@@ -1,2 +1,3 @@
-* [MQ](./docs/4.mq/README.md)
-  * [rabbitmq](./docs/4.mq/rabbitmq/README.md)
+* [MQ](./README.md)
+  * [rabbitmq](./rabbitmq/README.md)
+  * [kafka](./kafka/README.md)

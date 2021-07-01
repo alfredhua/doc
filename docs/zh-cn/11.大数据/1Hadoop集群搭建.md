@@ -43,7 +43,7 @@ docker run -itd --privileged=true --name  hadoop01 --net net --ip  172.18.0.11 g
 #### Hadoop02
 
 ```shell
-docker run -itd --privileged=true --name  hadoop02 --net net --ip  172.18.0.12 -p 9870:9870 -p 19888:19888 guozhenhua/hadoop:3   /usr/sbin/init
+docker run -itd --privileged=true --name  hadoop02 --net net --ip  172.18.0.12 -p 9870:9870 -p 19888:19888 guozhenhua/hadoop:5   /usr/sbin/init
 ```
 
 #### Hadoop03

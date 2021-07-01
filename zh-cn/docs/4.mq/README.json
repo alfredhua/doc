@@ -1,6 +1,6 @@
 {
   "filename": "README.md",
-  "__html": "<ul>\n<li><a href=\"./docs/4.mq/README.md\">MQ</a>\n<ul>\n<li><a href=\"./docs/4.mq/rabbitmq/README.md\">rabbitmq</a></li>\n</ul>\n</li>\n</ul>\n",
+  "__html": "<ul>\n<li><a href=\"./README.md\">MQ</a>\n<ul>\n<li><a href=\"./rabbitmq/README.md\">rabbitmq</a></li>\n<li><a href=\"./kafka/README.md\">kafka</a></li>\n</ul>\n</li>\n</ul>\n",
   "link": "/zh-cn/docs/4.mq/README.html",
   "meta": {}
 }

@@ -710,7 +710,7 @@ export default {
             link: "/zh-cn/docs/面试/Nodejs.html",
           },{
             title: 'RabbitMQ',
-            link: "/zh-cn/docs/面试/rabbbitmq.html",
+            link: "/zh-cn/docs/面试/rabbitmq.html",
           },{
             title: 'redis',
             link: "/zh-cn/docs/面试/redis.html",

@@ -1,22 +1,22 @@
-1. Hbase是什么？hbase的特点是什么？
+## 1. Hbase是什么？hbase的特点是什么？
 
 Hbase一个分布式的基于列式存储的数据库，基于Hadoop的 hdfs 存储，zookeeper 进行管理。
 Hbase适合存储半结构化或非结构化数据，对于数据结构字段不够确定或者杂乱无章很难按一个概念去抽取的数据。
 Hbase 为 null 的记录不会被存储。
 基于的表包含 rowkey，时间戳，和列族。新写入数据时，时间戳更新， 同时可以查询到以前的版本。
 hbase 是主从架构。hmaster 作为主节点，hregionserver 作为从节点。
-2. hbase如何导入数据？
+## 2. hbase如何导入数据？
 
 通过HBase API进行批量写入数据；
 使用Sqoop工具批量导数到HBase集群；
 使用MapReduce批量导入；
 HBase BulkLoad的方式。
 
-3. hbase 的存储结构？
+## 3. hbase 的存储结构？
 
 Hbase 中的每张表都通过行键 (rowkey) 按照一定的范围被分割成多个子表（HRegion），默认一个 HRegion 超过 256M 就要被分割成两个，由 HRegionServer 管理，管理哪些 HRegion 由 Hmaster 分配。 HRegion 存取一个子表时，会创建一个 HRegion 对象，然后对表的每个列族 （Column Family） 创建一个 store 实例， 每个 store 都会有 0个或多个 StoreFile 与之对应，每个 StoreFile 都会对应一个 HFile ， HFile 就是实际的存储文件，因此，一个 HRegion 还拥有一个 MemStore 实例。
 
-4. Hbase 和 hive 有什么区别？hive 与 hbase 的底层存储是什么？hive 是产生的原因是什么？habase 是为了弥补 hadoop 的什么缺陷?
+## 4. Hbase 和 hive 有什么区别？hive 与 hbase 的底层存储是什么？hive 是产生的原因是什么？habase 是为了弥补 hadoop 的什么缺陷?
 
 共同点：
 
@@ -32,11 +32,12 @@ hbase是物理表，不是逻辑表，提供一个超大的内存hash表，搜�
 hbase是列存储；
 hdfs 作为底层存储，hdfs 是存放文件的系统，而 Hbase 负责组织文件；
 hive 需要用到 hdfs 存储文件，需要用到 MapReduce 计算框架。
-5. 解释下 hbase 实时查询的原理
+
+## 5. 解释下 hbase 实时查询的原理
 
 实时查询，可以认为是从内存中查询，一般响应时间在 1 秒内。HBase 的机制是数据先写入到内存中，当数据量达到一定的量（如 128M），再写入磁盘中， 在内存中，是不进行数据的更新或合并操作的，只增加数据，这使得用户的写操作只要进入内存中就可以立即返回，保证了 HBase I/O 的高性能。
 
-6. 描述 Hbase 的 rowKey 的设计原则
+## 6. 描述 Hbase 的 rowKey 的设计原则
 
 联系 region 和 rowkey 关系说明，设计可参考以下三个原则.
 
@@ -51,10 +52,11 @@ rowkey 是一个二进制码流，可以是任意字符串，最大长度 64kb�
      3. rowkey 唯一原则
 必须在设计上保证其唯一性，rowkey 是按照字典顺序排序存储的，因此， 设计 rowkey 的时候，要充分利用这个排序的特点，将经常读取的数据存储到一块，将最近可能会被访问的数据放到一块。
 
-7. 描述 Hbase 中 scan 和 get 的功能以及实现的异同
+## 7. 描述 Hbase 中 scan 和 get 的功能以及实现的异同
 
 按指 定 RowKey 获 取 唯 一 一 条 记 录 ， get 方法（ org.apache.hadoop.hbase.client.Get ） Get的方法处理分两种 ： 设置了ClosestRowBefore和没有设置的 rowlock 主要是用来保证行的事务性，即每个get 是以一个 row 来标记的.一个 row 中可以有很多 family 和 column。
 按指定的条件获取一批记录，scan 方法(org.apache.Hadoop.hbase.client.Scan)实现条件查询功能使用的就是 scan 方式
+
 1. scan 可以通过 setCaching 与 setBatch 方法提高速度(以空间换时间)；
 2. scan 可以通过 setStartRow 与 setEndRow 来限定范围([start，end]start? 是闭区间，end 是开区间)。范围越小，性能越高；
 3. scan 可以通过 setFilter 方法添加过滤器，这也是分页、多条件查询的基础。 3.全表扫描，即直接扫描整张表中所有行记录。
@@ -63,24 +65,24 @@ rowkey 是一个二进制码流，可以是任意字符串，最大长度 64kb�
 
 HBase 中通过 row 和 columns 确定的为一个存贮单元称为 cell。Cell：由{row key， column(= + )， version}是唯一确定的单元cell 中的数据是没有类型的，全部是字节码形式存贮。
 
-9. 简述 HBASE 中 compact 用途是什么，什么时候触发，分为哪两种，有什么区别，有哪些相关配置参数？
+## 9. 简述 HBASE 中 compact 用途是什么，什么时候触发，分为哪两种，有什么区别，有哪些相关配置参数？
 
 在 hbase 中每当有 memstore 数据 flush 到磁盘之后，就形成一个 storefile， 当 storeFile 的数量达到一定程度后，就需要将 storefile 文件来进行 compaction 操作。Compact 的作用：
 
 合并文件
 清除过期，多余版本的数据
 提高读写数据的效率
-10. HBase 中实现了两种 compaction 的方式 ： minor and major这两种compaction 方式的区别是：
+## 10. HBase 中实现了两种 compaction 的方式 ： minor and major这两种compaction 方式的区别是：
 
 Minor 操作只用来做部分文件的合并操作以及包括 minVersion=0 并且设置 TTL 的过期版本清理，不做任何删除数据、多版本数据的清理工作;
 Major 操作是对 Region 下的 HStore 下的所有 StoreFile 执行合并操作， 最终的结果是整理合并出一个文件。
-11. 简述 Hbase filter 的实现原理是什么？结合实际项目经验，写出几个使用filter 的场景。
+## 11. 简述 Hbase filter 的实现原理是什么？结合实际项目经验，写出几个使用filter 的场景。
 
 HBase 为筛选数据提供了一组过滤器，通过这个过滤器可以在 HBase 中的数据的多个维度（行，列，数据版本）上进行对数据的筛选操作，也就是说过滤器最终能够筛选的数据能够细化到具体的一个存储单元格上（由行键， 列名，时间戳定位）。
 
 RowFilter、PrefixFilter。hbase 的 filter 是通过 scan 设置的，所以是基于 scan 的查询结果进行过滤. 过滤器的类型很多，但是可以分为两大类——比较过滤器，专用过滤器。过滤器的作用是在服务端判断数据是否满足条件，然后只将满足条件的数据返回给客户端；如在进行订单开发的时候，我们使用 rowkeyfilter 过滤出某个用户的所有订单。
 
-12. Hbase 内部是什么机制？
+## 12. Hbase 内部是什么机制？
 
 在 HBase 中无论是增加新行还是修改已有的行，其内部流程都是相同的。HBase 接到命令后存下变化信息，或者写入失败抛出异常。默认情况下，执行写入时会写到两个地方：预写式日志（write-ahead log，也称 HLog）和 MemStore。HBase 的默认方式是把写入动作记录在这两个地方，以保证数据持久化。只有当这两个地方的变化信息都写入并确认后，才认为写动作完成。
 
@@ -90,7 +92,7 @@ MemStore 是内存里的写入缓冲区，HBase 中数据在永久写入硬盘�
 
 大多数情况下，HBase 使用Hadoop分布式文件系统（HDFS）来作为底层文件系统。如果 HBase 服务器宕机，没有从 MemStore 里刷写到 HFile 的数据将可以通过回放 WAL 来恢复。你不需要手工执行。Hbase 的内部机制中有恢复流程部分来处理。每台 HBase 服务器有一个 WAL，这台服务器上的所有表（和它们的列族）共享这个 WAL。你可能想到，写入时跳过 WAL 应该会提升写性能。但我们不建议禁用 WAL， 除非你愿意在出问题时丢失数据。如果你想测试一下，如下代码可以禁用 WAL： 注意：不写入 WAL 会在 RegionServer 故障时增加丢失数据的风险。关闭 WAL， 出现故障时 HBase 可能无法恢复数据，没有刷写到硬盘的所有写入数据都会丢失。
 
-13. HBase 宕机如何处理？
+## 13. HBase 宕机如何处理？
 
 宕机分为 HMaster 宕机和 HRegisoner 宕机.
 
@@ -98,12 +100,13 @@ MemStore 是内存里的写入缓冲区，HBase 中数据在永久写入硬盘�
 
 如果是 HMaster 宕机， HMaster 没有单点问题， HBase 中可以启动多个HMaster，通过 Zookeeper 的 Master Election 机制保证总有一个 Master 运行。即ZooKeeper 会保证总会有一个 HMaster 在对外提供服务。
 
-14. HRegionServer宕机如何处理？
+## 14. HRegionServer宕机如何处理？
 
 ZooKeeper 会监控 HRegionServer 的上下线情况，当 ZK 发现某个 HRegionServer 宕机之后会通知 HMaster 进行失效备援；
 HRegionServer 会停止对外提供服务，就是它所负责的 region 暂时停止对外提供服务
 HMaster 会将该 HRegionServer 所负责的 region 转移到其他 HRegionServer 上，并且会对 HRegionServer 上存在 memstore 中还未持久化到磁盘中的数据进行恢复;
 这个恢复的工作是由 WAL重播 来完成，这个过程如下：
+
 1. wal实际上就是一个文件，存在/hbase/WAL/对应RegionServer路径下
 2. 宕机发生时，读取该RegionServer所对应的路径下的wal文件，然后根据不同的region切分成不同的临时文件recover.edits
 3. 当region被分配到新的RegionServer中，RegionServer读取region时会进行是否存在recover.edits，如果有则进行恢复
@@ -131,7 +134,7 @@ BlockCache 采用的算法为 LRU（最近最少使用算法），因此当 Bloc
 
 一个 RegionServer 上有一个 BlockCache 和N个 Memstore，它们的大小之和不能大于等于 heapsize * 0.8，否则 hbase 不能启动。默认 BlockCache 为 0.2，而 Memstore 为 0.4。对于注重读响应时间的系统，应该将 BlockCache 设大些，比如设置BlockCache =0.4，Memstore=0.39。这会加大缓存命中率。
 
-15. HBase优化方法
+## 15. HBase优化方法
 
 优化手段主要有以下四个方面
 
@@ -180,7 +183,7 @@ RowKey设计：应该具备以下几个属性
      2. 列族的设计
 
       列族的设计需要看应用场景
-
+    
       多列族设计的优劣
 
 优势：
@@ -191,7 +194,7 @@ HBase中数据时按列进行存储的，那么查询某一列族的某一列时
 降低了写的I/O性能。原因如下：数据写到store以后是先缓存在memstore中，同一个region中存在多个列族则存在多个store，每个store都一个memstore，当其实memstore进行flush时，属于同一个region
 的store中的memstore都会进行flush，增加I/O开销。
 
-16. 为什么不建议在 HBase 中使用过多的列族
+## 16. 为什么不建议在 HBase 中使用过多的列族
 
 在 Hbase 的表中，每个列族对应 Region 中的一个Store，Region的大小达到阈值时会分裂，因此如果表中有多个列族，则可能出现以下现象：
 

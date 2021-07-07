@@ -717,7 +717,13 @@ export default {
           },{
             title: 'rpc',
             link: "/zh-cn/docs/面试/rpc.html",
-          }               
+          },{
+            title: 'elasticsearch',
+            link: "/zh-cn/docs/面试/elasticsearch.html",
+          },{
+            title: 'hbase',
+            link: "/zh-cn/docs/面试/hbase.html",
+          }                  
         ],
       }
     ],

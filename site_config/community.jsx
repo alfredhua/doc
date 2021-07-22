@@ -12,49 +12,7 @@ export default {
           content: 'this is the content',
           dateStr: 'May 12nd，2018',
           link: '/en-us/blog/blog1.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: 'this is the title',
-          content: 'this is the content',
-          dateStr: 'May 12nd，2018',
-          link: '/en-us/blog/blog2.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: 'this is the title',
-          content: 'this is the content',
-          dateStr: 'May 12nd，2018',
-          link: '/en-us/blog/blog3.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: 'this is the title',
-          content: 'this is the content',
-          dateStr: 'May 12nd，2018',
-          link: '/en-us/blog/blog4.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: 'this is the title',
-          content: 'this is the content',
-          dateStr: 'May 12nd，2018',
-          link: '/en-us/blog/blog5.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: 'this is the title',
-          content: 'this is the content',
-          dateStr: 'May 12nd，2018',
-          link: '/en-us/blog/blog6.html',
-        },
-        {
-          img: '/img/brhtqqzh.jpeg',
-          title: 'this is the title',
-          content: 'this is the content',
-          dateStr: 'May 12nd，2018',
-          link: '/en-us/blog/blog7.html',
-        },
+        }
       ]
     },
     contacts: {
@@ -95,22 +53,7 @@ export default {
           img: '/img/mailinglist.png',
           title: 'Mailing List',
           content: <span>this is the content</span>,
-        },
-        {
-          img: '/img/issue.png',
-          title: 'Issue',
-          content: <span>this is the content</span>,
-        },
-        {
-          img: '/img/documents.png',
-          title: 'Documents',
-          content: <span>this is the content</span>,
-        },
-        {
-          img: '/img/pullrequest.png',
-          title: 'Pull Request',
-          content: <span>this is the content</span>,
-        },
+        }
       ],
     },
     ecos: {

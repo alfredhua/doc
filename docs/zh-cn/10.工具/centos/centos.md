@@ -20,6 +20,8 @@
 > 修改 HandleLidSwitch=ignore
 > systemctl restart systemd-logind
 
+
+
 ## 挂载硬盘
 
 > 显示当前所有的硬盘，fdisk -l
